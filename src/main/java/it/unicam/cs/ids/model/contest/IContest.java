@@ -1,6 +1,8 @@
 package it.unicam.cs.ids.model.contest;
+import it.unicam.cs.ids.model.user.IUserPlatform;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Interface representing a contest platform in our system
@@ -29,24 +31,17 @@ public interface IContest {
     String ContestDescription();
 
     /**
-     * It gets the starting date of a contest.
-     *
-     * @return the starting date of a contest.
-     */
-    Date startDate();
-
-    /**
-     * It gets the ending date of a contest.
-     *
-     * @return the ending date of a contest.
-     */
-    Date endDate();
-
-    /**
      * It gets a list of allowed users if the contest is private.
      *
      * @return the entire list of allowed users.
      */
-    String [] allowedUsers();
+    List<IUserPlatform> getAllowedUsers();
+
+    /**
+     *It gets true if the contest is private, otherwise it returns false.
+     *
+     * @return true if the contest is private.
+     */
+    boolean isPrivate();
 
 }
