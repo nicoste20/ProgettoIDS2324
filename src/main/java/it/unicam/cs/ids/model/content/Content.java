@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.model.content;
 
+import it.unicam.cs.ids.model.comment.IComment;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 /**
  * Represents a content item with user information, a photo, a description, and a list of comments.

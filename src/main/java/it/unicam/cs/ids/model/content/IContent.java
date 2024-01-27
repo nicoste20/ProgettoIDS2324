@@ -1,6 +1,11 @@
 package it.unicam.cs.ids.model.content;
 
+import it.unicam.cs.ids.model.comment.Comment;
+import it.unicam.cs.ids.model.comment.IComment;
 import it.unicam.cs.ids.model.user.IUserPlatform;
+
+import java.util.List;
+
 /**
  * The  IContent interface represents content with user information, a photo,
  * a description, and the ability to handle comments.
@@ -34,7 +39,7 @@ public interface IContent {
      *
      * @return the list of comments
      */
-    List<IComment> getComment();
+    List <Comment> getComment();
 
     /**
      * Gets the description of the content.
