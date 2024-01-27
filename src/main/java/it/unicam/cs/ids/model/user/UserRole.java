@@ -28,5 +28,9 @@ public enum UserRole {
     /**
      * Represents an animator user with can create contest in the platform.
      */
-    Animator
+    Animator,
+    /**
+     * Represents a platform manager user with specialized functions.
+     */
+    PlatformManager
 }

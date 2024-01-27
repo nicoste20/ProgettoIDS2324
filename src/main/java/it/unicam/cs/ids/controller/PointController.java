@@ -1,4 +1,4 @@
-package it.unicam.cs.ids;
+package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.model.point.IPoint;
 import it.unicam.cs.ids.model.point.Point;

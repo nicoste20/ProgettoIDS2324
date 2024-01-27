@@ -1,4 +1,4 @@
-package it.unicam.cs.ids;
+package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.model.itinerary.Itinerary;
 import it.unicam.cs.ids.model.user.IUserPlatform;
