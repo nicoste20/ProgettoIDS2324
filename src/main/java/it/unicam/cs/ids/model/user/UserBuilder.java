@@ -1,5 +1,8 @@
 package it.unicam.cs.ids.model.user;
 
+import it.unicam.cs.ids.model.user.BaseUser;
+import it.unicam.cs.ids.model.user.UserRole;
+
 /**
  * Builder class for creating instances of the {@link BaseUser} class with specific user roles.
  * It provides methods to construct users with different roles.

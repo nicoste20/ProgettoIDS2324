@@ -1,6 +1,8 @@
 package userTest;
 
-import it.unicam.cs.ids.model.user.*;
+import it.unicam.cs.ids.model.user.BaseUser;
+import it.unicam.cs.ids.model.user.UserBuilder;
+import it.unicam.cs.ids.model.user.UserRole;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

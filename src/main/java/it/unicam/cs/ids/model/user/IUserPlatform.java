@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.model.user;
 
+import it.unicam.cs.ids.model.user.UserRole;
+
 /**
  * Interface representing a user platform in a system.
  * It defines methods to retrieve basic information about a user.
