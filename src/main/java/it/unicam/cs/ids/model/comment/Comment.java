@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.model.comment;
 
-import it.unicam.cs.ids.model.content.Content;
+import it.unicam.cs.ids.model.Multimedia;
 import it.unicam.cs.ids.model.user.UserBuilder;
 
 /**
@@ -10,7 +10,7 @@ import it.unicam.cs.ids.model.user.UserBuilder;
 public class Comment implements IComment{
     private String text;
     private UserBuilder author;
-    private Content content;
+    private Multimedia content;
     private boolean commentValidation;
 
     /**
@@ -21,7 +21,7 @@ public class Comment implements IComment{
      * @param content The content associated with a comment.
      * @param commentValidation If the comment needs validation.
      */
-    public Comment(String text, UserBuilder author, Content content, boolean commentValidation) {
+    public Comment(String text, UserBuilder author, Multimedia content, boolean commentValidation) {
         this.text = text;
         this.author = author;
         this.content = content;
@@ -45,7 +45,7 @@ public class Comment implements IComment{
      * {@inheritDoc}
      */
     @Override
-    public Content getContent() {
+    public Multimedia getContent() {
         return this.content;
     }
     /**

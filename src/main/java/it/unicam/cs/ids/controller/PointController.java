@@ -1,17 +1,13 @@
 package it.unicam.cs.ids.controller;
 
-import it.unicam.cs.ids.model.point.IPoint;
-import it.unicam.cs.ids.model.point.Point;
+import it.unicam.cs.ids.model.Point;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
-
 import java.util.List;
 
 public class PointController {
 
-    List<IPoint> points;
-
-    List<IPoint> pendingPoints;
+    List<Point> points;
 
     public void addPoint(Point point , IUserPlatform user){
         if(user.getUserType().equals(UserRole.Contributor))
@@ -21,18 +17,22 @@ public class PointController {
     }
 
     private void addWithPending(Point point){
-        this.pendingPoints.add(point);
-    }
-
-    private void addWithoutPending(Point point){
+        point.setValidation(false);
         this.points.add(point);
     }
 
-    public void validatePoint(boolean choice, IUserPlatform user, IPoint point){
-        if(choice)
-            this.points.add(point);
-        else
-            this.pendingPoints.remove(point);
+    private void addWithoutPending(Point point){
+        point.setValidation(true);
+        this.points.add(point);
+    }
+
+    public void validatePoint(boolean choice, IUserPlatform user, Point point){
+       int index = this.points.indexOf(point);
+       Point pointToValidate = this.points.get(index);
+       if(choice)
+           pointToValidate.setValidation(true);
+       else
+           this.points.remove(pointToValidate);
     }
 
 }

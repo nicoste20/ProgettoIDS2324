@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.model.comment;
 
-import it.unicam.cs.ids.model.content.Content;
+import it.unicam.cs.ids.model.Multimedia;
 import it.unicam.cs.ids.model.user.UserBuilder;
 
 /**
@@ -25,7 +25,7 @@ public interface IComment {
      *
      * @return the content associated with a comment.
      */
-    public Content getContent();
+    public Multimedia getContent();
     /**
      * Gets the validation of a comment.
      *
