@@ -28,7 +28,7 @@ public class ItineraryController {
         this.itineraries.add(itinerary);
     }
 
-    public void validateItinerary(boolean choice, IUserPlatform user, Itinerary itinerary){
+    public void validateItinerary(boolean choice, Itinerary itinerary){
         int index = this.itineraries.indexOf(itinerary);
         Itinerary itineraryToValidate = this.itineraries.get(index);
         if(choice)

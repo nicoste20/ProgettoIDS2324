@@ -10,16 +10,13 @@ import java.util.List;
  * Implements the  IContent interface.
  */
 public class Multimedia extends Content {
-    private String photo;
-    private List<IComment> commentList;
+    private final String photo;
     /**
      * Constructs a new Content object with the specified user, photo, and description.
      *
-     * @param user        the user associated with the content
      * @param photo       the file path or URL of the photo
-     * @param description the description of the content
      */
-    public Multimedia(BaseUser author, String text , IUserPlatform user, String photo, String description , int id) {
+    public Multimedia(BaseUser author, String text , String photo, int id) {
         super(author,text, id);
         this.photo = photo;
     }
@@ -31,24 +28,6 @@ public class Multimedia extends Content {
      */
     public String getFile() {
         return this.photo;
-    }
-
-    /**
-     * Adds a comment to the list of comments associated with the content.
-     *
-     * @param comment the comment to be added
-     */
-    public void addComment(IComment comment) {
-        commentList.add(comment);
-    }
-
-    /**
-     * Gets the list of comments associated with the content.
-     *
-     * @return the list of comments
-     */
-    public List<IComment> getComment() {
-        return this.commentList;
     }
 
 }

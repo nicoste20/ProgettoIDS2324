@@ -14,7 +14,7 @@ public class Point extends Content {
     private final String type;
 
     /** The coordinates of the point in 2D space. */
-    private Point2D coordinates;
+    private final Point2D coordinates;
 
     /**
      * Constructor to create a point with coordinates, type, author, text description, and a unique identifier.
