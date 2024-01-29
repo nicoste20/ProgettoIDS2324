@@ -1,7 +1,6 @@
 package userTest;
 
 import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.UserBuilder;
 import it.unicam.cs.ids.model.user.UserRole;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class userTest {
      */
     @Test
     public void testCreateContributor() {
-        BaseUser contributor = new UserBuilder().Contributor(1, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
+        BaseUser contributor = new BaseUser(1,UserRole.Contributor, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
 
         assertEquals(UserRole.Contributor, contributor.getUserType());
         assertEquals("Nicolo", contributor.getName());
@@ -32,7 +31,7 @@ public class userTest {
      */
     @Test
     public void testCreateContributorAuthorized() {
-        BaseUser contributor = new UserBuilder().ContributorAuthorized(1, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
+        BaseUser contributor = new BaseUser(1,UserRole.ContributorAuthorized,  "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
 
         assertEquals(UserRole.ContributorAuthorized, contributor.getUserType());
         assertEquals("Nicolo", contributor.getName());
@@ -47,7 +46,7 @@ public class userTest {
      */
     @Test
     public void testCreateCurator() {
-        BaseUser curator = new UserBuilder().Curator(1, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
+        BaseUser curator = new BaseUser(1,UserRole.Curator,  "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
 
         assertEquals(UserRole.Curator, curator.getUserType());
         assertEquals("Nicolo", curator.getName());
@@ -62,7 +61,7 @@ public class userTest {
      */
     @Test
     public void testCreateAnimator() {
-        BaseUser animator = new UserBuilder().Animator(1, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
+        BaseUser animator = new BaseUser(1,UserRole.Animator,  "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
 
         assertEquals(UserRole.Animator, animator.getUserType());
         assertEquals("Nicolo", animator.getName());

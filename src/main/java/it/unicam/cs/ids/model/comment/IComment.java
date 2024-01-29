@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.model.comment;
 
 import it.unicam.cs.ids.model.Multimedia;
-import it.unicam.cs.ids.model.user.UserBuilder;
+import it.unicam.cs.ids.model.user.BaseUser;
 
 /**
  Interface representing a comment under a multimedia content.
@@ -19,7 +19,7 @@ public interface IComment {
      *
      * @return the author of a comment.
      */
-    public UserBuilder getAuthor();
+    public BaseUser getAuthor();
     /**
      * Gets the content associated with a comment.
      *
