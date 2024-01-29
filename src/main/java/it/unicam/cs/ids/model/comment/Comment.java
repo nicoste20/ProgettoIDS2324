@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.model.comment;
 
 import it.unicam.cs.ids.model.Multimedia;
-import it.unicam.cs.ids.model.user.BaseUser;
+import it.unicam.cs.ids.model.user.IUserPlatform;
 
 /**
  *  Represents a base implementation of the {@link IComment} interface.
@@ -9,7 +9,7 @@ import it.unicam.cs.ids.model.user.BaseUser;
  */
 public class Comment implements IComment{
     private String text;
-    private BaseUser author;
+    private IUserPlatform author;
     private Multimedia content;
     private boolean commentValidation;
 
@@ -21,7 +21,7 @@ public class Comment implements IComment{
      * @param content The content associated with a comment.
      * @param commentValidation If the comment needs validation.
      */
-    public Comment(String text, BaseUser author, Multimedia content, boolean commentValidation) {
+    public Comment(String text, IUserPlatform author, Multimedia content, boolean commentValidation) {
         this.text = text;
         this.author = author;
         this.content = content;
@@ -38,7 +38,7 @@ public class Comment implements IComment{
      * {@inheritDoc}
      */
     @Override
-    public BaseUser getAuthor() {
+    public IUserPlatform getAuthor() {
         return this.author;
     }
     /**
