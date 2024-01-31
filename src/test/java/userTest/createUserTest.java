@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 /**
  * Test class for validating the creation of different user roles using the {@link UserBuilder}.
  */
-public class userTest {
+public class createUserTest {
 
     /**
      * Test method for creating a Contributor user.

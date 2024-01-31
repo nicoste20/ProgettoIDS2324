@@ -5,6 +5,7 @@ import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +23,13 @@ public class MultimediaController {
      * The list of content pending approval.
      */
     List<Multimedia> pendingContentList;
+    /**
+     * Constructs a new {@code MultimediaController} with empty content lists.
+     */
+    public MultimediaController() {
+        this.contentList = new ArrayList<Multimedia>();
+        this.pendingContentList = new ArrayList<Multimedia>();
+    }
 
     /**
      * Adds content to the appropriate list based on the user's role.
@@ -60,13 +68,36 @@ public class MultimediaController {
     /**
      * Validates content based on the curator's choice (approve or reject).
      *
+     * @param user    the curator making the decision
      * @param choice  {@code true} to approve the content, {@code false} to reject
      * @param content the content to be validated
      */
-    private void validateContent(boolean choice, Multimedia content) {
-        if (choice)
-            this.contentList.add(content);
-        else
-            this.pendingContentList.remove(content);
+    public void validateContent(BaseUser user, boolean choice, Multimedia content) {
+        if (user.getUserType().equals(UserRole.Curator)) {
+            if (choice) {
+                this.contentList.add(content);
+                this.pendingContentList.remove(content);
+            } else {
+                this.pendingContentList.remove(content);
+            }
+        }
+    }
+
+    /**
+     * Gets the size of the approved content list.
+     *
+     * @return the size of the approved content list
+     */
+    public int getContentListSize() {
+        return contentList.size();
+    }
+
+    /**
+     * Gets the size of the content pending approval list.
+     *
+     * @return the size of the content pending approval list
+     */
+    public int getContentPendingListSize() {
+        return pendingContentList.size();
     }
 }
