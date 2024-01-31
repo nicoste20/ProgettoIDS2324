@@ -26,7 +26,7 @@ public class PointController {
         this.points.add(point);
     }
 
-    public void validatePoint(boolean choice, IUserPlatform user, Point point){
+    public void validatePoint(boolean choice, Point point){
        int index = this.points.indexOf(point);
        Point pointToValidate = this.points.get(index);
        if(choice)
