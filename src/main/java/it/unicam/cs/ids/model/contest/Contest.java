@@ -11,12 +11,12 @@ import java.util.List;
  * This class provides methods that concerns about Contests.
  */
 public class Contest implements IContest{
-    private int id;
+    private final int id;
     private String contestName;
     private String contestDescription;
     private List <IUserPlatform>  allowedUsers;
-    private boolean isPrivate;
     private List<Multimedia> multimediaList;
+    private final boolean isPrivate;
     /**
      * Constructs a new Contest object with the specified parameters.
      *
@@ -69,15 +69,24 @@ public class Contest implements IContest{
     /**
      * {@inheritDoc}
      */
+    @Override
     public void addAllowedUsers(IUserPlatform user){
         this.allowedUsers.add(user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<Multimedia> getMultimediaList() {
         return multimediaList;
     }
 
-    public void setMultimediaList(Multimedia multimedia) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addMultimedia(Multimedia multimedia) {
         this.multimediaList.add(multimedia);
     }
 }

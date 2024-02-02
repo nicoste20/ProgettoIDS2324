@@ -59,7 +59,7 @@ public class ItineraryController {
      * @param curator the User that validates the itinerary
      * @param choice if the itinerary will be validated or no
      */
-    public void validateItinerary(BaseUser curator, boolean choice, Itinerary itinerary) {
+    public void validateItinerary(IUserPlatform curator, boolean choice, Itinerary itinerary) {
         if (curator.getUserType().equals(UserRole.Curator)) {
             int index = this.itineraries.indexOf(itinerary);
             if (index != -1) {

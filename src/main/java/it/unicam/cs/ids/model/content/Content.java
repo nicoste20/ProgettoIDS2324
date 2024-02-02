@@ -32,6 +32,7 @@ public abstract class Content {
         this.author = author;
         this.description = text;
         this.id = id;
+        this.isValidate = false;
     }
 
     /**

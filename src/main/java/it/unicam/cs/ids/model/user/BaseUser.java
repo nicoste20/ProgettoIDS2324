@@ -6,11 +6,11 @@ package it.unicam.cs.ids.model.user;
  */
 public class BaseUser implements IUserPlatform {
 
-    private int id;
-    private UserRole userRole;
+    private final int id;
+    private final UserRole userRole;
     private String name;
     private String surname;
-    private String username;
+    private final String username;
     private String password;
     private String email;
 

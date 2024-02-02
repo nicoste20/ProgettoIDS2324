@@ -63,12 +63,16 @@ public class PointController {
      * @param point  The Point to be validated or removed.
      */
     public void validatePoint(boolean choice, IUserPlatform user, Point point) {
-        int index = this.points.indexOf(point);
-        Point pointToValidate = this.points.get(index);
-        if (choice)
-            pointToValidate.setValidation(true);
-        else
-            this.points.remove(pointToValidate);
+        if (user.getUserType().equals(UserRole.Curator)) {
+            int index = this.points.indexOf(point);
+            if(index != -1){
+                Point pointToValidate = this.points.get(index);
+                if (choice)
+                    pointToValidate.setValidation(true);
+                else
+                    this.points.remove(pointToValidate);
+            }
+        }
     }
 
     /**

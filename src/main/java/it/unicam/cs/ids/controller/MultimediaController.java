@@ -14,6 +14,7 @@ import java.util.List;
  * It interacts with instances of {@link Multimedia}, {@link BaseUser}, {@link IUserPlatform}, and {@link UserRole}.
  */
 public class MultimediaController {
+
     /**
      * The list of content.
      */
@@ -69,7 +70,7 @@ public class MultimediaController {
      * @param choice  {@code true} to approve the content, {@code false} to reject
      * @param content the content to be validated
      */
-    public void validateContent(BaseUser user, boolean choice, Multimedia content) {
+    public void validateContent(IUserPlatform user, boolean choice, Multimedia content) {
         if (user.getUserType().equals(UserRole.Curator)) {
             int index = contentList.indexOf(content);
             if(index !=1) {
