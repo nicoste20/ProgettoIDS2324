@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.model.content;
 
 import it.unicam.cs.ids.model.user.BaseUser;
+import it.unicam.cs.ids.model.user.IUserPlatform;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class Point extends Content {
      * @param id     The unique identifier for the point.
      * @param title the title of the point
      */
-    public Point(Point2D point, String type, BaseUser author, String text, int id, String title) {
+    public Point(Point2D point, String type, IUserPlatform author, String text, int id, String title) {
         super(author, text, id);
         this.coordinates = point;
         this.type = type;

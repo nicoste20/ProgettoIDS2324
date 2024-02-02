@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.model.content;
 
 import it.unicam.cs.ids.model.user.BaseUser;
+import it.unicam.cs.ids.model.user.IUserPlatform;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ public class Itinerary extends Content {
      * @param text The textual description of the itinerary.
      * @param id The unique identifier for the itinerary.
      */
-    public Itinerary(BaseUser author, String text, int id) {
+    public Itinerary(IUserPlatform author, String text, int id) {
         super(author, text, id);
         this.points = new ArrayList<>();
     }

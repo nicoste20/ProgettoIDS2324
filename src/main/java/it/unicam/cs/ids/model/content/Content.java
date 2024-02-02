@@ -10,7 +10,7 @@ import it.unicam.cs.ids.model.user.IUserPlatform;
 public abstract class Content {
 
     /** The author of the content. */
-    private final BaseUser author;
+    private final IUserPlatform author;
 
     /** The textual description of the content. */
     private String description;
@@ -28,7 +28,7 @@ public abstract class Content {
      * @param text The textual description of the content.
      * @param id The unique identifier for the content.
      */
-    public Content(BaseUser author, String text, int id) {
+    public Content(IUserPlatform author, String text, int id) {
         this.author = author;
         this.description = text;
         this.id = id;

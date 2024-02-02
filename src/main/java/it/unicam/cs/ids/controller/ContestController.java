@@ -13,6 +13,13 @@ public class ContestController {
 
     private List<IContest> contests;
 
+    public ContestController(List<IContest> contests){
+        this.contests = contests;
+    }
+
+    public ContestController(){
+    }
+
     /**
      * Adds a contest to the list of contests.
      *

@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.model.content;
 
 import it.unicam.cs.ids.model.user.BaseUser;
+import it.unicam.cs.ids.model.user.IUserPlatform;
 
 /**
  * Represents a content item with user information, a photo, a description, and a list of comments.
@@ -15,7 +16,7 @@ public class Multimedia extends Content {
      *
      * @param photo       the file path or URL of the photo
      */
-    public Multimedia(BaseUser author, String text , String photo, int id) {
+    public Multimedia(IUserPlatform author, String text , String photo, int id) {
         super(author,text, id);
         this.photo = photo;
     }
