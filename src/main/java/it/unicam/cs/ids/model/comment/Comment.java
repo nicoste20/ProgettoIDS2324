@@ -1,13 +1,15 @@
 package it.unicam.cs.ids.model.comment;
 
+import it.unicam.cs.ids.model.Content;
 import it.unicam.cs.ids.model.Multimedia;
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 
 /**
  *  Represents a base implementation of the {@link IComment} interface.
  * This class provides methods that concerns about Comments.
  */
-public class Comment implements IComment{
+public class Comment extends Content {
     private String text;
     private IUserPlatform author;
     private Multimedia content;
@@ -20,39 +22,23 @@ public class Comment implements IComment{
      * @param author The author of a comment.
      * @param content The content associated with a comment.
      * @param commentValidation If the comment needs validation.
+     * @param id the id of the comment
      */
-    public Comment(String text, IUserPlatform author, Multimedia content, boolean commentValidation) {
-        this.text = text;
-        this.author = author;
+    public Comment(String text, BaseUser author, int id, Multimedia content, boolean commentValidation) {
+        super(author, text, id);
         this.content = content;
         this.commentValidation = commentValidation;
     }
     /**
-     * {@inheritDoc}
+     *it gets the content of the comment
      */
-    @Override
-    public String getText() {
-        return this.text;
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IUserPlatform getAuthor() {
-        return this.author;
-    }
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Multimedia getContent() {
         return this.content;
     }
     /**
-     * {@inheritDoc}
+     * it gets the validation of the comment
      */
-    @Override
-    public boolean commentValidation() {
+    public boolean getCommentValidation() {
         return this.commentValidation;
     }
 }

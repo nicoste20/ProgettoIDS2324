@@ -27,7 +27,7 @@ public class Point extends Content {
      * @param author The author of the point.
      * @param text   The textual description of the point.
      * @param id     The unique identifier for the point.
-     * @param title
+     * @param title the title of the point
      */
     public Point(Point2D point, String type, BaseUser author, String text, int id, String title) {
         super(author, text, id);

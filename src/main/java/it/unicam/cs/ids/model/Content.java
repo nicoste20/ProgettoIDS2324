@@ -2,6 +2,8 @@ package it.unicam.cs.ids.model;
 
 import it.unicam.cs.ids.model.comment.IComment;
 import it.unicam.cs.ids.model.user.BaseUser;
+import it.unicam.cs.ids.model.user.IUserPlatform;
+
 import java.util.List;
 
 /**
@@ -43,7 +45,7 @@ public abstract class Content {
      *
      * @return The author of the content.
      */
-    public BaseUser getAuthor() {
+    public IUserPlatform getAuthor() {
         return author;
     }
 
