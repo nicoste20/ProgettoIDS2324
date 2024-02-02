@@ -1,11 +1,11 @@
 package it.unicam.cs.ids.controller;
-import it.unicam.cs.ids.model.comment.Comment;
+import it.unicam.cs.ids.model.content.Comment;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 
 import java.util.List;
-import java.util.Optional;
+
 /**
  * The  Comment controller class manages the addition and validation of a general comment
  * differentiating between immediate addition and pending approval based on the user's role.
@@ -55,27 +55,18 @@ public class CommentController {
      * @param user   The user performing the validation.
      * @param comment  The Point to be validated or removed.
      */
-    public void validateComment(boolean choice, IUserPlatform user, Comment comment) {
-        int index = this.comments.indexOf(comment);
-        Comment commentToValidate = this.comments.get(index);
-        if (choice)
-            commentToValidate.setValidation(true);
-        else
-            this.comments.remove(commentToValidate);
+    public void validateComment(boolean choice, BaseUser curator, Comment comment) {
+        if(curator.getUserType().equals(UserRole.Curator)) {
+            int index = this.comments.indexOf(comment);
+            if(index!=-1) {
+                if (choice)
+                    comments.get(index).setValidation(true);
+                else
+                    this.comments.remove(index);
+            }
+        }
     }
 
- /*
-     * Searches for a Point by its title in the list.
-     *
-     * @param description The description of a comment to be searched.
-     * @return An Optional containing the found comment, or empty if not found.
 
-    public Optional<Comment> searchPoint(String description) {
-        for (Comment comment : comments) {
-            if (comment.getDescription().equals(description))
-                return Optional.of(comment);
-        }
-        return Optional.empty();
-    }*/
 }
 

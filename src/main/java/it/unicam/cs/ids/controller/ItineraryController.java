@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.controller;
 
-import it.unicam.cs.ids.model.Itinerary;
-import it.unicam.cs.ids.model.Multimedia;
+import it.unicam.cs.ids.model.content.Itinerary;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
@@ -16,12 +15,9 @@ import java.util.List;
 public class ItineraryController {
 
     List<Itinerary> itineraries;
-    List<Itinerary> pendingItinerary;
-
 
     public ItineraryController() {
         this.itineraries = new ArrayList<Itinerary>();
-        this.pendingItinerary = new ArrayList<Itinerary>();
     }
     /**
      * Adds an Itinerary to the list based on the user's role.
@@ -45,7 +41,7 @@ public class ItineraryController {
      */
     private void addWithPending(Itinerary itinerary){
         itinerary.setValidation(false);
-        this.pendingItinerary.add(itinerary);
+        this.itineraries.add(itinerary);
     }
     /**
      * Adds an Itinerary without the pending
@@ -65,14 +61,12 @@ public class ItineraryController {
      */
     public void validateItinerary(BaseUser curator, boolean choice, Itinerary itinerary) {
         if (curator.getUserType().equals(UserRole.Curator)) {
-            int index = this.pendingItinerary.indexOf(itinerary);
+            int index = this.itineraries.indexOf(itinerary);
             if (index != -1) {
                 if (choice) {
-                    //   pendingItinerary.setValidation(true);
-                    itineraries.add(itinerary);
-                    this.pendingItinerary.remove(itinerary);
+                    itineraries.get(index).setValidation(true);
                 } else
-                    this.pendingItinerary.remove(itinerary);
+                    this.itineraries.remove(index);
             }
         }
     }
@@ -85,6 +79,7 @@ public class ItineraryController {
     /**
      * It returns how many itineraries are in a pending situation
      */
-    public int getPendingItinerariesSize(){ return this.pendingItinerary.size();
+    public int getPendingItinerariesSize(){
+        return 0;
     }
 }

@@ -1,7 +1,7 @@
 package controllerTest;
 import it.unicam.cs.ids.controller.ItineraryController;
-import it.unicam.cs.ids.model.Itinerary;
-import it.unicam.cs.ids.model.Point;
+import it.unicam.cs.ids.model.content.Itinerary;
+import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import org.junit.Test;

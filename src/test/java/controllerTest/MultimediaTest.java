@@ -1,10 +1,13 @@
 package controllerTest;
 
 import it.unicam.cs.ids.controller.MultimediaController;
-import it.unicam.cs.ids.model.Multimedia;
+import it.unicam.cs.ids.model.content.Multimedia;
+import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import org.junit.Test;
+
+import java.awt.geom.Point2D;
 
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +17,6 @@ import static org.junit.Assert.assertEquals;
 public class MultimediaTest {
 
     private final MultimediaController multimediaController = new MultimediaController();
-
     /**
      * Test for adding content with no pending approval.
      */
@@ -23,12 +25,13 @@ public class MultimediaTest {
         BaseUser contributorAuthorized = new BaseUser(1, UserRole.ContributorAuthorized, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
         String description = "This is my first post!";
         String photo = "/path";
+
+
         Multimedia multimedia = new Multimedia(contributorAuthorized, description, photo, 0);
 
         multimediaController.addContent(multimedia);
 
         assertEquals(1, multimediaController.getContentListSize());
-        assertEquals(0, multimediaController.getContentPendingListSize());
     }
 
     /**
@@ -39,12 +42,12 @@ public class MultimediaTest {
         BaseUser contributor = new BaseUser(1, UserRole.Contributor, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
         String description = "This is my first post!";
         String photo = "/path";
+
         Multimedia multimedia = new Multimedia(contributor, description, photo, 0);
 
         multimediaController.addContent(multimedia);
 
-        assertEquals(0, multimediaController.getContentListSize());
-        assertEquals(1, multimediaController.getContentPendingListSize());
+        assertEquals(1, multimediaController.getContentListSize());
     }
 
     /**
@@ -55,12 +58,12 @@ public class MultimediaTest {
         BaseUser tourist = new BaseUser(1, UserRole.Tourist, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
         String description = "This is my first post!";
         String photo = "/path";
+
         Multimedia multimedia = new Multimedia(tourist, description, photo, 0);
 
         multimediaController.addContent(multimedia);
 
         assertEquals(0, multimediaController.getContentListSize());
-        assertEquals(0, multimediaController.getContentPendingListSize());
     }
 
     /**
@@ -71,19 +74,18 @@ public class MultimediaTest {
         BaseUser contributor = new BaseUser(1, UserRole.Contributor, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
         String description = "This is my first post!";
         String photo = "/path";
+
         Multimedia multimedia = new Multimedia(contributor, description, photo, 0);
 
         multimediaController.addContent(multimedia);
 
-        assertEquals(0, multimediaController.getContentListSize());
-        assertEquals(1, multimediaController.getContentPendingListSize());
+        assertEquals(1, multimediaController.getContentListSize());
 
         BaseUser curator = new BaseUser(2, UserRole.Curator, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
 
         multimediaController.validateContent(curator, true, multimedia);
 
         assertEquals(1, multimediaController.getContentListSize());
-        assertEquals(0, multimediaController.getContentPendingListSize());
     }
 
     /**
@@ -94,18 +96,17 @@ public class MultimediaTest {
         BaseUser contributor = new BaseUser(1, UserRole.Contributor, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
         String description = "This is my first post!";
         String photo = "/path";
+
         Multimedia multimedia = new Multimedia(contributor, description, photo, 0);
 
         multimediaController.addContent(multimedia);
 
-        assertEquals(0, multimediaController.getContentListSize());
-        assertEquals(1, multimediaController.getContentPendingListSize());
+        assertEquals(1, multimediaController.getContentListSize());
 
         BaseUser curator = new BaseUser(2, UserRole.Curator, "Nicolo", "Stefani", "nico_ste", "nico@example.com", "password");
 
         multimediaController.validateContent(curator, false, multimedia);
 
         assertEquals(0, multimediaController.getContentListSize());
-        assertEquals(0, multimediaController.getContentPendingListSize());
     }
 }

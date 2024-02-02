@@ -1,16 +1,15 @@
-package it.unicam.cs.ids.model;
+package it.unicam.cs.ids.model.content;
 
-import it.unicam.cs.ids.model.comment.IComment;
 import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
-import java.util.List;
 
 /**
  * Represents a content item with user information, a photo, a description, and a list of comments.
  * Implements the  IContent interface.
  */
 public class Multimedia extends Content {
+
     private final String photo;
+
     /**
      * Constructs a new Content object with the specified user, photo, and description.
      *

@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.controller;
 
-import it.unicam.cs.ids.model.Point;
+import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import java.util.List;
@@ -17,6 +17,10 @@ public class PointController {
      * List to store Point objects managed by the controller.
      */
     List<Point> points;
+
+    public PointController(List<Point> points) {
+        this.points = points;
+    }
 
     /**
      * Adds a Point to the list based on the user's role.

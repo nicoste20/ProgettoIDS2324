@@ -1,8 +1,10 @@
-package it.unicam.cs.ids.model;
+package it.unicam.cs.ids.model.content;
 
 import it.unicam.cs.ids.model.user.BaseUser;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a point, a type of content that includes coordinates and a specific type.
@@ -19,6 +21,7 @@ public class Point extends Content {
     /** The coordinates of the point in 2D space. */
     private final Point2D coordinates;
 
+    private final List<Multimedia> multimediaList;
     /**
      * Constructor to create a point with coordinates, type, author, text description, and a unique identifier.
      *
@@ -34,6 +37,7 @@ public class Point extends Content {
         this.coordinates = point;
         this.type = type;
         this.title = title;
+        this.multimediaList=new ArrayList<Multimedia>();
     }
 
     /**
@@ -56,6 +60,14 @@ public class Point extends Content {
 
     public String getTitle(){
         return this.title;
+    }
+
+    public void addMultimedia(Multimedia multimedia){
+        this.multimediaList.add(multimedia);
+    }
+
+    public List<Multimedia> getMultimediaList(){
+        return this.multimediaList;
     }
 }
 

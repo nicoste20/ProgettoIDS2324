@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.controller;
 
-import it.unicam.cs.ids.model.Multimedia;
+import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
@@ -15,20 +15,15 @@ import java.util.List;
  */
 public class MultimediaController {
     /**
-     * The list of approved content.
+     * The list of content.
      */
     List<Multimedia> contentList;
 
-    /**
-     * The list of content pending approval.
-     */
-    List<Multimedia> pendingContentList;
     /**
      * Constructs a new {@code MultimediaController} with empty content lists.
      */
     public MultimediaController() {
         this.contentList = new ArrayList<Multimedia>();
-        this.pendingContentList = new ArrayList<Multimedia>();
     }
 
     /**
@@ -53,6 +48,7 @@ public class MultimediaController {
      * @param content the content to be added
      */
     private void addContentNoPending(Multimedia content) {
+        content.setValidation(true);
         this.contentList.add(content);
     }
 
@@ -62,7 +58,8 @@ public class MultimediaController {
      * @param content the content to be added
      */
     private void addContentPending(Multimedia content) {
-        this.pendingContentList.add(content);
+        content.setValidation(false);
+        this.contentList.add(content);
     }
 
     /**
@@ -74,11 +71,13 @@ public class MultimediaController {
      */
     public void validateContent(BaseUser user, boolean choice, Multimedia content) {
         if (user.getUserType().equals(UserRole.Curator)) {
-            if (choice) {
-                this.contentList.add(content);
-                this.pendingContentList.remove(content);
-            } else {
-                this.pendingContentList.remove(content);
+            int index = contentList.indexOf(content);
+            if(index !=1) {
+                if (choice) {
+                    this.contentList.get(index).setValidation(true);
+                } else {
+                    this.contentList.remove(content);
+                }
             }
         }
     }
@@ -92,12 +91,4 @@ public class MultimediaController {
         return contentList.size();
     }
 
-    /**
-     * Gets the size of the content pending approval list.
-     *
-     * @return the size of the content pending approval list
-     */
-    public int getContentPendingListSize() {
-        return pendingContentList.size();
-    }
 }

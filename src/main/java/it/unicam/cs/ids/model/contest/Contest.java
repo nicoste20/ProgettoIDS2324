@@ -1,6 +1,8 @@
 package it.unicam.cs.ids.model.contest;
+import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class Contest implements IContest{
     private String contestDescription;
     private List <IUserPlatform>  allowedUsers;
     private boolean isPrivate;
-
+    private List<Multimedia> multimediaList;
     /**
      * Constructs a new Contest object with the specified parameters.
      *
@@ -27,6 +29,7 @@ public class Contest implements IContest{
         this.contestName = contestName;
         this.contestDescription = contestDescription;
         this.isPrivate = isPrivate;
+        this.multimediaList=new ArrayList<Multimedia>();
     }
     /**
      * {@inheritDoc}
@@ -68,5 +71,13 @@ public class Contest implements IContest{
      */
     public void addAllowedUsers(IUserPlatform user){
         this.allowedUsers.add(user);
+    }
+
+    public List<Multimedia> getMultimediaList() {
+        return multimediaList;
+    }
+
+    public void setMultimediaList(Multimedia multimedia) {
+        this.multimediaList.add(multimedia);
     }
 }

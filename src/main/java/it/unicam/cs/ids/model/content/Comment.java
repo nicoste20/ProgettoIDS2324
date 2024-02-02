@@ -1,19 +1,13 @@
-package it.unicam.cs.ids.model.comment;
+package it.unicam.cs.ids.model.content;
 
-import it.unicam.cs.ids.model.Content;
-import it.unicam.cs.ids.model.Multimedia;
 import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
 
 /**
  *  Represents a base implementation of the {@link IComment} interface.
  * This class provides methods that concerns about Comments.
  */
 public class Comment extends Content {
-    private String text;
-    private IUserPlatform author;
-    private Multimedia content;
-    private boolean commentValidation;
+    private final Content content;
 
     /**
      * Constructs a new Contest object with the specified parameters.
@@ -24,21 +18,15 @@ public class Comment extends Content {
      * @param commentValidation If the comment needs validation.
      * @param id the id of the comment
      */
-    public Comment(String text, BaseUser author, int id, Multimedia content, boolean commentValidation) {
+    public Comment(String text, BaseUser author, int id, Content content) {
         super(author, text, id);
         this.content = content;
-        this.commentValidation = commentValidation;
     }
     /**
      *it gets the content of the comment
      */
-    public Multimedia getContent() {
+    public Content getContent() {
         return this.content;
     }
-    /**
-     * it gets the validation of the comment
-     */
-    public boolean getCommentValidation() {
-        return this.commentValidation;
-    }
+
 }

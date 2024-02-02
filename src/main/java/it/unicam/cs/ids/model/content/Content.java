@@ -1,10 +1,7 @@
-package it.unicam.cs.ids.model;
+package it.unicam.cs.ids.model.content;
 
-import it.unicam.cs.ids.model.comment.IComment;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
-
-import java.util.List;
 
 /**
  * The abstract class representing content in the application.
@@ -23,9 +20,6 @@ public abstract class Content {
 
     /** The unique identifier for the content. */
     private final int id;
-
-    /**The comments related to this content**/
-    private List<IComment> comments;
 
     /**
      * Constructor to initialize a Content object.
@@ -94,19 +88,6 @@ public abstract class Content {
         return this.id;
     }
 
-    /**
-     * Getter for the comments.
-     *
-     * @return The comments.
-     */
-    public List<IComment> getComments(){return this.comments;}
-
-    /**
-     * Add a comment to this content.
-     */
-    public void addComment(IComment comment){
-        this.comments.add(comment);
-    }
 }
 
 
