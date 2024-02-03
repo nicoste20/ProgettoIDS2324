@@ -1,9 +1,7 @@
 package it.unicam.cs.ids.model.contest;
 import it.unicam.cs.ids.model.content.Multimedia;
-import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,7 +28,7 @@ public interface IContest {
      *
      * @return the description of a contest.
      */
-    String ContestDescription();
+    String getContestDescription();
 
     /**
      * It gets a list of allowed users if the contest is private.

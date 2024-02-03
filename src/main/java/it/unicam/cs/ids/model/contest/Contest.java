@@ -49,7 +49,7 @@ public class Contest implements IContest{
      * {@inheritDoc}
      */
     @Override
-    public String ContestDescription() {
+    public String getContestDescription() {
         return this.contestDescription;
     }
     /**

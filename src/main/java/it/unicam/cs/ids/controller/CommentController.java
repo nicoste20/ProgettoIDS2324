@@ -52,10 +52,10 @@ public class CommentController {
      * Validates or removes a comment based on the user's choice.
      *
      * @param choice The user's choice for validation.
-     * @param user   The user performing the validation.
+     * @param curator   The user performing the validation.
      * @param comment  The Point to be validated or removed.
      */
-    public void validateComment(boolean choice, BaseUser curator, Comment comment) {
+    public void validateComment(boolean choice, IUserPlatform curator, Comment comment) {
         if(curator.getUserType().equals(UserRole.Curator)) {
             int index = this.comments.indexOf(comment);
             if(index!=-1) {

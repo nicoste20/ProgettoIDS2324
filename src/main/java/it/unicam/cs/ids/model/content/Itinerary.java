@@ -35,7 +35,7 @@ public class Itinerary extends Content {
      * @param points The list of points in the itinerary.
      * @param id The unique identifier for the itinerary.
      */
-    public Itinerary(BaseUser author, String text, List<Point> points, int id) {
+    public Itinerary(IUserPlatform author, String text, List<Point> points, int id) {
         super(author, text, id);
         this.points = points;
     }
