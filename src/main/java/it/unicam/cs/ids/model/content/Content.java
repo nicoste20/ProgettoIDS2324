@@ -89,6 +89,11 @@ public abstract class Content {
         return this.id;
     }
 
+    /**
+     * Set a new description for the content
+     * @param description the new description
+     */
+    public void setDescription(String description){this.description=description;}
 }
 
 

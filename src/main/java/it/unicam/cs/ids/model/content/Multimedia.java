@@ -8,7 +8,7 @@ import it.unicam.cs.ids.model.user.IUserPlatform;
  * Implements the  IContent interface.
  */
 public class Multimedia extends Content {
-
+    private boolean isSignaled;
     private final String photo;
 
     /**
@@ -19,6 +19,7 @@ public class Multimedia extends Content {
     public Multimedia(IUserPlatform author, String text , String photo, int id) {
         super(author,text, id);
         this.photo = photo;
+        this.isSignaled=false;
     }
 
     /**
@@ -29,5 +30,14 @@ public class Multimedia extends Content {
     public String getFile() {
         return this.photo;
     }
+
+    public boolean isSignaled() {
+        return isSignaled;
+    }
+
+    public void setSignaled(boolean signaled) {
+        isSignaled = signaled;
+    }
+
 
 }
