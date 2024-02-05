@@ -1,12 +1,15 @@
 package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.model.content.Itinerary;
+import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 /**
  * The  Itinerary controller class manages the addition and validation of itinerary,
  * differentiating between immediate addition and pending approval based on the user's role.
@@ -81,5 +84,18 @@ public class ItineraryController {
      */
     public int getPendingItinerariesSize(){
         return 0;
+    }
+
+    /**
+     *It does the research of an itinerary by his title
+     * @param title The title of an itinerary
+     * @return the Itinerary researched
+     */
+    public Optional<Itinerary> searchPoint(String title) {
+        for (Itinerary itinerary : itineraries) {
+            if (itinerary.getDescription().equals(title))
+                return Optional.of(itinerary);
+        }
+        return Optional.empty();
     }
 }

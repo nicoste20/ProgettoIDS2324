@@ -1,10 +1,14 @@
 package it.unicam.cs.ids.controller;
 
+import it.unicam.cs.ids.model.content.Content;
+import it.unicam.cs.ids.model.content.Itinerary;
 import it.unicam.cs.ids.model.content.Multimedia;
+import it.unicam.cs.ids.model.contest.Contest;
 import it.unicam.cs.ids.model.contest.IContest;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The ContestController class manages operations related to contests and multimedia within a platform.
@@ -96,5 +100,17 @@ public class ContestController {
             multimedia.setValidation(false);
             this.contests.get(index).addMultimedia(multimedia);
         }
+    }
+    /**
+     *It does the research of a contest by his name
+     * @param title The title of a contest
+     * @return the Contest researched
+     */
+    public Optional<IContest> searchPoint(String title) {
+        for (IContest contest : contests) {
+            if (contest.getContestName().equals(title))
+                return Optional.of(contest);
+        }
+        return Optional.empty();
     }
 }
