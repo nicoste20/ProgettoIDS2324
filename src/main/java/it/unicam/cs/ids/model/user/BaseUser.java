@@ -7,13 +7,14 @@ package it.unicam.cs.ids.model.user;
 public class BaseUser implements IUserPlatform {
 
     private final int id;
-    private final UserRole userRole;
+    private UserRole userRole;
     private String name;
     private String surname;
     private final String username;
     private String password;
     private String email;
 
+    private int postCount;
     /**
      * Constructs a new BaseUser object with the specified parameters.
      *
@@ -33,6 +34,7 @@ public class BaseUser implements IUserPlatform {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.postCount=0;
     }
 
     /**
@@ -87,7 +89,20 @@ public class BaseUser implements IUserPlatform {
      * {@inheritDoc}
      */
     @Override
-    public String getPassword() {
-        return this.password;
-    }
+    public String getPassword() {return this.password;}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setRole(UserRole role) {this.userRole= role;}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void incrementPostCount() {this.postCount+=1;}
+    /**
+     * {@inheritDoc}
+     */
+    public int getPostCount(){return this.postCount;}
+
 }

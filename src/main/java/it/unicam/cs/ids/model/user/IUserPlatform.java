@@ -56,4 +56,18 @@ public interface IUserPlatform {
      * @return The user's password.
      */
     String getPassword();
+    /**
+     * Sets the role of a user
+     */
+    void setRole(UserRole role);
+    /**
+     *  Increments the number of post published by a general user
+     */
+    void incrementPostCount();
+
+    /**
+     *It gets the number of post made by a user
+     * @return the number of posts that have been posted
+     */
+    int getPostCount();
 }

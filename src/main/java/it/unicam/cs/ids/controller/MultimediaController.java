@@ -50,6 +50,7 @@ public class MultimediaController {
      */
     private void addContentNoPending(Multimedia content) {
         content.setValidation(true);
+        content.getAuthor().incrementPostCount();
         this.contentList.add(content);
     }
 
@@ -76,6 +77,7 @@ public class MultimediaController {
             if(index !=1) {
                 if (choice) {
                     this.contentList.get(index).setValidation(true);
+                    this.contentList.get(index).getAuthor().incrementPostCount();
                 } else {
                     this.contentList.remove(content);
                 }

@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.controller;
 import it.unicam.cs.ids.model.content.Comment;
+import it.unicam.cs.ids.model.content.Content;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
@@ -19,7 +20,7 @@ public class CommentController {
      * @param comment the comment that we want to add
      * @param user the user that wants to add a comment
      */
-    public void addPointComment(Comment comment , IUserPlatform user) {
+    public void addComment(Comment comment , IUserPlatform user) {
         if (user.getUserType().equals(UserRole.Contributor) || user.getUserType().equals(UserRole.TouristAuthorized)) {
             if((user.getUserType().equals(UserRole.ContributorAuthorized) || user.getUserType().equals(UserRole.Curator)))
                 this.addWithoutPending(comment);
@@ -66,7 +67,6 @@ public class CommentController {
             }
         }
     }
-
 
 }
 
