@@ -1,9 +1,7 @@
 package it.unicam.cs.ids.model.content;
-
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import jakarta.persistence.Entity;
-
-import java.awt.geom.Point2D;
+import it.unicam.cs.ids.util.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 

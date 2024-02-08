@@ -5,11 +5,10 @@ import it.unicam.cs.ids.model.content.Itinerary;
 import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
+import it.unicam.cs.ids.util.Point2D;
 import org.junit.Test;
-
-import java.awt.geom.Point2D;
-
 import static org.junit.Assert.assertEquals;
+
 /**
  * Test class for the {@link ItineraryController} class.
  */
@@ -24,7 +23,7 @@ public class ItineraryControllerTest {
     public void testAddItineraryNoPending(){
         BaseUser contributorAuthorized = new BaseUser(1, UserRole.ContributorAuthorized, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
         Itinerary itinerary1= new Itinerary(contributorAuthorized, "Itinerary1" , 345);
-        Point colosseum= new Point(new Point2D.Double(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
+        Point colosseum= new Point(new Point2D(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
         itinerary1.addPoint(colosseum);
 
         itineraryController.addItinerary(itinerary1, contributorAuthorized);
@@ -40,7 +39,7 @@ public class ItineraryControllerTest {
         BaseUser contributor = new BaseUser(1, UserRole.Contributor, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
         Itinerary itinerary1= new Itinerary(contributor, "Itinerary1" , 543);
         BaseUser contributorAuthorized = new BaseUser(2, UserRole.ContributorAuthorized, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
-        Point colosseum= new Point(new Point2D.Double(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
+        Point colosseum= new Point(new Point2D(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
         itinerary1.addPoint(colosseum);
 
         itineraryController.addItinerary(itinerary1, contributor);
@@ -55,7 +54,7 @@ public class ItineraryControllerTest {
         BaseUser touristUser = new BaseUser(1, UserRole.Tourist, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
         Itinerary itinerary1= new Itinerary(touristUser, "Itinerary1" , 567);
         BaseUser contributorAuthorized = new BaseUser(2, UserRole.ContributorAuthorized, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
-        Point colosseum= new Point(new Point2D.Double(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
+        Point colosseum= new Point(new Point2D(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
         itinerary1.addPoint(colosseum);
 
         itineraryController.addItinerary(itinerary1, touristUser);
@@ -70,7 +69,7 @@ public class ItineraryControllerTest {
         BaseUser contributor = new BaseUser(1, UserRole.Contributor, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
         Itinerary itinerary1= new Itinerary(contributor, "Itinerary1" , 543);
         BaseUser contributorAuthorized = new BaseUser(2, UserRole.ContributorAuthorized, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
-        Point colosseum= new Point(new Point2D.Double(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
+        Point colosseum= new Point(new Point2D(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
         itinerary1.addPoint(colosseum);
 
         itineraryController.addItinerary(itinerary1, contributor);
@@ -89,7 +88,7 @@ public class ItineraryControllerTest {
         BaseUser contributor = new BaseUser(1, UserRole.Contributor, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
         Itinerary itinerary1= new Itinerary(contributor, "Itinerary1" , 543);
         BaseUser contributorAuthorized = new BaseUser(2, UserRole.ContributorAuthorized, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
-        Point colosseum= new Point(new Point2D.Double(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
+        Point colosseum= new Point(new Point2D(23.0, 67.0),"Monument", contributorAuthorized, "testPoint", 1 , "colosseum");
         itinerary1.addPoint(colosseum);
 
         itineraryController.addItinerary(itinerary1, contributor);
