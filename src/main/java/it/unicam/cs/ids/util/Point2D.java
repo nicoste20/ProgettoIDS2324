@@ -1,8 +1,11 @@
 package it.unicam.cs.ids.util;
 
+import jakarta.persistence.Entity;
+
 /**
  * Class representing a two-dimensional point with x and y coordinates.
  */
+@Entity
 public class Point2D {
 
     // x and y coordinates of the point
@@ -18,6 +21,9 @@ public class Point2D {
     public Point2D(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Point2D() {
     }
 
     /**

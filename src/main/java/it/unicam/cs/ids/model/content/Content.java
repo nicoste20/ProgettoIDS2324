@@ -45,7 +45,7 @@ public abstract class Content {
      *
      * @return The author of the content.
      */
-    public IUserPlatform getAuthor() {
+    public BaseUser getAuthor() {
         return author;
     }
 

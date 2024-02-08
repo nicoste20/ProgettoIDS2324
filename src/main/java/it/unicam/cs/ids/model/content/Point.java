@@ -1,7 +1,11 @@
 package it.unicam.cs.ids.model.content;
-import it.unicam.cs.ids.model.user.IUserPlatform;
+import it.unicam.cs.ids.model.user.BaseUser;
 import jakarta.persistence.Entity;
 import it.unicam.cs.ids.util.Point2D;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,19 +13,21 @@ import java.util.List;
  * Represents a point, a type of content that includes coordinates and a specific type.
  * Extends the base class Content.
  */
-@Entity
-public class Point extends Content {
+@MappedSuperclass
+public abstract class Point extends Content implements Cloneable{
 
     /** The title of this point **/
-    private final String title;
+    private String title;
 
     /** The type of the point. */
-    private final String type;
+    private String type;
 
     /** The coordinates of the point in 2D space. */
-    private final Point2D coordinates;
+    @OneToOne
+    private Point2D coordinates;
 
-    private final List<Multimedia> multimediaList;
+    @OneToMany
+    private List<Multimedia> multimediaList;
     /**
      * Constructor to create a point with coordinates, type, author, text description, and a unique identifier.
      *
@@ -32,7 +38,7 @@ public class Point extends Content {
      * @param id     The unique identifier for the point.
      * @param title the title of the point
      */
-    public Point(Point2D point, String type, IUserPlatform author, String text, int id, String title) {
+    public Point(Point2D point, String type, BaseUser author, String text, int id, String title) {
         super(author, text, id);
         this.coordinates = point;
         this.type = type;
@@ -41,7 +47,7 @@ public class Point extends Content {
     }
 
     public Point() {
-        super();
+        super(null,null,-1);
     }
 
     /**
@@ -73,5 +79,8 @@ public class Point extends Content {
     public List<Multimedia> getMultimediaList(){
         return this.multimediaList;
     }
+
+    @Override
+    public abstract Point clone();
 }
 
