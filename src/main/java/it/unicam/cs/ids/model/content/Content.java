@@ -1,15 +1,19 @@
 package it.unicam.cs.ids.model.content;
 
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
+import jakarta.persistence.*;
 
 /**
  * The abstract class representing content in the application.
  * This serves as a base class for various types of content.
  */
+@MappedSuperclass
 public abstract class Content {
 
     /** The author of the content. */
-    private final IUserPlatform author;
+    @OneToOne
+    private BaseUser author;
 
     /** The textual description of the content. */
     private String description;
@@ -18,6 +22,8 @@ public abstract class Content {
     private boolean isValidate;
 
     /** The unique identifier for the content. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final int id;
 
     /**
@@ -27,7 +33,7 @@ public abstract class Content {
      * @param text The textual description of the content.
      * @param id The unique identifier for the content.
      */
-    public Content(IUserPlatform author, String text, int id) {
+    public Content(BaseUser author, String text, int id) {
         this.author = author;
         this.description = text;
         this.id = id;

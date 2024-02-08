@@ -1,6 +1,10 @@
 package it.unicam.cs.ids.model.contest;
 import it.unicam.cs.ids.model.content.Multimedia;
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.OneToMany;
 
 import java.util.List;
 
@@ -8,6 +12,7 @@ import java.util.List;
  * Interface representing a contest platform in our system
  * It defines methods to retrieve basic attributes about a published contest.
  */
+@MappedSuperclass
 public interface IContest {
     /**
      * It gets the unique identifier of a contest.
@@ -35,18 +40,20 @@ public interface IContest {
      *
      * @return the entire list of allowed users.
      */
-    List<IUserPlatform> getAllowedUsers();
+    @ManyToMany
+    List<BaseUser> getAllowedUsers();
 
     /**
      * Permit to add a new allowed user for this contest
      */
-    void addAllowedUsers(IUserPlatform user);
+    void addAllowedUsers(BaseUser user);
 
     /**
      *Return all contest's multimedia.
      *
      * @return the entire list of multimedia.
      */
+   @OneToMany
     public List<Multimedia> getMultimediaList();
 
     /**

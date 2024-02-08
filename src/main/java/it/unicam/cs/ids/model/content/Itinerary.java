@@ -1,6 +1,9 @@
 package it.unicam.cs.ids.model.content;
 
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +12,11 @@ import java.util.List;
  * Represents an itinerary, a type of content that includes a list of points.
  * Extends the base class Content.
  */
+@Entity
 public class Itinerary extends Content {
 
     /** The list of points in the itinerary. */
+    @ManyToMany
     private List<Point> points;
 
     /**
@@ -21,7 +26,7 @@ public class Itinerary extends Content {
      * @param text The textual description of the itinerary.
      * @param id The unique identifier for the itinerary.
      */
-    public Itinerary(IUserPlatform author, String text, int id) {
+    public Itinerary(BaseUser author, String text, int id) {
         super(author, text, id);
         this.points = new ArrayList<>();
     }
@@ -34,9 +39,13 @@ public class Itinerary extends Content {
      * @param points The list of points in the itinerary.
      * @param id The unique identifier for the itinerary.
      */
-    public Itinerary(IUserPlatform author, String text, List<Point> points, int id) {
+    public Itinerary(BaseUser author, String text, List<Point> points, int id) {
         super(author, text, id);
         this.points = points;
+    }
+
+    public Itinerary() {
+        super(null,null,-1);
     }
 
     /**

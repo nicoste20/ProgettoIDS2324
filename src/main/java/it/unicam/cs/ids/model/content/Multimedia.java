@@ -1,24 +1,33 @@
 package it.unicam.cs.ids.model.content;
 
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 
 /**
  * Represents a content item with user information, a photo, a description, and a list of comments.
  * Implements the  IContent interface.
  */
+@Entity
 public class Multimedia extends Content {
-    private boolean isSignaled;
-    private final String photo;
+    @Column
+    private boolean signaled;
+    private String photo;
 
     /**
      * Constructs a new Content object with the specified user, photo, and description.
      *
      * @param photo       the file path or URL of the photo
      */
-    public Multimedia(IUserPlatform author, String text , String photo, int id) {
+    public Multimedia(BaseUser author, String text , String photo, int id) {
         super(author,text, id);
         this.photo = photo;
-        this.isSignaled=false;
+        this.signaled =false;
+    }
+
+    public Multimedia() {
+        super(null,null,-1);
     }
 
     /**
@@ -30,12 +39,12 @@ public class Multimedia extends Content {
         return this.photo;
     }
 
-    public boolean isSignaled() {
-        return isSignaled;
+    public boolean getSignaled() {
+        return signaled;
     }
 
     public void setSignaled(boolean signaled) {
-        isSignaled = signaled;
+        this.signaled = signaled;
     }
 
 

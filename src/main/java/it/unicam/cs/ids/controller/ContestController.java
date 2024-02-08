@@ -2,6 +2,7 @@ package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.contest.IContest;
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 
@@ -46,7 +47,7 @@ public class ContestController {
      * @param contest The contest to invite the user to.
      * @param user    The user to be invited.
      */
-    public void invite(IContest contest, IUserPlatform user) {
+    public void invite(IContest contest, BaseUser user) {
         if (contest.isPrivate() && this.contests.contains(contest)) {
             int index = this.contests.indexOf(contest);
             this.contests.get(index).addAllowedUsers(user);

@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.model.content;
 
 import it.unicam.cs.ids.model.user.IUserPlatform;
+import jakarta.persistence.Entity;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
  * Represents a point, a type of content that includes coordinates and a specific type.
  * Extends the base class Content.
  */
+@Entity
 public class Point extends Content {
 
     /** The title of this point **/
@@ -38,6 +40,10 @@ public class Point extends Content {
         this.type = type;
         this.title = title;
         this.multimediaList=new ArrayList<Multimedia>();
+    }
+
+    public Point() {
+        super();
     }
 
     /**

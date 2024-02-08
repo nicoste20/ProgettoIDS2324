@@ -1,6 +1,8 @@
 package it.unicam.cs.ids.model.contest;
 import it.unicam.cs.ids.model.content.Multimedia;
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,13 +11,18 @@ import java.util.List;
  *  Represents a base implementation of the {@link IContest} interface.
  * This class provides methods that concerns about Contests.
  */
+@Entity
 public class Contest implements IContest{
-    private final int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String contestName;
     private String contestDescription;
-    private List <IUserPlatform>  allowedUsers;
+    @ManyToMany
+    private List <BaseUser>  allowedUsers;
+    @OneToMany
     private List<Multimedia> multimediaList;
-    private final boolean isPrivate;
+    private boolean isPrivate;
     /**
      * Constructs a new Contest object with the specified parameters.
      *
@@ -30,6 +37,11 @@ public class Contest implements IContest{
         this.isPrivate = isPrivate;
         this.multimediaList=new ArrayList<Multimedia>();
     }
+
+    public Contest() {
+
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -55,7 +67,7 @@ public class Contest implements IContest{
      * {@inheritDoc}
      */
     @Override
-    public List<IUserPlatform> getAllowedUsers() {
+    public List<BaseUser> getAllowedUsers() {
         return this.allowedUsers;
     }
     /**
@@ -69,7 +81,7 @@ public class Contest implements IContest{
      * {@inheritDoc}
      */
     @Override
-    public void addAllowedUsers(IUserPlatform user){
+    public void addAllowedUsers(BaseUser user){
         this.allowedUsers.add(user);
     }
 

@@ -1,9 +1,12 @@
 package it.unicam.cs.ids.model.user;
 
+import jakarta.persistence.MappedSuperclass;
+
 /**
  * Interface representing a user platform in a system.
  * It defines methods to retrieve basic information about a user.
  */
+@MappedSuperclass
 public interface IUserPlatform {
 
     /**

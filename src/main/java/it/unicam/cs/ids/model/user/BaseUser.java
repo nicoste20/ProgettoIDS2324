@@ -1,16 +1,21 @@
 package it.unicam.cs.ids.model.user;
 
+import jakarta.persistence.*;
+
 /**
  * Represents a base implementation of the {@link IUserPlatform} interface.
  * This class provides basic functionality for user-related operations.
  */
+@Entity
 public class BaseUser implements IUserPlatform {
-
-    private final int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private  int id;
+    @Enumerated(EnumType.STRING)
     private UserRole userRole;
     private String name;
     private String surname;
-    private final String username;
+    private  String username;
     private String password;
     private String email;
 
@@ -35,6 +40,10 @@ public class BaseUser implements IUserPlatform {
         this.password = password;
         this.email = email;
         this.postCount=0;
+    }
+
+    public BaseUser() {
+
     }
 
     /**
