@@ -45,7 +45,7 @@ class ContestControllerTest {
     @Test
     void inviteToPrivateContest() {
         IContest privateContest = new Contest(0,"ContestName","Contest Description" , true);
-        IUserPlatform user = new BaseUser(1, UserRole.TouristAuthorized, "John", "Doe", "john_doe",
+        BaseUser user = new BaseUser(1, UserRole.TouristAuthorized, "John", "Doe", "john_doe",
                 "john.doe@email.com", "password123");
         contestController.addContest(privateContest);
         contestController.invite(privateContest, user);
@@ -55,7 +55,7 @@ class ContestControllerTest {
     @Test
     void inviteToPublicContest() {
         IContest publicContest = new Contest(0,"ContestName","Contest Description" , true);
-        IUserPlatform user = new BaseUser(1, UserRole.TouristAuthorized, "John", "Doe", "john_doe",
+        BaseUser user = new BaseUser(1, UserRole.TouristAuthorized, "John", "Doe", "john_doe",
                 "john.doe@email.com", "password123");
         contestController.addContest(publicContest);
         contestController.invite(publicContest, user);
@@ -65,7 +65,7 @@ class ContestControllerTest {
     @Test
     void addMultimediaToExistingContest() {
         IContest contest = new Contest(0,"ContestName","Contest Description" , false);
-        IUserPlatform user = new BaseUser(1, UserRole.Curator, "John", "Doe", "john_doe",
+        BaseUser user = new BaseUser(1, UserRole.Curator, "John", "Doe", "john_doe",
                 "john.doe@email.com", "password123");
         Multimedia multimedia = new Multimedia(user, "This is a multimedia text", "path/to/photo.jpg", 2);
         contestController.addContest(contest);
@@ -76,7 +76,7 @@ class ContestControllerTest {
     @Test
     void addMultimediaToNonExistingContest() {
         IContest contest = new Contest(0,"ContestName","Contest Description" , false);
-        IUserPlatform user = new BaseUser(1, UserRole.Curator, "John", "Doe", "john_doe",
+        BaseUser user = new BaseUser(1, UserRole.Curator, "John", "Doe", "john_doe",
                 "john.doe@email.com", "password123");
         Multimedia multimedia = new Multimedia(user, "This is a multimedia text", "path/to/photo.jpg", 2);
         contestController.addMultimedia(multimedia, contest);
@@ -87,7 +87,7 @@ class ContestControllerTest {
     @Test
     void validateMultimediaByCurator() {
         IContest contest = new Contest(0,"ContestName","Contest Description" , false);
-        IUserPlatform user = new BaseUser(1, UserRole.Curator, "John", "Doe", "john_doe",
+        BaseUser user = new BaseUser(1, UserRole.Curator, "John", "Doe", "john_doe",
                 "john.doe@email.com", "password123");
         Multimedia multimedia = new Multimedia(user, "This is a multimedia text", "path/to/photo.jpg", 2);
         contestController.addContest(contest);
@@ -100,7 +100,7 @@ class ContestControllerTest {
     void validateMultimediaByNonCurator() {
         IContest contest = new Contest(0,"ContestName","Contest Description" , false);
 
-        IUserPlatform user = new BaseUser(1, UserRole.TouristAuthorized, "John", "Doe", "john_doe",
+        BaseUser user = new BaseUser(1, UserRole.TouristAuthorized, "John", "Doe", "john_doe",
                 "john.doe@email.com", "password123");
 
         Multimedia multimedia = new Multimedia(user, "This is a multimedia text", "path/to/photo.jpg", 2);
@@ -113,7 +113,7 @@ class ContestControllerTest {
     @Test
     void addWithPendingValidation() {
         IContest contest = new Contest(0,"ContestName","Contest Description" , false);
-        IUserPlatform user = new BaseUser(1, UserRole.TouristAuthorized, "John", "Doe", "john_doe",
+        BaseUser user = new BaseUser(1, UserRole.TouristAuthorized, "John", "Doe", "john_doe",
                 "john.doe@email.com", "password123");
         Multimedia multimedia = new Multimedia(user, "This is a multimedia text", "path/to/photo.jpg", 2);
         contestController.addContest(contest);
