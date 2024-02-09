@@ -42,7 +42,7 @@ public class MultimediaController {
      * @return a ResponseEntity representing the status of the operation
      * @throws UserNotCorrectException if the user's role is not correct
      */
-    @PostMapping("/multimedia")
+    @PostMapping("/add/multimedia")
     public ResponseEntity<Object> addContent(@RequestBody Multimedia content) {
         IUserPlatform user = content.getAuthor();
         if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))) {
@@ -138,7 +138,7 @@ public class MultimediaController {
      * @throws UserNotCorrectException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @DeleteMapping("/multimedia")
+    @DeleteMapping("/delete/multimedia")
     public ResponseEntity<Object> deleteContent(@RequestBody IUserPlatform user,@RequestBody int id){
         if (user.getUserType().equals(UserRole.Curator)) {
             if(contentList.existsById(id)){

@@ -28,7 +28,7 @@ public class ItineraryControllerTest {
 
         itineraryController.addItinerary(itinerary1, contributorAuthorized);
         assertEquals(1,itineraryController.getItinerariesSize());
-        assertEquals(0,itineraryController.getPendingItinerariesSize());
+        assertEquals(0,itineraryController.getPendingItineraries().size());
     }
 
     /**
@@ -43,7 +43,7 @@ public class ItineraryControllerTest {
 
         itineraryController.addItinerary(itinerary1, contributor);
         assertEquals(0,itineraryController.getItinerariesSize());
-        assertEquals(1,itineraryController.getPendingItinerariesSize());
+        assertEquals(1,itineraryController.getPendingItineraries().size());
     }
     /**
      * Test for adding an Itinerary from an invalid user
@@ -57,7 +57,7 @@ public class ItineraryControllerTest {
 
         itineraryController.addItinerary(itinerary1, touristUser);
         assertEquals(0,itineraryController.getItinerariesSize());
-        assertEquals(0,itineraryController.getPendingItinerariesSize());
+        assertEquals(0,itineraryController.getPendingItineraries().size());
     }
     /**
      * Test for approving an itinerary to be added
@@ -72,11 +72,11 @@ public class ItineraryControllerTest {
 
         itineraryController.addItinerary(itinerary1, contributor);
         assertEquals(0,itineraryController.getItinerariesSize());
-        assertEquals(1,itineraryController.getPendingItinerariesSize());
+        assertEquals(1,itineraryController.getPendingItineraries().size());
         BaseUser curator = new BaseUser(1, UserRole.Curator, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
         itineraryController.validateItinerary(curator, true, itinerary1);
         assertEquals(1,itineraryController.getItinerariesSize());
-        assertEquals(0,itineraryController.getPendingItinerariesSize());
+        assertEquals(0,itineraryController.getPendingItineraries().size());
     }
     /**
      * Test for not approving an itinerary to be added
@@ -91,11 +91,11 @@ public class ItineraryControllerTest {
 
         itineraryController.addItinerary(itinerary1, contributor);
         assertEquals(0,itineraryController.getItinerariesSize());
-        assertEquals(1,itineraryController.getPendingItinerariesSize());
+        assertEquals(1,itineraryController.getPendingItineraries().size());
         BaseUser curator = new BaseUser(1, UserRole.Curator, "Alessio", "Marinelli", "marinx", "ale@example.com", "password");
         itineraryController.validateItinerary(curator, false, itinerary1);
         assertEquals(0,itineraryController.getItinerariesSize());
-        assertEquals(0,itineraryController.getPendingItinerariesSize());
+        assertEquals(0,itineraryController.getPendingItineraries().size());
     }
 
 }
