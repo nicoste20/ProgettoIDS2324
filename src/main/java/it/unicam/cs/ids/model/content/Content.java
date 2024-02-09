@@ -8,7 +8,8 @@ import jakarta.persistence.*;
  * The abstract class representing content in the application.
  * This serves as a base class for various types of content.
  */
-@MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Content {
 
     /** The author of the content. */
@@ -23,8 +24,8 @@ public abstract class Content {
 
     /** The unique identifier for the content. */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final int id;
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private int id;
 
     /**
      * Constructor to initialize a Content object.
@@ -38,6 +39,10 @@ public abstract class Content {
         this.description = text;
         this.id = id;
         this.isValidate = false;
+    }
+
+    public Content() {
+
     }
 
     /**

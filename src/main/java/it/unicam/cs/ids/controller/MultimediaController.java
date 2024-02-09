@@ -4,6 +4,7 @@ import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;

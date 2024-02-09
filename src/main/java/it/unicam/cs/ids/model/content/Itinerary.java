@@ -1,8 +1,14 @@
 package it.unicam.cs.ids.model.content;
 
+import it.unicam.cs.ids.model.point.GreenZone;
+import it.unicam.cs.ids.model.point.Monument;
+import it.unicam.cs.ids.model.point.Restaurant;
+import it.unicam.cs.ids.model.point.Square;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 
 import java.util.ArrayList;
@@ -16,7 +22,7 @@ import java.util.List;
 public class Itinerary extends Content {
 
     /** The list of points in the itinerary. */
-    @ManyToMany
+    @ManyToMany(targetEntity = Point.class)
     private List<Point> points;
 
     /**

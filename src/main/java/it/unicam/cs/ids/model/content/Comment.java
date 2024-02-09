@@ -1,13 +1,19 @@
 package it.unicam.cs.ids.model.content;
 
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 
 /**
  *  Represents a base implementation of the {@link Content} interface.
  * This class provides methods that concerns about Comments.
  */
+@Entity
 public class Comment extends Content {
-    private final Content content;
+    @OneToOne(targetEntity = Content.class)
+    private Content content;
 
     /**
      * Constructs a new Contest object with the specified parameters.
@@ -17,10 +23,15 @@ public class Comment extends Content {
      * @param content The content associated with a comment.
      * @param id the id of the comment
      */
-    public Comment(String text, IUserPlatform author, int id, Content content) {
+    public Comment(String text, BaseUser author, int id, Content content) {
         super(author, text, id);
         this.content = content;
     }
+
+    public Comment() {
+        super(null,null,-1);
+    }
+
     /**
      *it gets the content of the comment
      */

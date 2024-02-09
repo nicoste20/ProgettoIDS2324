@@ -1,10 +1,7 @@
 package it.unicam.cs.ids.model.content;
 import it.unicam.cs.ids.model.user.BaseUser;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import it.unicam.cs.ids.util.Point2D;
-import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +10,7 @@ import java.util.List;
  * Represents a point, a type of content that includes coordinates and a specific type.
  * Extends the base class Content.
  */
-@MappedSuperclass
+@Entity
 public abstract class Point extends Content implements Cloneable{
 
     /** The title of this point **/

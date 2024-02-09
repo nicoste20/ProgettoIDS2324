@@ -3,24 +3,29 @@ package it.unicam.cs.ids.model.point;
 import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.util.Point2D;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 @Entity
 public class Restaurant extends Point {
-    private String type;
+    @Enumerated(EnumType.STRING)
+    private RestaurantType typeRestaurant;
+    @Column(name="openingHours")
     private String openingHours;
 
-    public Restaurant(Point2D point, BaseUser author, String text, int id, String title, String type, String openingHours) {
+    public Restaurant(Point2D point, BaseUser author, String text, int id, String title, RestaurantType type, String openingHours) {
         super(point, "Restaurant", author, text, id, title);
-        this.type = type;
+        this.typeRestaurant = type;
         this.openingHours = openingHours;
     }
 
     public Restaurant() {
     }
 
-    public String getType() {
-        return type;
+    public RestaurantType getTypeRestaurant() {
+        return typeRestaurant;
     }
 
     public String getOpeningHours() {
@@ -29,7 +34,7 @@ public class Restaurant extends Point {
 
     @Override
     public Restaurant clone() {
-        return new Restaurant(this.getCoordinates(), super.getAuthor(), super.getDescription(), this.getId(), this.getTitle(), this.getType(), this.getOpeningHours());
+        return new Restaurant(this.getCoordinates(), super.getAuthor(), super.getDescription(), this.getId(), this.getTitle(), this.getTypeRestaurant(), this.getOpeningHours());
     }
 }
 

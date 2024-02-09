@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.util;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * Class representing a two-dimensional point with x and y coordinates.
@@ -11,6 +12,8 @@ public class Point2D {
     // x and y coordinates of the point
     private double x;
     private double y;
+    @Id
+    private Long id;
 
     /**
      * Constructor for the Point2D class.
@@ -72,6 +75,14 @@ public class Point2D {
         double deltaX = this.x - target.getX();
         double deltaY = this.y - target.getY();
         return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
     }
 }
 
