@@ -83,7 +83,7 @@ public class ItineraryController {
      * @param choice if the itinerary will be validated or no
      */
     @PostMapping("/validate/itinerary/{id}/{userId}")
-    public void validateItinerary(@PathParam(("userId"))int userID,@PathParam(("id")) int id, @RequestBody boolean choice) {
+    public void validateItinerary(@PathParam(("userId")) int userID, @PathParam(("id")) int id, @RequestBody boolean choice) {
         if (users.existsById(userID)) {
             if(users.findById(id).get().equals(UserRole.Curator)){
                 if (this.itineraries.existsById(id)) {

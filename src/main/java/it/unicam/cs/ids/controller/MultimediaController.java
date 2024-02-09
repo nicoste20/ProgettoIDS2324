@@ -3,6 +3,7 @@ package it.unicam.cs.ids.controller;
 import it.unicam.cs.ids.Exception.MultimediaNotFoundException;
 import it.unicam.cs.ids.Exception.UserNotCorrectException;
 import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
+import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
@@ -26,14 +27,18 @@ public class MultimediaController {
      */
     private final MultimediaRepository contentList;
 
+    private final UserRepository users;
+
     /**
      * Constructs a new {@code MultimediaController} with empty content lists.
      *
      * @param contentList the repository for multimedia content
+     * @param users
      */
     @Autowired
-    public MultimediaController(MultimediaRepository contentList) {
+    public MultimediaController(MultimediaRepository contentList, UserRepository users) {
         this.contentList = contentList;
+        this.users = users;
     }
     /**
      * Adds content to the appropriate list based on the user's role.
@@ -79,24 +84,27 @@ public class MultimediaController {
     /**
      * Validates content based on the curator's choice (approve or reject).
      *
-     * @param user    the curator making the decision
+     * @param userId    the curator making the decision
      * @param choice  {@code true} to approve the content, {@code false} to reject
      * @param id      the ID of the content to be validated
      * @throws UserNotCorrectException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @RequestMapping(value="/multimedia/{user}/{choice}/{id}", method = RequestMethod.PUT)
-    public void validateContent(@PathParam(("user")) IUserPlatform user, @PathParam(("choice")) boolean choice, @PathParam(("id")) int id) {
-        if (user.getUserType().equals(UserRole.Curator)) {
-            if (contentList.existsById(id)) {
-                if (choice) {
-                    contentList.findById(id).get().setValidation(true);
-                    contentList.findById(id).get().getAuthor().incrementPostCount();
-                } else {
-                    contentList.deleteById(id);
-                }
-            }else throw new MultimediaNotFoundException();
-        }else throw new UserNotCorrectException();
+    @RequestMapping(value="/multimedia/{choice}/{id}/{userId}", method = RequestMethod.PUT)
+    public void validateContent(@PathParam(("userId")) int userId, @PathParam(("choice")) boolean choice, @PathParam(("id")) int id) {
+        if (users.existsById(userId)) {
+            IUserPlatform user = users.findById(userId).get();
+            if (user.equals(UserRole.Curator)){
+                if (contentList.existsById(id)) {
+                    if (choice) {
+                        contentList.findById(id).get().setValidation(true);
+                        contentList.findById(id).get().getAuthor().incrementPostCount();
+                    } else {
+                        contentList.deleteById(id);
+                    }
+                }else throw new MultimediaNotFoundException();
+            }else throw new UserNotCorrectException();
+        }
     }
 
     /**
@@ -150,20 +158,23 @@ public class MultimediaController {
 
     /**
      * Reports a multimedia content
-     * @param user the user that is reporting the content
+     * @param userId the user that is reporting the content
      * @param id      the ID of the content that the user wants to signal
      * @return a ResponseEntity representing the status of the operation
      * @throws UserNotCorrectException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @RequestMapping(value="/multimedia/{user}/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Object> signalContent(@PathParam(("user")) IUserPlatform user,@PathParam(("id")) int id) {
+    @RequestMapping(value="/multimedia/{userId}/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Object> signalContent(@PathParam(("userId")) int userId,@PathParam(("id")) int id) {
         if (contentList.existsById(id)) {
-            //int index = contentList.indexOf(content);
-            if (!(user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.PlatformManager) || user.getUserType().equals(UserRole.Animator))){
-                this.contentList.findById(id).get().setSignaled(true);
-                return new ResponseEntity<>("Multimedia signaled",HttpStatus.OK);
-            }else throw new UserNotCorrectException();
-        }else throw new MultimediaNotFoundException();
+            if(users.existsById(userId)){
+                IUserPlatform user = users.findById(userId).get();
+                if (!(user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.PlatformManager)
+                        || user.getUserType().equals(UserRole.Animator))){
+                    this.contentList.findById(id).get().setSignaled(true);
+                    return new ResponseEntity<>("Multimedia signaled",HttpStatus.OK);
+                }else throw new UserNotCorrectException();
+            }else throw new MultimediaNotFoundException();
+        }else throw new UserNotCorrectException();
     }
 }
