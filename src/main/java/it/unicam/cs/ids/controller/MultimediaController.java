@@ -7,6 +7,7 @@ import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,10 @@ public class MultimediaController {
      */
     private final MultimediaRepository contentList;
 
-
-
     /**
      * Constructs a new {@code MultimediaController} with empty content lists.
+     *
+     * @param contentList the repository for multimedia content
      */
     @Autowired
     public MultimediaController(MultimediaRepository contentList) {
@@ -38,8 +39,10 @@ public class MultimediaController {
      * Adds content to the appropriate list based on the user's role.
      *
      * @param content the content to be added
+     * @return a ResponseEntity representing the status of the operation
+     * @throws UserNotCorrectException if the user's role is not correct
      */
-    @PostMapping("/multimediaAdd")
+    @PostMapping("/multimedia")
     public ResponseEntity<Object> addContent(@RequestBody Multimedia content) {
         IUserPlatform user = content.getAuthor();
         if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))) {
@@ -61,8 +64,6 @@ public class MultimediaController {
         content.setValidation(true);
         content.getAuthor().incrementPostCount();
         contentList.save(content);
-
-        //this.contentList.add(content);
     }
 
     /**
@@ -73,7 +74,6 @@ public class MultimediaController {
     private void addContentPending(Multimedia content) {
         content.setValidation(false);
         contentList.save(content);
-        //this.contentList.add(content);
     }
 
     /**
@@ -81,19 +81,19 @@ public class MultimediaController {
      *
      * @param user    the curator making the decision
      * @param choice  {@code true} to approve the content, {@code false} to reject
-     * @param content the content to be validated
+     * @param id      the ID of the content to be validated
+     * @throws UserNotCorrectException if the user's role is not correct
+     * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @PutMapping("/multimedia")
-    public void validateContent(IUserPlatform user, @PostMapping boolean choice,@PostMapping Multimedia content) {
+    @RequestMapping(value="/multimedia/{user}/{choice}/{id}", method = RequestMethod.PUT)
+    public void validateContent(@PathParam(("user")) IUserPlatform user, @PathParam(("choice")) boolean choice, @PathParam(("id")) int id) {
         if (user.getUserType().equals(UserRole.Curator)) {
-            if (contentList.existsById(content.getId())) {
+            if (contentList.existsById(id)) {
                 if (choice) {
-                    contentList.findById(content.getId()).get().setValidation(true);
-                    contentList.findById(content.getId()).get().getAuthor().incrementPostCount();
-                   // this.contentList.get(index).setValidation(true);
-                    // this.contentList.get(index).getAuthor().incrementPostCount();
+                    contentList.findById(id).get().setValidation(true);
+                    contentList.findById(id).get().getAuthor().incrementPostCount();
                 } else {
-                    contentList.deleteById(content.getId());
+                    contentList.deleteById(id);
                 }
             }else throw new MultimediaNotFoundException();
         }else throw new UserNotCorrectException();
@@ -111,35 +111,38 @@ public class MultimediaController {
     /**
      * Update the description of a multimedia content
      * @param text the new description
-     * @param content the content of which to change the description
+     * @throws UserNotCorrectException if the user's role is not correct
+     * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @PutMapping("/multimedia")
-    public void modifyDesription(String text, Multimedia content){
-        if(this.contentList.contains(content)){
-            int index = this.contentList.indexOf(content);
-            IUserPlatform user = content.getAuthor();
+    @RequestMapping(value="/multimedia/{text}/{id}", method = RequestMethod.PUT)
+    public void modifyDesription(@PathParam("text") String text,@PathParam("id") int id){
+        if(contentList.existsById(id)){
+            IUserPlatform user = contentList.findById(id).get().getAuthor();
             if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))) {
                 if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)) {
-                    this.contentList.get(index).setDescription(text);
+                    this.contentList.findById(id).get().setDescription(text);
                 } else {
-                    this.contentList.get(index).setDescription(text);
-                    this.contentList.get(index).setValidation(false);
+                    this.contentList.findById(id).get().setDescription(text);
+                    this.contentList.findById(id).get().setValidation(false);
                 }
-            }
-        }
+            }else throw new UserNotCorrectException();
+        }else throw new MultimediaNotFoundException();
 
     }
 
     /**
      * Delete a multimedia content
      * @param user the curator user
-     * @param content the content to be removed
+     * @param id the content to be removed
+     * @return a ResponseEntity representing the status of the operation
+     * @throws UserNotCorrectException if the user's role is not correct
+     * @throws MultimediaNotFoundException if the multimedia content is not found
      */
     @DeleteMapping("/multimedia")
-    public ResponseEntity<Object> deleteContent(@RequestBody IUserPlatform user,@RequestBody Multimedia content){
+    public ResponseEntity<Object> deleteContent(@RequestBody IUserPlatform user,@RequestBody int id){
         if (user.getUserType().equals(UserRole.Curator)) {
-            if(contentList.existsById(content.getId())){
-                contentList.deleteById(content.getId());
+            if(contentList.existsById(id)){
+                contentList.deleteById(id);
                 return new ResponseEntity<>("Multimedia deleted",HttpStatus.OK);
             }else throw new MultimediaNotFoundException();
         }else throw new UserNotCorrectException();
@@ -148,16 +151,19 @@ public class MultimediaController {
     /**
      * Reports a multimedia content
      * @param user the user that is reporting the content
-     * @param content the content that the user want to signal
+     * @param id      the ID of the content that the user wants to signal
+     * @return a ResponseEntity representing the status of the operation
+     * @throws UserNotCorrectException if the user's role is not correct
+     * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    public void signalContent(IUserPlatform user, Multimedia content) {
-        if (contentList.contains(content)) {
-            int index = contentList.indexOf(content);
+    @RequestMapping(value="/multimedia/{user}/{id}", method = RequestMethod.PUT)
+    public ResponseEntity<Object> signalContent(@PathParam(("user")) IUserPlatform user,@PathParam(("id")) int id) {
+        if (contentList.existsById(id)) {
+            //int index = contentList.indexOf(content);
             if (!(user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.PlatformManager) || user.getUserType().equals(UserRole.Animator))){
-                this.contentList.get(index).setSignaled(true);
-            }
-        }
+                this.contentList.findById(id).get().setSignaled(true);
+                return new ResponseEntity<>("Multimedia signaled",HttpStatus.OK);
+            }else throw new UserNotCorrectException();
+        }else throw new MultimediaNotFoundException();
     }
-
-
 }
