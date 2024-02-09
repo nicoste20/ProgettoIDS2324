@@ -1,6 +1,9 @@
 package it.unicam.cs.ids.model.content;
 
 import it.unicam.cs.ids.model.user.BaseUser;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+
 import java.util.Date;
 import java.util.List;
 
@@ -8,11 +11,14 @@ import java.util.List;
  * Represents a Festival, a type of content that includes a list of points.
  * Extends the base class Itinerary.
  */
+@Entity
 public class Festival extends Itinerary{
     /** the starting date of a festival. */
-    private final Date start;
+    @Column(name="start")
+    private  Date start;
     /** the ending date of a festival. */
-    private final Date end;
+    @Column(name="end")
+    private  Date end;
     /** the description of a festival. */
     private String description;
 
@@ -32,6 +38,10 @@ public class Festival extends Itinerary{
         this.start= start;
         this.end=end;
         this.description=description;
+    }
+
+    public Festival() {
+
     }
 
     /**
