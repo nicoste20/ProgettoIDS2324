@@ -11,6 +11,7 @@ import java.util.List;
  * The  Festival controller class manages the addition and removing of Festivals,
  * It interacts with instances of {@link UserRole}, {@link IUserPlatform}
  */
+
 public class FestivalController {
     List<Festival> festivals;
     boolean alreadyIn=false;

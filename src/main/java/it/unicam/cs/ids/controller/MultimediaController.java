@@ -1,39 +1,46 @@
 package it.unicam.cs.ids.controller;
 
+import it.unicam.cs.ids.Exception.MultimediaNotFoundException;
+import it.unicam.cs.ids.Exception.UserNotCorrectException;
+import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
 import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * The  ContentController class manages the addition and validation of content,
  * differentiating between immediate addition and pending approval based on the user's role.
  * It interacts with instances of {@link Multimedia}, {@link BaseUser}, {@link IUserPlatform}, and {@link UserRole}.
  */
+@RestController
 public class MultimediaController {
 
     /**
      * The list of content.
      */
-    List<Multimedia> contentList;
+    private final MultimediaRepository contentList;
+
+
 
     /**
      * Constructs a new {@code MultimediaController} with empty content lists.
      */
-    public MultimediaController() {
-        this.contentList = new ArrayList<Multimedia>();
+    @Autowired
+    public MultimediaController(MultimediaRepository contentList) {
+        this.contentList = contentList;
     }
-
     /**
      * Adds content to the appropriate list based on the user's role.
      *
      * @param content the content to be added
      */
-    public void addContent(Multimedia content) {
+    @PostMapping("/multimediaAdd")
+    public ResponseEntity<Object> addContent(@RequestBody Multimedia content) {
         IUserPlatform user = content.getAuthor();
         if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))) {
             if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)) {
@@ -41,7 +48,8 @@ public class MultimediaController {
             } else {
                 addContentPending(content);
             }
-        }
+            return new ResponseEntity<>("Multimedia created", HttpStatus.OK);
+        }else throw new UserNotCorrectException();
     }
 
     /**
@@ -49,10 +57,12 @@ public class MultimediaController {
      *
      * @param content the content to be added
      */
-    private void addContentNoPending(Multimedia content) {
+    public void addContentNoPending(Multimedia content) {
         content.setValidation(true);
         content.getAuthor().incrementPostCount();
-        this.contentList.add(content);
+        contentList.save(content);
+
+        //this.contentList.add(content);
     }
 
     /**
@@ -62,7 +72,8 @@ public class MultimediaController {
      */
     private void addContentPending(Multimedia content) {
         content.setValidation(false);
-        this.contentList.add(content);
+        contentList.save(content);
+        //this.contentList.add(content);
     }
 
     /**
@@ -72,18 +83,20 @@ public class MultimediaController {
      * @param choice  {@code true} to approve the content, {@code false} to reject
      * @param content the content to be validated
      */
-    public void validateContent(IUserPlatform user, boolean choice, Multimedia content) {
+    @PutMapping("/multimedia")
+    public void validateContent(IUserPlatform user, @PostMapping boolean choice,@PostMapping Multimedia content) {
         if (user.getUserType().equals(UserRole.Curator)) {
-            int index = contentList.indexOf(content);
-            if (index != 1) {
+            if (contentList.existsById(content.getId())) {
                 if (choice) {
-                    this.contentList.get(index).setValidation(true);
-                    this.contentList.get(index).getAuthor().incrementPostCount();
+                    contentList.findById(content.getId()).get().setValidation(true);
+                    contentList.findById(content.getId()).get().getAuthor().incrementPostCount();
+                   // this.contentList.get(index).setValidation(true);
+                    // this.contentList.get(index).getAuthor().incrementPostCount();
                 } else {
-                    this.contentList.remove(content);
+                    contentList.deleteById(content.getId());
                 }
-            }
-        }
+            }else throw new MultimediaNotFoundException();
+        }else throw new UserNotCorrectException();
     }
 
     /**
@@ -91,8 +104,8 @@ public class MultimediaController {
      *
      * @return the size of the approved content list
      */
-    public int getContentListSize() {
-        return contentList.size();
+    public long getContentListSize() {
+        return contentList.count();
     }
 
     /**
@@ -100,6 +113,7 @@ public class MultimediaController {
      * @param text the new description
      * @param content the content of which to change the description
      */
+    @PutMapping("/multimedia")
     public void modifyDesription(String text, Multimedia content){
         if(this.contentList.contains(content)){
             int index = this.contentList.indexOf(content);
@@ -121,13 +135,14 @@ public class MultimediaController {
      * @param user the curator user
      * @param content the content to be removed
      */
-    public void deleteContent(IUserPlatform user,Multimedia content){
+    @DeleteMapping("/multimedia")
+    public ResponseEntity<Object> deleteContent(@RequestBody IUserPlatform user,@RequestBody Multimedia content){
         if (user.getUserType().equals(UserRole.Curator)) {
-            int index = contentList.indexOf(content);
-            if(index !=1) {
-                this.contentList.remove(content);
-            }
-        }
+            if(contentList.existsById(content.getId())){
+                contentList.deleteById(content.getId());
+                return new ResponseEntity<>("Multimedia deleted",HttpStatus.OK);
+            }else throw new MultimediaNotFoundException();
+        }else throw new UserNotCorrectException();
     }
 
     /**
@@ -143,4 +158,6 @@ public class MultimediaController {
             }
         }
     }
+
+
 }
