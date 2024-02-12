@@ -3,18 +3,18 @@ package it.unicam.cs.ids.controller;
 import it.unicam.cs.ids.Exception.*;
 import it.unicam.cs.ids.controller.Repository.FestivalRepository;
 import it.unicam.cs.ids.model.content.Festival;
-import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
-import java.util.List;
+
 /**
  * The  Festival controller class manages the addition and removing of Festivals,
  * It interacts with instances of {@link UserRole}, {@link IUserPlatform}
@@ -32,37 +32,43 @@ public class FestivalController {
      * Adds a Festival to the list
      *
      * @param newfestival The Festival to be added.
+     * @return ResponseEntity with appropriate status and message
      */
     @PostMapping("/festival")
     public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival){
         if(newfestival.getEnd().after(new Date())){
-            if(!festivals.existsByName(newfestival.getDescription())){
+            if(festivals.countFestivalsWithDescription(newfestival.getDescription())>0){
                 festivals.save(newfestival);
                 return new ResponseEntity<>("Festival created", HttpStatus.OK);
-            }
+            }throw new FestivalNotFoundException();
         } throw new FestivalAlreadyInException();
     }
+
     /**
      * Remove a specific Festival searched by the title
      *
      * @param title the festival's title
+     * @return ResponseEntity with appropriate status and message.
      */
-
+    @DeleteMapping("/del/festival/")
     public  ResponseEntity<Object>  removeFestival(String title){
-        //TODO:modificare il metodo
-        if(!festivals.existsByName(title)){
-            festivals.deleteById(newfestival);
-            return new ResponseEntity<>("Festival deleted", HttpStatus.OK);
+        if(festivals.countFestivalsWithDescription(title)>0){
+            festivals.deleteById(festivals.findFestivalIdByDescription(title));
+            return new ResponseEntity<>("Festival cancelled", HttpStatus.OK);
         }throw new FestivalNotFoundException();
-        festivals.delete(festival -> festival.getDescription().equals(title));
     }
 
     /**
      * Gets if the festival is active
-     * @return if the Festival is active
+     *
+     * @param text The text description of the festival.
+     * @return true if the Festival is active, false otherwise.
      */
-    public boolean isActive(Festival festival){
-        return festival.getEnd().after(new Date());
+    private boolean isActive(String text){
+        if(festivals.countFestivalsWithDescription(text)>0){
+            int id = festivals.findFestivalIdByDescription(text);
+            return festivals.findById(id).get().getEnd().after(new Date());
+        } throw new FestivalNotFoundException();
     }
 
 }
