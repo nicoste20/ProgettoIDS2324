@@ -36,7 +36,7 @@ public class FestivalController {
      */
     @PostMapping("/festival")
     public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival){
-        if(newfestival.getEnd().after(new Date())){
+        if(newfestival.getEndDate().after(new Date())){
             if(festivals.countFestivalsWithDescription(newfestival.getDescription())>0){
                 festivals.save(newfestival);
                 return new ResponseEntity<>("Festival created", HttpStatus.OK);
@@ -67,7 +67,7 @@ public class FestivalController {
     private boolean isActive(String text){
         if(festivals.countFestivalsWithDescription(text)>0){
             int id = festivals.findFestivalIdByDescription(text);
-            return festivals.findById(id).get().getEnd().after(new Date());
+            return festivals.findById(id).get().getEndDate().after(new Date());
         } throw new FestivalNotFoundException();
     }
 

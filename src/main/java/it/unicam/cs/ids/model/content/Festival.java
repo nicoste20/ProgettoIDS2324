@@ -14,11 +14,11 @@ import java.util.List;
 @Entity
 public class Festival extends Itinerary{
     /** the starting date of a festival. */
-    @Column(name="start")
-    private  Date start;
+    @Column(name="startDate")
+    private  Date startDate;
     /** the ending date of a festival. */
-    @Column(name="end")
-    private  Date end;
+    @Column(name="endDate")
+    private  Date endDate;
 
     /** the description of a festival. */
     private String information;
@@ -36,8 +36,8 @@ public class Festival extends Itinerary{
      */
     public Festival(BaseUser author, String text, List<Point> points, int id, Date start, Date end, String information) {
         super(author, text, points, id);
-        this.start= start;
-        this.end=end;
+        this.startDate = start;
+        this.endDate =end;
         this.information = information;
     }
 
@@ -49,15 +49,15 @@ public class Festival extends Itinerary{
      *it gets the starting date of a festival
      * @return the starting date
      */
-    public Date getStart(){
-        return this.start;
+    public Date getStartDate(){
+        return this.startDate;
     }
     /**
      *it gets the ending date of a festival
      * @return the ending date
      */
-    public Date getEnd(){
-        return this.end;
+    public Date getEndDate(){
+        return this.endDate;
     }
 
     /**
