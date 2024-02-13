@@ -147,8 +147,8 @@ public class MultimediaController {
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
     @DeleteMapping("/delete/multimedia")
-    public ResponseEntity<Object> deleteContent(@RequestBody IUserPlatform user,@RequestBody int id){
-        if (user.getUserType().equals(UserRole.Curator)) {
+    public ResponseEntity<Object> deleteContent(@RequestBody int idUser,@RequestBody int id){
+        if (users.findById(idUser).get().getUserType().equals(UserRole.Curator)) {
             if(contentList.existsById(id)){
                 contentList.deleteById(id);
                 return new ResponseEntity<>("Multimedia deleted",HttpStatus.OK);

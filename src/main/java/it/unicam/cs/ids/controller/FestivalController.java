@@ -5,6 +5,7 @@ import it.unicam.cs.ids.controller.Repository.FestivalRepository;
 import it.unicam.cs.ids.model.content.Festival;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
+import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,12 +51,13 @@ public class FestivalController {
      * @param title the festival's title
      * @return ResponseEntity with appropriate status and message.
      */
-    @DeleteMapping("/del/festival/")
-    public  ResponseEntity<Object>  removeFestival(String title){
+    @DeleteMapping("/del/festival/{title}")
+    public ResponseEntity<Object>  removeFestival(@PathParam(("title")) String title){
         if(festivals.countFestivalsWithDescription(title)>0){
             festivals.deleteById(festivals.findFestivalIdByDescription(title));
             return new ResponseEntity<>("Festival cancelled", HttpStatus.OK);
         }throw new FestivalNotFoundException();
+
     }
 
     /**

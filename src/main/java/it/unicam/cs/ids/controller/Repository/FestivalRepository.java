@@ -11,5 +11,5 @@ public interface FestivalRepository extends CrudRepository<Festival,Integer> {
     int countFestivalsWithDescription(@Param("text") String text);
 
     @Query("SELECT f.id FROM Festival f WHERE f.description = :text")
-    Integer findFestivalIdByDescription(@Param("text") String text);
+    int findFestivalIdByDescription(@Param("text") String text);
 }

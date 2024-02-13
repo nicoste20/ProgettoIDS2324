@@ -5,6 +5,7 @@ import it.unicam.cs.ids.model.contest.IContest;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.Optional;
 /**
  * The ContestController class manages operations related to contests and multimedia within a platform.
  */
+@RestController
 public class ContestController {
 
     private List<IContest> contests;
