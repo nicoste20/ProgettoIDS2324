@@ -81,8 +81,8 @@ public class PointController {
      * Validates or removes a Point based on the user's choice.
      *
      * @param choice The user's choice for validation.
-     * @param user   The user performing the validation.
-     * @param point  The Point to be validated or removed.
+     * @param userId   The user performing the validation.
+     * @param pointId  The Point to be validated or removed.
      */
     @RequestMapping(value = "/validate/point/{choice}/{userId}/{pointId}", method = RequestMethod.PUT)
     public ResponseEntity<Object> validatePoint(@PathParam("choice") boolean choice, @PathParam("userId") int userId, @PathParam("pointId") int pointId) {

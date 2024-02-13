@@ -140,20 +140,23 @@ public class MultimediaController {
 
     /**
      * Delete a multimedia content
-     * @param user the curator user
+     * @param idUser the curator user
      * @param id the content to be removed
      * @return a ResponseEntity representing the status of the operation
      * @throws UserNotCorrectException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @DeleteMapping("/delete/multimedia")
-    public ResponseEntity<Object> deleteContent(@RequestBody int idUser,@RequestBody int id){
-        if (users.findById(idUser).get().getUserType().equals(UserRole.Curator)) {
-            if(contentList.existsById(id)){
-                contentList.deleteById(id);
-                return new ResponseEntity<>("Multimedia deleted",HttpStatus.OK);
-            }else throw new MultimediaNotFoundException();
-        }else throw new UserNotCorrectException();
+    @DeleteMapping("/delete/multimedia/{id}/{userId}")
+    public ResponseEntity<Object> deleteContent(@PathParam("userId") int idUser,@PathParam("id") int id){
+        if(users.existsById(idUser)) {
+            if (users.findById(idUser).get().getUserType().equals(UserRole.Curator)) {
+                if (contentList.existsById(id)) {
+                    contentList.deleteById(id);
+                    return new ResponseEntity<>("Multimedia deleted", HttpStatus.OK);
+                } else throw new MultimediaNotFoundException();
+            } else throw new UserNotCorrectException();
+        }
+        return new ResponseEntity<>("Multimedia not deleted", HttpStatus.NOT_FOUND);
     }
 
     /**

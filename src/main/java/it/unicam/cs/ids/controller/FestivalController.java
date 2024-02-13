@@ -23,7 +23,7 @@ import java.util.Date;
 @RestController
 public class FestivalController {
     private final FestivalRepository festivals;
-    boolean alreadyIn=false;
+
     @Autowired
     public FestivalController(FestivalRepository festivals) {
         this.festivals = festivals;
