@@ -109,7 +109,7 @@ public class PointController {
      */
     @RequestMapping(value = "/search/point/{title}" , method = RequestMethod.PUT)
     public Optional<Point> searchPoint(@PathParam("title") String title) {
-                return Optional.of(points.findAllByTitle(title));
+        return Optional.of(points.findAllByTitle(title));
     }
 }
 

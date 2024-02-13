@@ -35,7 +35,7 @@ public class FestivalController {
      * @param newfestival The Festival to be added.
      * @return ResponseEntity with appropriate status and message
      */
-    @PostMapping("/festival")
+    @PostMapping("/add/festival")
     public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival){
         if(newfestival.getEndDate().after(new Date())){
             if(festivals.countFestivalsWithDescription(newfestival.getDescription())>0){
