@@ -1,7 +1,6 @@
 package it.unicam.cs.ids.model.content;
 
 import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
 import jakarta.persistence.*;
 
 /**

@@ -125,7 +125,7 @@ public class ContestController {
      * @throws MultimediaNotFoundException If the multimedia is not found.
      * @throws ContestNotExistException If the contest does not exist.
      */
-    @RequestMapping(value="/add/contest/{contestId}/{multimediaId}", method = RequestMethod.POST)
+    @RequestMapping(value="/add/pending/contest/{contestId}/{multimediaId}", method = RequestMethod.POST)
     public void addWithPending(@PathParam(("multimediaId")) int multimediaId,@PathParam(("contestId")) int contestId) {
         if (contestList.existsById(contestId)) {
             if(multimediaRepository.existsById(multimediaId)) {

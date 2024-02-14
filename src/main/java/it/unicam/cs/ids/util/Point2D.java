@@ -1,6 +1,8 @@
 package it.unicam.cs.ids.util;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 /**
@@ -13,6 +15,7 @@ public class Point2D {
     private double x;
     private double y;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     /**
