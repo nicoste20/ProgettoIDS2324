@@ -50,7 +50,7 @@ public class ContestController {
      * @param contest The contest to be added.
      */
     @PostMapping("/add/contest")
-    public void addContest(Contest contest) {
+    public void addContest(@RequestBody Contest contest) {
         this.contestList.save(contest);
     }
 

@@ -1,9 +1,20 @@
 package it.unicam.cs.ids.controller;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
+import it.unicam.cs.ids.controller.Repository.CommentRepository;
+import it.unicam.cs.ids.controller.Repository.ContestRespository;
+import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
+import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Comment;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
+import jakarta.websocket.server.PathParam;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -12,20 +23,34 @@ import java.util.List;
  * differentiating between immediate addition and pending approval based on the user's role.
  * It interacts with instances of {@link BaseUser}, {@link UserRole}, {@link IUserPlatform}, {@link Comment}
  */
+@RestController
 public class CommentController {
-    private List<Comment> comments;
+
+    private final CommentRepository comments;
+
+    private final UserRepository users;
+
+    @Autowired
+    public CommentController(CommentRepository comments, UserRepository users){
+        this.comments = comments;
+        this.users = users;
+    }
 
     /**
      * Adds a comment
      * @param comment the comment that we want to add
-     * @param user the user that wants to add a comment
+     * @param userId the user that wants to add a comment
      */
-    public void addComment(Comment comment , IUserPlatform user) {
-        if (user.getUserType().equals(UserRole.Contributor) || user.getUserType().equals(UserRole.TouristAuthorized)) {
-            if((user.getUserType().equals(UserRole.ContributorAuthorized) || user.getUserType().equals(UserRole.Curator)))
-                this.addWithoutPending(comment);
-            else
-                this.addWithPending(comment);
+    @PostMapping("/add/comment/{id}")
+    public void addComment(@RequestBody Comment comment , @PathParam("id") int userId) {
+        if(users.existsById(userId)){
+            BaseUser user = users.findById(userId).get();
+            if (user.getUserType().equals(UserRole.Contributor) || user.getUserType().equals(UserRole.TouristAuthorized)) {
+                if((user.getUserType().equals(UserRole.ContributorAuthorized) || user.getUserType().equals(UserRole.Curator)))
+                    this.addWithoutPending(comment);
+                else
+                    this.addWithPending(comment);
+            }
         }
     }
 
@@ -36,7 +61,7 @@ public class CommentController {
      */
     private void addWithPending(Comment comment) {
         comment.setValidation(false);
-        this.comments.add(comment);
+        this.comments.save(comment);
     }
 
     /**
@@ -46,24 +71,28 @@ public class CommentController {
      */
     private void addWithoutPending(Comment comment) {
         comment.setValidation(true);
-        this.comments.add(comment);
+        this.comments.save(comment);
     }
 
     /**
      * Validates or removes a comment based on the user's choice.
      *
      * @param choice The user's choice for validation.
-     * @param curator   The user performing the validation.
-     * @param comment  The Point to be validated or removed.
+     * @param userId   The user performing the validation.
+     * @param commentId  The Point to be validated or removed.
      */
-    public void validateComment(boolean choice, IUserPlatform curator, Comment comment) {
-        if(curator.getUserType().equals(UserRole.Curator)) {
-            int index = this.comments.indexOf(comment);
-            if(index!=-1) {
-                if (choice)
-                    comments.get(index).setValidation(true);
-                else
-                    this.comments.remove(index);
+    @PutMapping("/add/comment/{userId}/{commentId}")
+    public void validateComment(@RequestBody boolean choice,@PathParam("userId") int userId, @PathParam("userId")
+    int commentId) {
+        if(users.existsById(userId)) {
+            BaseUser curator = this.users.findById(userId).get();
+            if(curator.getUserType().equals(UserRole.Curator)) {
+                if(comments.existsById(commentId)){
+                    if (choice)
+                        this.comments.findById(commentId).get().setValidation(true);
+                    else
+                        this.comments.deleteById(commentId);
+                }
             }
         }
     }

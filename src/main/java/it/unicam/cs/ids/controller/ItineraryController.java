@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -43,18 +42,22 @@ public class ItineraryController {
      * Adds an Itinerary to the list based on the user's role.
      *
      * @param itinerary The Itinerary to be added.
-     * @param user      The user performing the operation.
+     * @param userId      The user performing the operation.
      * @return the response
      */
-    @PostMapping("/add/itinerary")
-    public ResponseEntity<String> addItinerary(@RequestBody Itinerary itinerary , IUserPlatform user) {
-        if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.Animator))) {
-            if (user.getUserType().equals(UserRole.Contributor))
-                this.addWithPending(itinerary);
-            else
-                this.addWithoutPending(itinerary);
+    @PostMapping("/add/itinerary/{userId}")
+    public ResponseEntity<String> addItinerary(@RequestBody Itinerary itinerary ,@PathParam("userId") int userId) {
+        if(users.existsById(userId)){
+           IUserPlatform user = users.findById(userId).get();
+            if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.Animator))) {
+                if (user.getUserType().equals(UserRole.Contributor))
+                    this.addWithPending(itinerary);
+                else
+                    this.addWithoutPending(itinerary);
+            }
+            return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
+        return new ResponseEntity<>("Itinerary not created", HttpStatus.NOT_FOUND);
     }
 
     /**
