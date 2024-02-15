@@ -49,9 +49,11 @@ public class ContestController {
      *
      * @param contest The contest to be added.
      */
-    @PostMapping("/add/contest")
-    public void addContest(@RequestBody Contest contest) {
-        this.contestList.save(contest);
+    @PostMapping("/add/contest/{userId}")
+    public void addContest(@RequestBody Contest contest,@PathParam(("userId"))int userId) {
+        if(users.existsById(userId) && users.findById(userId).get().getUserType().equals(UserRole.Animator)) {
+            this.contestList.save(contest);
+        } throw new UserNotCorrectException();
     }
 
     /**
@@ -59,9 +61,11 @@ public class ContestController {
      *
      * @param contestId The ID of the contest to be removed.
      */
-    @DeleteMapping("/delete/contest")
-    public void removeContest(int contestId) {
-        this.contestList.deleteById(contestId);
+    @DeleteMapping("/delete/contest/{userId}")
+    public void removeContest(@RequestBody int contestId, @PathParam(("userId")) int userId) {
+        if(users.existsById(userId) && users.findById(userId).get().getUserType().equals(UserRole.Animator)) {
+            this.contestList.deleteById(contestId);
+        } throw new UserNotCorrectException();
     }
 
     /**
