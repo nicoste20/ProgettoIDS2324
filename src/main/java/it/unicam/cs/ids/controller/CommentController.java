@@ -1,9 +1,6 @@
 package it.unicam.cs.ids.controller;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import it.unicam.cs.ids.controller.Repository.CommentRepository;
-import it.unicam.cs.ids.controller.Repository.ContestRespository;
-import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Comment;
 import it.unicam.cs.ids.model.user.BaseUser;
@@ -11,12 +8,9 @@ import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * The  Comment controller class manages the addition and validation of a general comment
@@ -81,7 +75,7 @@ public class CommentController {
      * @param userId   The user performing the validation.
      * @param commentId  The Point to be validated or removed.
      */
-    @PutMapping("/add/comment/{userId}/{commentId}")
+    @PutMapping("/validate/comment/{userId}/{commentId}")
     public void validateComment(@RequestBody boolean choice,@PathParam("userId") int userId, @PathParam("userId")
     int commentId) {
         if(users.existsById(userId)) {
@@ -97,5 +91,9 @@ public class CommentController {
         }
     }
 
+    @GetMapping(value ="/get/comment")
+    public ResponseEntity<Object> getComment(){
+        return new ResponseEntity<>(comments.findAll(), HttpStatus.OK);
+    }
 }
 

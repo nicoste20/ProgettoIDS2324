@@ -15,8 +15,8 @@ public class Restaurant extends Point {
     @Column(name="openingHours")
     private String openingHours;
 
-    public Restaurant(Point2D point, BaseUser author, String text, int id, String title, RestaurantType type, String openingHours) {
-        super(point, "Restaurant", author, text, id, title);
+    public Restaurant(Point2D point, BaseUser author, String name, int id, RestaurantType type, String openingHours) {
+        super(point, "Restaurant", author, name, id);
         this.typeRestaurant = type;
         this.openingHours = openingHours;
     }
@@ -34,7 +34,7 @@ public class Restaurant extends Point {
 
     @Override
     public Restaurant clone() {
-        return new Restaurant(this.getCoordinates(), super.getAuthor(), super.getDescription(), this.getId(), this.getTitle(), this.getTypeRestaurant(), this.getOpeningHours());
+        return new Restaurant(this.getCoordinates(), super.getAuthor(), super.getDescription(), this.getId(), this.getTypeRestaurant(), this.getOpeningHours());
     }
 }
 

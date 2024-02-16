@@ -13,8 +13,6 @@ import java.util.List;
 @Entity
 public abstract class Point extends Content implements Cloneable{
 
-    /** The title of this point **/
-    private String title;
 
     /** The type of the point. */
     private String type;
@@ -31,15 +29,13 @@ public abstract class Point extends Content implements Cloneable{
      * @param point  The coordinates of the point in 2D space.
      * @param type   The type of the point.
      * @param author The author of the point.
-     * @param text   The textual description of the point.
+     * @param name   The textual description of the point.
      * @param id     The unique identifier for the point.
-     * @param title the title of the point
      */
-    public Point(Point2D point, String type, BaseUser author, String text, int id, String title) {
-        super(author, text, id);
+    public Point(Point2D point, String type, BaseUser author, String name, int id) {
+        super(author, name, id);
         this.coordinates = point;
         this.type = type;
-        this.title = title;
         this.multimediaList=new ArrayList<Multimedia>();
     }
 
@@ -63,10 +59,6 @@ public abstract class Point extends Content implements Cloneable{
      */
     public String getType() {
         return this.type;
-    }
-
-    public String getTitle(){
-        return this.title;
     }
 
     public void addMultimedia(Multimedia multimedia){

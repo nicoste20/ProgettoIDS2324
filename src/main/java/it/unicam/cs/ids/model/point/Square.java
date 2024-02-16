@@ -11,8 +11,8 @@ public class Square extends Point {
     @Column(name="history")
     private String history;
 
-    public Square(Point2D point, BaseUser author, String text, int id, String title, String history) {
-        super(point, "Square", author, text, id, title);
+    public Square(Point2D point, BaseUser author, String name, int id, String history) {
+        super(point, "Square", author, name, id);
         this.history = history;
     }
 
@@ -26,6 +26,6 @@ public class Square extends Point {
     @Override
     public Square clone() {
         return new Square(this.getCoordinates(), super.getAuthor(), super.getDescription()
-                , this.getId(), this.getTitle(), this.getHistory());
+                , this.getId(), this.getHistory());
     }
 }

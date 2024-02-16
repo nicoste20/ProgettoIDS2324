@@ -1,7 +1,7 @@
 package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.Exception.MultimediaNotFoundException;
-import it.unicam.cs.ids.Exception.UserNotCorrectException;
+import it.unicam.cs.ids.Exception.UserBadTypeException;
 import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Multimedia;
@@ -45,7 +45,7 @@ public class MultimediaController {
      *
      * @param content the content to be added
      * @return a ResponseEntity representing the status of the operation
-     * @throws UserNotCorrectException if the user's role is not correct
+     * @throws UserBadTypeException if the user's role is not correct
      */
     @PostMapping("/add/multimedia")
     public ResponseEntity<Object> addContent(@RequestBody Multimedia content) {
@@ -57,7 +57,7 @@ public class MultimediaController {
                 addContentPending(content);
             }
             return new ResponseEntity<>("Multimedia created", HttpStatus.OK);
-        }else throw new UserNotCorrectException();
+        }else throw new UserBadTypeException();
     }
 
     /**
@@ -87,10 +87,10 @@ public class MultimediaController {
      * @param userId    the curator making the decision
      * @param choice  {@code true} to approve the content, {@code false} to reject
      * @param id      the ID of the content to be validated
-     * @throws UserNotCorrectException if the user's role is not correct
+     * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @RequestMapping(value="/multimedia/{choice}/{id}/{userId}", method = RequestMethod.PUT)
+    @RequestMapping(value="/validate/multimedia/{choice}/{id}/{userId}", method = RequestMethod.PUT)
     public void validateContent(@PathParam(("userId")) int userId, @PathParam(("choice")) boolean choice, @PathParam(("id")) int id) {
         if (users.existsById(userId)) {
             IUserPlatform user = users.findById(userId).get();
@@ -103,7 +103,7 @@ public class MultimediaController {
                         contentList.deleteById(id);
                     }
                 }else throw new MultimediaNotFoundException();
-            }else throw new UserNotCorrectException();
+            }else throw new UserBadTypeException();
         }
     }
 
@@ -119,10 +119,10 @@ public class MultimediaController {
     /**
      * Update the description of a multimedia content
      * @param text the new description
-     * @throws UserNotCorrectException if the user's role is not correct
+     * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @RequestMapping(value="/multimedia/{text}/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value="/modify/multimedia/{text}/{id}", method = RequestMethod.PUT)
     public void modifyDesription(@PathParam("text") String text,@PathParam("id") int id){
         if(contentList.existsById(id)){
             IUserPlatform user = contentList.findById(id).get().getAuthor();
@@ -133,7 +133,7 @@ public class MultimediaController {
                     this.contentList.findById(id).get().setDescription(text);
                     this.contentList.findById(id).get().setValidation(false);
                 }
-            }else throw new UserNotCorrectException();
+            }else throw new UserBadTypeException();
         }else throw new MultimediaNotFoundException();
 
     }
@@ -143,7 +143,7 @@ public class MultimediaController {
      * @param idUser the curator user
      * @param id the content to be removed
      * @return a ResponseEntity representing the status of the operation
-     * @throws UserNotCorrectException if the user's role is not correct
+     * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
     @DeleteMapping("/delete/multimedia/{id}/{userId}")
@@ -154,7 +154,7 @@ public class MultimediaController {
                     contentList.deleteById(id);
                     return new ResponseEntity<>("Multimedia deleted", HttpStatus.OK);
                 } else throw new MultimediaNotFoundException();
-            } else throw new UserNotCorrectException();
+            } else throw new UserBadTypeException();
         }
         return new ResponseEntity<>("Multimedia not deleted", HttpStatus.NOT_FOUND);
     }
@@ -164,10 +164,10 @@ public class MultimediaController {
      * @param userId the user that is reporting the content
      * @param id      the ID of the content that the user wants to signal
      * @return a ResponseEntity representing the status of the operation
-     * @throws UserNotCorrectException if the user's role is not correct
+     * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @RequestMapping(value="/multimedia/{userId}/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value="/signal/multimedia/{userId}/{id}", method = RequestMethod.PUT)
     public ResponseEntity<Object> signalContent(@PathParam(("userId")) int userId,@PathParam(("id")) int id) {
         if (contentList.existsById(id)) {
             if(users.existsById(userId)){
@@ -176,8 +176,13 @@ public class MultimediaController {
                         || user.getUserType().equals(UserRole.Animator))){
                     this.contentList.findById(id).get().setSignaled(true);
                     return new ResponseEntity<>("Multimedia signaled",HttpStatus.OK);
-                }else throw new UserNotCorrectException();
+                }else throw new UserBadTypeException();
             }else throw new MultimediaNotFoundException();
-        }else throw new UserNotCorrectException();
+        }else throw new UserBadTypeException();
+    }
+
+    @GetMapping(value ="/get/multimedia")
+    public ResponseEntity<Object> getMultimedia(){
+        return new ResponseEntity<>(contentList.findAll(), HttpStatus.OK);
     }
 }

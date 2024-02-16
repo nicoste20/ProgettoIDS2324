@@ -3,10 +3,11 @@ package it.unicam.cs.ids.controller;
 import it.unicam.cs.ids.Exception.*;
 import it.unicam.cs.ids.controller.Repository.PointRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
-import it.unicam.cs.ids.model.content.Festival;
 import it.unicam.cs.ids.model.content.Point;
-import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
+import it.unicam.cs.ids.model.point.GreenZone;
+import it.unicam.cs.ids.model.point.Monument;
+import it.unicam.cs.ids.model.point.Restaurant;
+import it.unicam.cs.ids.model.point.Square;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +43,38 @@ public class PointController {
      * @param point  The Point to be added.
      * @param userId The user performing the operation.
      */
-    @PostMapping("/point/{userId}")
-    public ResponseEntity<Object> addPoint(@RequestBody Point point, @PathParam(("userId")) int userId) {
+
+    //TODO: dividere in base al tipo di punto che viene creato!!
+    @PostMapping("/addRestaurant/point{userId}")
+    public void addPointRestaurant(@RequestBody Restaurant point, @PathParam(("userId")) int userId) {
+       addPoint(point,userId);
+    }
+
+    @PostMapping("/addMonument/point{userId}")
+    public void addPointMonument(@RequestBody Monument point, @PathParam(("userId")) int userId) {
+        addPoint(point,userId);
+
+    }
+    @PostMapping("/addGreenZone/point{userId}")
+    public void addPointGreenZone(@RequestBody GreenZone point, @PathParam(("userId")) int userId) {
+        addPoint(point, userId);
+    }
+
+    @PostMapping("/addSquare/point{userId}")
+    public void addPointSquare(@RequestBody Square point, @PathParam(("userId")) int userId) {
+        addPoint(point, userId);
+    }
+
+    private void addPoint( Point point,  int userId) {
         if (points.isAlreadyIn(point.getCoordinates().getX(), point.getCoordinates().getY()) == 0) {
             if (users.existsById(userId)) {
-                if (users.findById(userId).get().getUserType() == UserRole.Contributor) {
+                if (users.findById(userId).get().getUserType().equals(UserRole.Contributor)) {
                     this.addWithPending(point);
                 } else
                     this.addWithoutPending(point);
-                return new ResponseEntity<>("Point created", HttpStatus.OK);
+              //  return new ResponseEntity<>("Point created", HttpStatus.OK);
             }
-            throw new UserNotCorrectException();
+            throw new UserBadTypeException();
         }
         throw new PointAlreadyInException();
     }
@@ -86,7 +108,7 @@ public class PointController {
      */
     @RequestMapping(value = "/validate/point/{choice}/{userId}/{pointId}", method = RequestMethod.PUT)
     public ResponseEntity<Object> validatePoint(@PathParam("choice") boolean choice, @PathParam("userId") int userId, @PathParam("pointId") int pointId) {
-        if (users.findById(userId).get().getUserType() == UserRole.Curator) {
+        if (users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
             if (points.existsById(pointId)) {
                 if (choice) {
                     points.findById(pointId).get().setValidation(true);
@@ -98,7 +120,7 @@ public class PointController {
             }
             throw new PointNotExistException();
         }
-        throw new UserNotCorrectException();
+        throw new UserBadTypeException();
     }
 
     /**
@@ -110,6 +132,11 @@ public class PointController {
     @RequestMapping(value = "/search/point/{title}" , method = RequestMethod.PUT)
     public Optional<Point> searchPoint(@PathParam("title") String title) {
         return Optional.of(points.findAllByTitle(title));
+    }
+
+    @GetMapping(value ="get/point")
+    public ResponseEntity<Object> getPoints(){
+        return new ResponseEntity<>(points.findAll(),HttpStatus.OK);
     }
 }
 

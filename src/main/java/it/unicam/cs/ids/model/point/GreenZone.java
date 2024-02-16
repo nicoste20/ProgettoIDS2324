@@ -11,8 +11,9 @@ public class GreenZone extends Point {
     @Column(name="characteristics")
     private String characteristics;
 
-    public GreenZone(Point2D point, BaseUser author, String text, int id, String title, String characteristics) {
-        super(point, "Green Zone", author, text, id, title);
+
+    public GreenZone(Point2D point, BaseUser author, String name, int id, String characteristics) {
+        super(point, "Green Zone", author, name, id);
         this.characteristics = characteristics;
     }
 
@@ -25,6 +26,6 @@ public class GreenZone extends Point {
 
     @Override
     public GreenZone clone() {
-        return new GreenZone(this.getCoordinates(), super.getAuthor(), super.getDescription(), this.getId(), this.getTitle(), this.getCharacteristics());
+        return new GreenZone(this.getCoordinates(), super.getAuthor(), super.getDescription(), this.getId(), this.getCharacteristics());
     }
 }

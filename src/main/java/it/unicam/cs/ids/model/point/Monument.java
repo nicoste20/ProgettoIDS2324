@@ -13,8 +13,8 @@ public class Monument extends Point {
     @Column(name="story")
     private String story;
 
-    public Monument(Point2D point, BaseUser author, String text, int id, String title, String inaugurationDate, String story) {
-        super(point, "Monument", author, text, id, title);
+    public Monument(Point2D point, BaseUser author, String name, int id, String inaugurationDate, String story) {
+        super(point, "Monument",author, name, id);
         this.inaugurationDate = inaugurationDate;
         this.story = story;
     }
@@ -33,6 +33,6 @@ public class Monument extends Point {
     @Override
     public Monument clone() {
         return new Monument(this.getCoordinates(), super.getAuthor(), super.getDescription(),
-                this.getId(), this.getTitle(), this.getInaugurationDate(), this.getStory());
+                this.getId(), this.getInaugurationDate(), this.getStory());
     }
 }

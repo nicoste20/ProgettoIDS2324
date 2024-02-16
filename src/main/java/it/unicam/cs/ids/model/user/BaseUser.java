@@ -17,6 +17,7 @@ public class BaseUser implements IUserPlatform {
     private String surname;
     private  String username;
     private String password;
+    @Column(unique = true)
     private String email;
 
     private int postCount;
@@ -24,16 +25,16 @@ public class BaseUser implements IUserPlatform {
      * Constructs a new BaseUser object with the specified parameters.
      *
      * @param id       The unique identifier of the user.
-     * @param userRole The role of the user represented by the {@link UserRole} enum.
+     * @param role The role of the user represented by the {@link UserRole} enum.
      * @param name     The first name of the user.
      * @param surname  The last name of the user.
      * @param username The username of the user.
      * @param email    The email address of the user.
      * @param password The password of the user.
      */
-    public BaseUser(int id, UserRole userRole, String name, String surname, String username, String email, String password) {
+    public BaseUser(int id, String role, String name, String surname, String username, String email, String password) {
         this.id = id;
-        this.userRole = userRole;
+        this.userRole = UserRole.valueOf(UserRole.class,role);
         this.name = name;
         this.surname = surname;
         this.username = username;
@@ -61,6 +62,7 @@ public class BaseUser implements IUserPlatform {
     public UserRole getUserType() {
         return this.userRole;
     }
+
 
     /**
      * {@inheritDoc}

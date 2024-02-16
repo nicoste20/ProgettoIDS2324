@@ -7,8 +7,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class UserExceptionController {
-    @ExceptionHandler(value=UserNotCorrectException.class)
-    public ResponseEntity<Object> exception(UserNotCorrectException exception){
+    @ExceptionHandler(value= UserBadTypeException.class)
+    public ResponseEntity<Object> exception(UserBadTypeException exception){
         return new ResponseEntity<>("Incorrect User Type", HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler(value=UserAlreadyInException.class)
+    public ResponseEntity<Object> exception(UserAlreadyInException exception){
+        return new ResponseEntity<>("User already in", HttpStatus.FOUND);
+    }
+    @ExceptionHandler(value=UserNotInException.class)
+    public ResponseEntity<Object> exception(UserNotInException exception){
+        return new ResponseEntity<>("User not in", HttpStatus.NOT_FOUND);
     }
 }

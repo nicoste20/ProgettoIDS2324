@@ -2,6 +2,7 @@ package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.Exception.*;
 import it.unicam.cs.ids.controller.Repository.FestivalRepository;
+import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Festival;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
@@ -9,10 +10,7 @@ import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
@@ -23,10 +21,12 @@ import java.util.Date;
 @RestController
 public class FestivalController {
     private final FestivalRepository festivals;
+    private final UserRepository users;
 
     @Autowired
-    public FestivalController(FestivalRepository festivals) {
+    public FestivalController(FestivalRepository festivals, UserRepository users) {
         this.festivals = festivals;
+        this.users = users;
     }
 
     /**
@@ -35,14 +35,16 @@ public class FestivalController {
      * @param newfestival The Festival to be added.
      * @return ResponseEntity with appropriate status and message
      */
-    @PostMapping("/add/festival")
-    public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival){
-        if(newfestival.getEndDate().after(new Date())){
-            if(festivals.countFestivalsWithDescription(newfestival.getDescription())>0){
-                festivals.save(newfestival);
-                return new ResponseEntity<>("Festival created", HttpStatus.OK);
-            }throw new FestivalNotFoundException();
-        } throw new FestivalAlreadyInException();
+    @PostMapping("/add/festival{userId}")
+    public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival, @PathParam(("userId")) int userId){
+        if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
+            if (newfestival.getEndDate().after(new Date())) {
+                if (festivals.countFestivalsWithDescription(newfestival.getDescription()) > 0) {
+                    festivals.save(newfestival);
+                    return new ResponseEntity<>("Festival created", HttpStatus.OK);
+                } else throw new FestivalNotFoundException();
+            }else throw new FestivalAlreadyInException();
+        }else throw new UserBadTypeException();
     }
 
     /**
@@ -51,13 +53,15 @@ public class FestivalController {
      * @param title the festival's title
      * @return ResponseEntity with appropriate status and message.
      */
-    @DeleteMapping("/del/festival/{title}")
-    public ResponseEntity<Object>  removeFestival(@PathParam(("title")) String title){
-        if(festivals.countFestivalsWithDescription(title)>0){
-            festivals.deleteById(festivals.findFestivalIdByDescription(title));
-            return new ResponseEntity<>("Festival cancelled", HttpStatus.OK);
-        }throw new FestivalNotFoundException();
-
+    @RequestMapping(value = "/del/festival/{title}/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity<Object>  removeFestival(@PathParam(("title")) String title, @PathParam(("userId")) int userId){
+        if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
+            if (festivals.countFestivalsWithDescription(title) > 0) {
+                festivals.deleteById(festivals.findFestivalIdByDescription(title));
+                return new ResponseEntity<>("Festival cancelled", HttpStatus.OK);
+            }
+            throw new FestivalNotFoundException();
+        }else throw new UserBadTypeException();
     }
 
     /**
@@ -72,5 +76,10 @@ public class FestivalController {
             return festivals.findById(id).get().getEndDate().after(new Date());
         } throw new FestivalNotFoundException();
     }
+    @GetMapping(value ="/get/festival")
+    public ResponseEntity<Object> getFestival(){
+        return new ResponseEntity<>(festivals.findAll(), HttpStatus.OK);
+    }
+
 
 }

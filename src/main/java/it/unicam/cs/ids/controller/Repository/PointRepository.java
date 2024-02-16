@@ -8,6 +8,6 @@ public interface PointRepository extends CrudRepository<Point,Integer> {
     @Query ("SELECT COUNT (z) FROM Point z WHERE z.coordinates.x= :x AND z.coordinates.y= :y")
     int isAlreadyIn(@Param("x") double x, @Param("y") double y);
 
-    @Query ("SELECT x FROM Point x WHERE x.title= :title")
+    @Query ("SELECT x FROM Point x WHERE x.description= :title")
     Point findAllByTitle(@Param("title") String title);
 }
