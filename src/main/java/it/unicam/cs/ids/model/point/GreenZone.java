@@ -1,10 +1,9 @@
 package it.unicam.cs.ids.model.point;
 
+import it.unicam.cs.ids.model.user.BaseUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import it.unicam.cs.ids.model.content.Point;
-import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.util.Point2D;
 
 @Entity
 public class GreenZone extends Point {
@@ -12,8 +11,8 @@ public class GreenZone extends Point {
     private String characteristics;
 
 
-    public GreenZone(Point2D point, BaseUser author, String name, int id, String characteristics) {
-        super(point, "Green Zone", author, name, id);
+    public GreenZone(Float x, Float y, String type,String name, String characteristics) {
+        super(x , y, type, name);
         this.characteristics = characteristics;
     }
 
@@ -26,6 +25,6 @@ public class GreenZone extends Point {
 
     @Override
     public GreenZone clone() {
-        return new GreenZone(this.getCoordinates(), super.getAuthor(), super.getDescription(), this.getId(), this.getCharacteristics());
+        return new GreenZone(this.getX(), this.getY(), super.getType(),super.getName(), this.getCharacteristics());
     }
 }

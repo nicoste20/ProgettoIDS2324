@@ -11,36 +11,56 @@ import java.util.List;
  * Extends the base class Content.
  */
 @Entity
-public abstract class Point extends Content implements Cloneable{
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+public abstract class Point implements Cloneable{
 
+    public void setAuthor(int author) {
+        this.author = author;
+    }
 
+    private int author;
+
+    /** The textual description of the content. */
+    @Column(name="name", unique = true)
+    private String name;
+
+    /** Flag indicating whether the content is validated or not. */
+    @Column(name="isValidate")
+    private boolean isValidate;
+
+    /** The unique identifier for the content. */
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private int id;
     /** The type of the point. */
+    @Column(name="type")
     private String type;
 
     /** The coordinates of the point in 2D space. */
-    @OneToOne
-    private Point2D coordinates;
-
+    //@Column(name="x")
+    private Float x;
+    // @Column(name="y")
+    private Float y;
     @OneToMany
     private List<Multimedia> multimediaList;
     /**
      * Constructor to create a point with coordinates, type, author, text description, and a unique identifier.
      *
-     * @param point  The coordinates of the point in 2D space.
      * @param type   The type of the point.
-     * @param author The author of the point.
      * @param name   The textual description of the point.
-     * @param id     The unique identifier for the point.
      */
-    public Point(Point2D point, String type, BaseUser author, String name, int id) {
-        super(author, name, id);
-        this.coordinates = point;
+    public Point(Float x , Float y, String type, String name) {
+        this.name=name;
+        this.isValidate=false;
+        this.x = x;
+        this.y = y;
         this.type = type;
         this.multimediaList=new ArrayList<Multimedia>();
+        //new Point2D(x,y);
     }
 
     public Point() {
-        super(null,null,-1);
+
     }
 
     /**
@@ -48,8 +68,13 @@ public abstract class Point extends Content implements Cloneable{
      *
      * @return The coordinates of the point in 2D space.
      */
-    public Point2D getCoordinates() {
-        return this.coordinates;
+
+    public Float getX() {
+        return x;
+    }
+
+    public Float getY() {
+        return y;
     }
 
     /**
@@ -68,6 +93,60 @@ public abstract class Point extends Content implements Cloneable{
     public List<Multimedia> getMultimediaList(){
         return this.multimediaList;
     }
+    public int getAuthor() {
+        return author;
+    }
+
+    /**
+     * Getter for the textual description of the content.
+     *
+     * @return The textual description of the content.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Getter for the validation status of the content.
+     *
+     * @return True if the content is validated, false otherwise.
+     */
+    public boolean isValidate() {
+        return this.isValidate;
+    }
+
+    /**
+     * Setter for updating the validation status of the content.
+     *
+     * @param val The new validation status to be set.
+     */
+    public void setValidation(boolean val) {
+        this.isValidate = val;
+    }
+
+    /**
+     * Returns a string representation of the Content object.
+     *
+     * @return A string containing the author and description of the content.
+     */
+    public String toString() {
+        return this.author + " " + this.name;
+    }
+
+    /**
+     * Getter for the unique identifier of the content.
+     *
+     * @return The unique identifier of the content.
+     */
+    public int getId() {
+        return this.id;
+    }
+
+    /**
+     * Set a new description for the content
+     * @param description the new description
+     */
+    public void setName(String description){this.name =description;}
 
     @Override
     public abstract Point clone();

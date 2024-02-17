@@ -5,11 +5,13 @@ import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import jakarta.websocket.server.PathParam;
+import org.hibernate.query.criteria.JpaFetchParent;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
-public interface UserRepository extends CrudRepository<BaseUser,Integer> {
+public interface UserRepository extends JpaRepository<BaseUser,Integer> {
     @Query ("SELECT COUNT(x) FROM BaseUser x WHERE x.email= :email")
     int findByEmail(@Param("email") String email);
 

@@ -20,14 +20,14 @@ public class Multimedia extends Content {
      *
      * @param photo       the file path or URL of the photo
      */
-    public Multimedia(BaseUser author, String text , String photo, int id) {
-        super(author,text, id);
+    public Multimedia(String text , String photo) {
+        super(text);
         this.photo = photo;
         this.signaled =false;
     }
 
     public Multimedia() {
-        super(null,null,-1);
+        super(null);
     }
 
     /**

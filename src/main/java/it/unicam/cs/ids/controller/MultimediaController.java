@@ -47,14 +47,14 @@ public class MultimediaController {
      * @return a ResponseEntity representing the status of the operation
      * @throws UserBadTypeException if the user's role is not correct
      */
-    @PostMapping("/add/multimedia")
-    public ResponseEntity<Object> addContent(@RequestBody Multimedia content) {
-        IUserPlatform user = content.getAuthor();
+    @PostMapping("/add/multimedia{userId}")
+    public ResponseEntity<Object> addContent(@RequestBody Multimedia content,@PathParam(("userId"))int userId) {
+        BaseUser user = users.findById(userId).get();
         if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))) {
             if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)) {
-                addContentNoPending(content);
+                addContentNoPending(content,userId);
             } else {
-                addContentPending(content);
+                addContentPending(content,userId);
             }
             return new ResponseEntity<>("Multimedia created", HttpStatus.OK);
         }else throw new UserBadTypeException();
@@ -65,9 +65,15 @@ public class MultimediaController {
      *
      * @param content the content to be added
      */
-    public void addContentNoPending(Multimedia content) {
+    public void addContentNoPending(Multimedia content,int userId) {
         content.setValidation(true);
-        content.getAuthor().incrementPostCount();
+        //TODO: MODIFICA QUESTA PARTE SEGUENDO QUANTO FATTO NEL POINT CONTROLLER
+        /*
+        BaseUser author= users.findById(content.getAuthor());
+        users.findById(author).get().incrementPostCount();
+        users.save(author);
+
+         */
         contentList.save(content);
     }
 
@@ -76,7 +82,7 @@ public class MultimediaController {
      *
      * @param content the content to be added
      */
-    private void addContentPending(Multimedia content) {
+    private void addContentPending(Multimedia content,int userId) {
         content.setValidation(false);
         contentList.save(content);
     }
@@ -90,7 +96,9 @@ public class MultimediaController {
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @RequestMapping(value="/validate/multimedia/{choice}/{id}/{userId}", method = RequestMethod.PUT)
+
+    //TODO:MODIFICA
+    @RequestMapping(value="/validate/multimedia{choice}{id}{userId}", method = RequestMethod.PUT)
     public void validateContent(@PathParam(("userId")) int userId, @PathParam(("choice")) boolean choice, @PathParam(("id")) int id) {
         if (users.existsById(userId)) {
             IUserPlatform user = users.findById(userId).get();
@@ -98,7 +106,7 @@ public class MultimediaController {
                 if (contentList.existsById(id)) {
                     if (choice) {
                         contentList.findById(id).get().setValidation(true);
-                        contentList.findById(id).get().getAuthor().incrementPostCount();
+                        //contentList.findById(id).get().getAuthor().incrementPostCount();
                     } else {
                         contentList.deleteById(id);
                     }
@@ -122,15 +130,18 @@ public class MultimediaController {
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
+
+    //TODO:MODIFICAAA
     @RequestMapping(value="/modify/multimedia/{text}/{id}", method = RequestMethod.PUT)
     public void modifyDesription(@PathParam("text") String text,@PathParam("id") int id){
         if(contentList.existsById(id)){
-            IUserPlatform user = contentList.findById(id).get().getAuthor();
+            IUserPlatform user =null;
+            //  IUserPlatform user = contentList.findById(id).get().getAuthor();
             if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))) {
                 if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)) {
-                    this.contentList.findById(id).get().setDescription(text);
+                    this.contentList.findById(id).get().setName(text);
                 } else {
-                    this.contentList.findById(id).get().setDescription(text);
+                    this.contentList.findById(id).get().setName(text);
                     this.contentList.findById(id).get().setValidation(false);
                 }
             }else throw new UserBadTypeException();
@@ -146,7 +157,7 @@ public class MultimediaController {
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @DeleteMapping("/delete/multimedia/{id}/{userId}")
+    @DeleteMapping("/delete/multimedia{id}{userId}")
     public ResponseEntity<Object> deleteContent(@PathParam("userId") int idUser,@PathParam("id") int id){
         if(users.existsById(idUser)) {
             if (users.findById(idUser).get().getUserType().equals(UserRole.Curator)) {
@@ -167,7 +178,7 @@ public class MultimediaController {
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @RequestMapping(value="/signal/multimedia/{userId}/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value="/signal/multimedia{userId}{id}", method = RequestMethod.PUT)
     public ResponseEntity<Object> signalContent(@PathParam(("userId")) int userId,@PathParam(("id")) int id) {
         if (contentList.existsById(id)) {
             if(users.existsById(userId)){
@@ -181,7 +192,7 @@ public class MultimediaController {
         }else throw new UserBadTypeException();
     }
 
-    @GetMapping(value ="/get/multimedia")
+    @GetMapping(value ="/get/multimedias")
     public ResponseEntity<Object> getMultimedia(){
         return new ResponseEntity<>(contentList.findAll(), HttpStatus.OK);
     }

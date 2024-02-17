@@ -12,31 +12,27 @@ import jakarta.persistence.*;
 public abstract class Content {
 
     /** The author of the content. */
-    @OneToOne
-    private BaseUser author;
+
+    private int author;
 
     /** The textual description of the content. */
-    private String description;
+    private String name;
 
     /** Flag indicating whether the content is validated or not. */
     private boolean isValidate;
 
     /** The unique identifier for the content. */
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     /**
      * Constructor to initialize a Content object.
      *
-     * @param author The author of the content.
      * @param text The textual description of the content.
-     * @param id The unique identifier for the content.
      */
-    public Content(BaseUser author, String text, int id) {
-        this.author = author;
-        this.description = text;
-        this.id = id;
+    public Content(String name) {
+        this.name = name;
         this.isValidate = false;
     }
 
@@ -49,17 +45,19 @@ public abstract class Content {
      *
      * @return The author of the content.
      */
-    public BaseUser getAuthor() {
+    public int getAuthor() {
         return author;
     }
+
+    public void setAuthor(int author){this.author = author;}
 
     /**
      * Getter for the textual description of the content.
      *
      * @return The textual description of the content.
      */
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
     /**
@@ -86,7 +84,7 @@ public abstract class Content {
      * @return A string containing the author and description of the content.
      */
     public String toString() {
-        return this.author + " " + this.description;
+        return this.author + " " + this.name;
     }
 
     /**
@@ -102,7 +100,7 @@ public abstract class Content {
      * Set a new description for the content
      * @param description the new description
      */
-    public void setDescription(String description){this.description=description;}
+    public void setName(String description){this.name =description;}
 }
 
 

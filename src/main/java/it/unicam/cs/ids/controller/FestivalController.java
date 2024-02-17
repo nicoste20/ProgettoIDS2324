@@ -39,7 +39,7 @@ public class FestivalController {
     public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival, @PathParam(("userId")) int userId){
         if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
             if (newfestival.getEndDate().after(new Date())) {
-                if (festivals.countFestivalsWithDescription(newfestival.getDescription()) > 0) {
+                if (festivals.countFestivalsWithDescription(newfestival.getName()) > 0) {
                     festivals.save(newfestival);
                     return new ResponseEntity<>("Festival created", HttpStatus.OK);
                 } else throw new FestivalNotFoundException();

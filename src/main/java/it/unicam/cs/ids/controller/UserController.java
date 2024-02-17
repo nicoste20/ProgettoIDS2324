@@ -3,6 +3,7 @@ package it.unicam.cs.ids.controller;
 import it.unicam.cs.ids.Exception.UserAlreadyInException;
 import it.unicam.cs.ids.Exception.UserNotInException;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
+import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
@@ -20,25 +21,30 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/addCurator/user/{userEmail}")
+    @PostMapping("/addCurator/user{userEmail}")
     public ResponseEntity<Object> addCurator(@RequestBody String managerEmail, @PathParam("userEmail") String email) {
         if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
+
             int id= userRepository.selectByEmail(email);
-            userRepository.findById(id).get().setRole(UserRole.Curator);
+            BaseUser x = userRepository.findById(id).get();
+            x.setRole(UserRole.Curator);
+            userRepository.save(x);
             return new ResponseEntity<>("Curator added", HttpStatus.OK);
         }else throw new UserAlreadyInException();
     }
 
-    @PostMapping("/addAnimator/user/{userEmail}")
+    @PostMapping("/addAnimator/user{userEmail}")
     public ResponseEntity<Object> addAnimator(@RequestBody String managerEmail, @PathParam("userEmail") String email) {
         if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
             int id= userRepository.selectByEmail(email);
-            userRepository.findById(id).get().setRole(UserRole.Animator);
+            BaseUser x = userRepository.findById(id).get();
+            x.setRole(UserRole.Animator);
+            userRepository.save(x);
             return new ResponseEntity<>("Animator added", HttpStatus.OK);
         }else throw new UserAlreadyInException();
     }
 
-    @PostMapping("/updateContributor/user/{contributorEmail}")
+    @PostMapping("/updateContributor/user{contributorEmail}")
     public void changeRole(@RequestBody String managerEmail, @PathParam("contributorEmail") String email) {
         if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
             int id= userRepository.selectByEmail(email);

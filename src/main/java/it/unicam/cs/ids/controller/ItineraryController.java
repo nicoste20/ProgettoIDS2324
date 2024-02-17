@@ -1,8 +1,11 @@
 package it.unicam.cs.ids.controller;
 
+import it.unicam.cs.ids.Exception.UserBadTypeException;
+import it.unicam.cs.ids.Exception.UserNotInException;
 import it.unicam.cs.ids.controller.Repository.ItineraryRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Itinerary;
+import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
@@ -46,19 +49,23 @@ public class ItineraryController {
      * @param userId      The user performing the operation.
      * @return the response
      */
-    @PostMapping("/add/itinerary/{userId}")
+    @PostMapping("/add/itinerary{userId}")
     public ResponseEntity<String> addItinerary(@RequestBody Itinerary itinerary ,@PathParam("userId") int userId) {
         if(users.existsById(userId)){
-           IUserPlatform user = users.findById(userId).get();
+            IUserPlatform user = users.findById(userId).get();
             if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.Animator))) {
-                if (user.getUserType().equals(UserRole.Contributor))
+                itinerary.setAuthor(userId);
+                if (user.getUserType().equals(UserRole.Contributor)) {
                     this.addWithPending(itinerary);
-                else
+                    return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
+                }
+                else {
                     this.addWithoutPending(itinerary);
-            }
-            return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Itinerary not created", HttpStatus.NOT_FOUND);
+                    return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
+
+                }
+            }else throw new UserBadTypeException();
+        }else throw new UserNotInException();
     }
 
     /**
@@ -86,20 +93,21 @@ public class ItineraryController {
      * @param userID if of the User that validates the itinerary
      * @param choice if the itinerary will be validated or no
      */
-    @PostMapping("/validate/itinerary/{id}/{userId}")
+    @PostMapping("/validate/itinerary{id}{userId}")
     public void validateItinerary(@PathParam(("userId")) int userID, @PathParam(("id")) int id, @RequestBody boolean choice) {
         if (users.existsById(userID)) {
             if(users.findById(id).get().equals(UserRole.Curator)){
                 if (this.itineraries.existsById(id)) {
                     if (choice) {
-                        this.itineraries.findById(id).get().setValidation(true);
-                    }else
+                        Itinerary x =  itineraries.findById(id).get();
+                        x.setValidation(true);
+                        itineraries.save(x);
+                    }else{
                         this.itineraries.deleteById(id);
-                }else
-                    throw new RuntimeException("Itinerary doesn't exist");
+                    }
+                }else throw new RuntimeException("Itinerary doesn't exist");
             }
-        }else
-            throw new RuntimeException("Users doesn't exist");
+        }else throw new RuntimeException("Users doesn't exist");
     }
 
     /**
@@ -124,11 +132,11 @@ public class ItineraryController {
      * @param title The title of an itinerary
      * @return the Itinerary researched
      */
-    @PostMapping("/search/itinerary/{title}")
+    @PostMapping("/search/itinerary{title}")
     public Optional<Itinerary> searchPoint(@PathParam(("title"))String title) {
         return itineraries.findByDescription(title);
     }
-    @GetMapping(value ="/get/itinerary")
+    @GetMapping(value ="/get/itinerarys")
     public ResponseEntity<Object> getItineraries(){
         return new ResponseEntity<>(itineraries.findAll(), HttpStatus.OK);
     }

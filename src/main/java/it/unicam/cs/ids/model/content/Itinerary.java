@@ -6,10 +6,8 @@ import it.unicam.cs.ids.model.point.Restaurant;
 import it.unicam.cs.ids.model.point.Square;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,36 +20,32 @@ import java.util.List;
 public class Itinerary extends Content {
 
     /** The list of points in the itinerary. */
-    @ManyToMany(targetEntity = Point.class)
-    private List<Point> points;
+
+    @ElementCollection
+    @CollectionTable(name = "itinerary_points", joinColumns = @JoinColumn(name = "itinerary_id"))
+    @Column(name = "point_id")
+    private List<Integer> points;
 
     /**
      * Constructor to create an itinerary with an author, text description, and a unique identifier.
      *
-     * @param author The author of the itinerary.
      * @param text The textual description of the itinerary.
-     * @param id The unique identifier for the itinerary.
      */
-    public Itinerary(BaseUser author, String text, int id) {
-        super(author, text, id);
-        this.points = new ArrayList<>();
-    }
+
 
     /**
      * Constructor to create an itinerary with an author, text description, a list of points, and a unique identifier.
      *
-     * @param author The author of the itinerary.
      * @param text The textual description of the itinerary.
      * @param points The list of points in the itinerary.
-     * @param id The unique identifier for the itinerary.
      */
-    public Itinerary(BaseUser author, String text, List<Point> points, int id) {
-        super(author, text, id);
+    public Itinerary(String text, List<Integer> points) {
+        super(text);
         this.points = points;
     }
 
     public Itinerary() {
-        super(null,null,-1);
+        super(null);
     }
 
     /**
@@ -59,7 +53,7 @@ public class Itinerary extends Content {
      *
      * @return The list of points in the itinerary.
      */
-    public List<Point> getPoints() {
+    public List<Integer> getPoints() {
         return this.points;
     }
 
@@ -68,7 +62,7 @@ public class Itinerary extends Content {
      *
      * @param point The point to be added to the itinerary.
      */
-    public void addPoint(Point point) {
+    public void addPoint(Integer point) {
         this.points.add(point);
     }
 }
