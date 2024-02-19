@@ -22,27 +22,22 @@ public class Festival extends Itinerary{
     @Column(name="endDate")
     private  Date endDate;
 
-    /** the description of a festival. */
-    private String information;
-
     /**
      * Constructor to create an itinerary with an author, text description, and a unique identifier.
      *
-     * @param text The unique name of the festival.
+     * @param name The unique name of the festival.
      * @param points the list of points related to a festival.
-     * @param information the description of a festival.
+     * @param description the description of a festival.
      * @param start  the starting date of a festival.
      * @param end  the ending date of a festival.
      */
-    public Festival(String text, List<Integer> points, Date start, Date end, String information) {
-        super(text, points);
+    public Festival(String name, List<Integer> points, Date start, Date end, String description) {
+        super(name, points , description);
         this.startDate = start;
         this.endDate =end;
-        this.information = information;
     }
 
     public Festival() {
-
     }
 
     /**
@@ -60,11 +55,4 @@ public class Festival extends Itinerary{
         return this.endDate;
     }
 
-    /**
-     * Get festival information
-     * @return the festival information
-     */
-    public String getInformation() {
-        return information;
-    }
 }

@@ -8,9 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 
 public interface FestivalRepository extends JpaRepository<Festival,Integer> {
-    @Query("SELECT COUNT(f) FROM Festival f WHERE f.name = :text")
-    int countFestivalsWithDescription(@Param("text") String text);
+    @Query("SELECT COUNT(f) FROM Festival f WHERE f.name = :name")
+    int countFestivalsWithDescription(@Param("name") String text);
 
-    @Query("SELECT f.id FROM Festival f WHERE f.name = :text")
-    int findFestivalIdByDescription(@Param("text") String text);
+    @Query("SELECT f.id FROM Festival f WHERE f.name = :name")
+    int findFestivalIdByDescription(@Param("name") String text);
 }

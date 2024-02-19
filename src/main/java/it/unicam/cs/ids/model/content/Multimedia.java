@@ -13,21 +13,21 @@ import jakarta.persistence.Entity;
 public class Multimedia extends Content {
     @Column
     private boolean signaled;
-    private String photo;
+    private String file;
 
     /**
      * Constructs a new Content object with the specified user, photo, and description.
      *
-     * @param photo       the file path or URL of the photo
+     * @param file the file path or URL of the photo
      */
-    public Multimedia(String text , String photo) {
-        super(text);
-        this.photo = photo;
+    public Multimedia(String name , String file, String description) {
+        super(name,description);
+        this.file = file;
         this.signaled =false;
     }
 
     public Multimedia() {
-        super(null);
+        super(null,"");
     }
 
     /**
@@ -36,7 +36,7 @@ public class Multimedia extends Content {
      * @return the file in a string format
      */
     public String getFile() {
-        return this.photo;
+        return this.file;
     }
 
     public boolean getSignaled() {

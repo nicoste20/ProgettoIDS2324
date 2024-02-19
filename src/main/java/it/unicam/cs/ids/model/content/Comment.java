@@ -16,16 +16,16 @@ public class Comment extends Content {
     /**
      * Constructs a new Contest object with the specified parameters.
      *
-     * @param text  The text of a comment
+     * @param name  The text of a comment
      * @param content The content associated with a comment.
      */
-    public Comment(String text,Content content) {
-        super(text);
+    public Comment(String name,Content content, String description) {
+        super(name,description);
         this.content = content;
     }
 
     public Comment() {
-        super(null);
+        super(null, null);
     }
 
     /**

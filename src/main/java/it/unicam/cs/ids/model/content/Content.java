@@ -18,6 +18,8 @@ public abstract class Content {
     /** The textual description of the content. */
     private String name;
 
+    private String description;
+
     /** Flag indicating whether the content is validated or not. */
     private boolean isValidate;
 
@@ -29,11 +31,12 @@ public abstract class Content {
     /**
      * Constructor to initialize a Content object.
      *
-     * @param text The textual description of the content.
+     * @param name The textual description of the content.
      */
-    public Content(String name) {
+    public Content(String name, String description) {
         this.name = name;
         this.isValidate = false;
+        this.description = description;
     }
 
     public Content() {
@@ -101,6 +104,14 @@ public abstract class Content {
      * @param description the new description
      */
     public void setName(String description){this.name =description;}
+
+    public String getDescription(){
+        return this.description;
+    }
+
+    public void setDescription(String description){
+        this.description = description;
+    }
 }
 
 

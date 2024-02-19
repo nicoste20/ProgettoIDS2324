@@ -4,6 +4,7 @@ import it.unicam.cs.ids.Exception.*;
 import it.unicam.cs.ids.controller.Repository.FestivalRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Festival;
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
@@ -36,10 +37,11 @@ public class FestivalController {
      * @return ResponseEntity with appropriate status and message
      */
     @PostMapping("/add/festival{userId}")
-    public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival, @PathParam(("userId")) int userId){
+    public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival, @PathParam(("userId")) Integer userId){
+        newfestival.setAuthor(userId);
         if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
             if (newfestival.getEndDate().after(new Date())) {
-                if (festivals.countFestivalsWithDescription(newfestival.getName()) > 0) {
+                if (festivals.countFestivalsWithDescription(newfestival.getName()) == 0) {
                     festivals.save(newfestival);
                     return new ResponseEntity<>("Festival created", HttpStatus.OK);
                 } else throw new FestivalNotFoundException();

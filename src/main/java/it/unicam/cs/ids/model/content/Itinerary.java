@@ -36,16 +36,16 @@ public class Itinerary extends Content {
     /**
      * Constructor to create an itinerary with an author, text description, a list of points, and a unique identifier.
      *
-     * @param text The textual description of the itinerary.
+     * @param name The textual description of the itinerary.
      * @param points The list of points in the itinerary.
      */
-    public Itinerary(String text, List<Integer> points) {
-        super(text);
+    public Itinerary(String name, List<Integer> points , String description) {
+        super(name,description);
         this.points = points;
     }
 
     public Itinerary() {
-        super(null);
+        super(null, "");
     }
 
     /**

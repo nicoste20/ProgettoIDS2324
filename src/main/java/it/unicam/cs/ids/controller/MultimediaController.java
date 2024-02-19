@@ -4,6 +4,7 @@ import it.unicam.cs.ids.Exception.MultimediaNotFoundException;
 import it.unicam.cs.ids.Exception.UserBadTypeException;
 import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
+import it.unicam.cs.ids.model.content.Content;
 import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
@@ -50,6 +51,7 @@ public class MultimediaController {
     @PostMapping("/add/multimedia{userId}")
     public ResponseEntity<Object> addContent(@RequestBody Multimedia content,@PathParam(("userId"))int userId) {
         BaseUser user = users.findById(userId).get();
+        content.setAuthor(userId);
         if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))) {
             if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)) {
                 addContentNoPending(content,userId);
@@ -97,22 +99,26 @@ public class MultimediaController {
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
 
-    //TODO:MODIFICA
     @RequestMapping(value="/validate/multimedia{choice}{id}{userId}", method = RequestMethod.PUT)
-    public void validateContent(@PathParam(("userId")) int userId, @PathParam(("choice")) boolean choice, @PathParam(("id")) int id) {
+    public ResponseEntity<Object> validateContent(@PathParam(("userId")) int userId, @PathParam(("choice")) boolean choice,
+                                                  @PathParam(("id")) int id) {
         if (users.existsById(userId)) {
-            IUserPlatform user = users.findById(userId).get();
-            if (user.equals(UserRole.Curator)){
+            BaseUser user = users.findById(userId).get();
+            if (user.getUserType().equals(UserRole.Curator)){
                 if (contentList.existsById(id)) {
                     if (choice) {
-                        contentList.findById(id).get().setValidation(true);
-                        //contentList.findById(id).get().getAuthor().incrementPostCount();
+                        Multimedia multimedia = contentList.findById(id).get();
+                        multimedia.setValidation(true);
+                        contentList.save(multimedia);
+                        return new ResponseEntity<>("Multimedia validated", HttpStatus.OK);
                     } else {
                         contentList.deleteById(id);
+                        return new ResponseEntity<>("Multimedia eliminated", HttpStatus.OK);
                     }
                 }else throw new MultimediaNotFoundException();
             }else throw new UserBadTypeException();
         }
+        return new ResponseEntity<>("Multimedia nota validate", HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -126,23 +132,27 @@ public class MultimediaController {
 
     /**
      * Update the description of a multimedia content
-     * @param text the new description
+     * @param description the new description
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
 
-    //TODO:MODIFICAAA
-    @RequestMapping(value="/modify/multimedia/{text}/{id}", method = RequestMethod.PUT)
-    public void modifyDesription(@PathParam("text") String text,@PathParam("id") int id){
+    //TODO:MODIFICA
+    @RequestMapping(value="/modify/multimedia/{description}/{id}", method = RequestMethod.PUT)
+    public void modifyDesription(@PathParam("description") String description,@PathParam("id") int id){
         if(contentList.existsById(id)){
-            IUserPlatform user =null;
-            //  IUserPlatform user = contentList.findById(id).get().getAuthor();
+            int userId = contentList.findById(id).get().getAuthor();
+            BaseUser user = users.findById(userId).get();
             if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))) {
                 if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)) {
-                    this.contentList.findById(id).get().setName(text);
+                    Multimedia x = contentList.findById(id).get();
+                    x.setDescription(description);
+                    contentList.save(x);
                 } else {
-                    this.contentList.findById(id).get().setName(text);
-                    this.contentList.findById(id).get().setValidation(false);
+                    Multimedia x = contentList.findById(id).get();
+                    x.setDescription(description);
+                    x.setValidation(false);
+                    contentList.save(x);
                 }
             }else throw new UserBadTypeException();
         }else throw new MultimediaNotFoundException();
