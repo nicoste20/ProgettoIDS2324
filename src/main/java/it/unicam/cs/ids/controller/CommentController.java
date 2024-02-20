@@ -35,8 +35,8 @@ public class CommentController {
      * @param comment the comment that we want to add
      * @param userId the user that wants to add a comment
      */
-    @PostMapping("/add/comment/{id}")
-    public void addComment(@RequestBody Comment comment , @PathParam("id") int userId) {
+    @PostMapping("/add/comment{userId}")
+    public void addComment(@RequestBody Comment comment , @PathParam("userId") int userId) {
         if(users.existsById(userId)){
             BaseUser user = users.findById(userId).get();
             if (user.getUserType().equals(UserRole.Contributor) || user.getUserType().equals(UserRole.TouristAuthorized)) {
@@ -75,23 +75,25 @@ public class CommentController {
      * @param userId   The user performing the validation.
      * @param commentId  The Point to be validated or removed.
      */
-    @PutMapping("/validate/comment/{userId}/{commentId}")
+    @PutMapping("/validate/comment{userId}{commentId}")
     public void validateComment(@RequestBody boolean choice,@PathParam("userId") int userId, @PathParam("userId")
     int commentId) {
         if(users.existsById(userId)) {
             BaseUser curator = this.users.findById(userId).get();
             if(curator.getUserType().equals(UserRole.Curator)) {
                 if(comments.existsById(commentId)){
-                    if (choice)
-                        this.comments.findById(commentId).get().setValidation(true);
-                    else
+                    if (choice) {
+                        Comment x= comments.findById(commentId).get();
+                        x.setValidation(true);
+                        comments.save(x);
+                    }else
                         this.comments.deleteById(commentId);
                 }
             }
         }
     }
 
-    @GetMapping(value ="/get/comment")
+    @GetMapping(value ="/get/comments")
     public ResponseEntity<Object> getComment(){
         return new ResponseEntity<>(comments.findAll(), HttpStatus.OK);
     }

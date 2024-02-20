@@ -1,11 +1,10 @@
 package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.Exception.UserBadTypeException;
-import it.unicam.cs.ids.Exception.UserNotInException;
+import it.unicam.cs.ids.Exception.UserNotExistException;
 import it.unicam.cs.ids.controller.Repository.ItineraryRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Itinerary;
-import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
@@ -57,15 +56,13 @@ public class ItineraryController {
                 itinerary.setAuthor(userId);
                 if (user.getUserType().equals(UserRole.Contributor)) {
                     this.addWithPending(itinerary);
-                    return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
                 }
                 else {
                     this.addWithoutPending(itinerary);
-                    return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
-
                 }
+                return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
             }else throw new UserBadTypeException();
-        }else throw new UserNotInException();
+        }else throw new UserNotExistException();
     }
 
     /**

@@ -19,8 +19,8 @@ public class BaseUser implements IUserPlatform {
     private String password;
     @Column(unique = true)
     private String email;
-
     private int postCount;
+
     /**
      * Constructs a new BaseUser object with the specified parameters.
      *
@@ -62,7 +62,6 @@ public class BaseUser implements IUserPlatform {
     public UserRole getUserType() {
         return this.userRole;
     }
-
 
     /**
      * {@inheritDoc}

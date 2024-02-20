@@ -15,8 +15,8 @@ public class UserExceptionController {
     public ResponseEntity<Object> exception(UserAlreadyInException exception){
         return new ResponseEntity<>("User already in", HttpStatus.FOUND);
     }
-    @ExceptionHandler(value=UserNotInException.class)
-    public ResponseEntity<Object> exception(UserNotInException exception){
+    @ExceptionHandler(value= UserNotExistException.class)
+    public ResponseEntity<Object> exception(UserNotExistException exception){
         return new ResponseEntity<>("User not in", HttpStatus.NOT_FOUND);
     }
 }

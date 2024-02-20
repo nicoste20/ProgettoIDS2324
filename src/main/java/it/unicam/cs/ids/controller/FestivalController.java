@@ -55,7 +55,7 @@ public class FestivalController {
      * @param title the festival's title
      * @return ResponseEntity with appropriate status and message.
      */
-    @RequestMapping(value = "/del/festival/{title}/{userId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/del/festival{title}{userId}", method = RequestMethod.DELETE)
     public ResponseEntity<Object>  removeFestival(@PathParam(("title")) String title, @PathParam(("userId")) int userId){
         if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
             if (festivals.countFestivalsWithDescription(title) > 0) {
@@ -78,7 +78,7 @@ public class FestivalController {
             return festivals.findById(id).get().getEndDate().after(new Date());
         } throw new FestivalNotFoundException();
     }
-    @GetMapping(value ="/get/festival")
+    @GetMapping(value ="/get/festivals")
     public ResponseEntity<Object> getFestival(){
         return new ResponseEntity<>(festivals.findAll(), HttpStatus.OK);
     }

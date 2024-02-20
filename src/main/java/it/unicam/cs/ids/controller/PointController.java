@@ -9,7 +9,6 @@ import it.unicam.cs.ids.model.point.GreenZone;
 import it.unicam.cs.ids.model.point.Monument;
 import it.unicam.cs.ids.model.point.Restaurant;
 import it.unicam.cs.ids.model.point.Square;
-import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import it.unicam.cs.ids.util.Point2D;
 import jakarta.websocket.server.PathParam;
@@ -73,15 +72,13 @@ public class PointController {
         if (points.isAlreadyIn(point.getX(), point.getY()) == 0) {
             points2D.save(new Point2D(point.getX(), point.getY()));
             if (users.existsById(userId)) {
-                //int user = users.findById(userId).get();
                 point.setAuthor(userId);
                 if (users.findById(userId).get().getUserType().equals(UserRole.Contributor)) {
                     this.addWithPending(point);
-                    return new ResponseEntity<>("Point created", HttpStatus.OK);
                 } else {
                     this.addWithoutPending(point);
-                    return new ResponseEntity<>("Point created", HttpStatus.OK);
                 }
+                return new ResponseEntity<>("Point created", HttpStatus.OK);
             } else throw new UserBadTypeException();
         }else throw new PointAlreadyInException();
     }

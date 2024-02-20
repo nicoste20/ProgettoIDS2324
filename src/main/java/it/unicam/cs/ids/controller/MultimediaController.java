@@ -69,13 +69,6 @@ public class MultimediaController {
      */
     public void addContentNoPending(Multimedia content,int userId) {
         content.setValidation(true);
-        //TODO: MODIFICA QUESTA PARTE SEGUENDO QUANTO FATTO NEL POINT CONTROLLER
-        /*
-        BaseUser author= users.findById(content.getAuthor());
-        users.findById(author).get().incrementPostCount();
-        users.save(author);
-
-         */
         contentList.save(content);
     }
 

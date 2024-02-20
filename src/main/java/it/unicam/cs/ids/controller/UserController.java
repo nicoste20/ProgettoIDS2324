@@ -1,9 +1,8 @@
 package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.Exception.UserAlreadyInException;
-import it.unicam.cs.ids.Exception.UserNotInException;
+import it.unicam.cs.ids.Exception.UserNotExistException;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
-import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
@@ -24,9 +23,7 @@ public class UserController {
     @PostMapping("/addCurator/user{userEmail}")
     public ResponseEntity<Object> addCurator(@RequestBody String managerEmail, @PathParam("userEmail") String email) {
         if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
-
-            int id= userRepository.selectByEmail(email);
-            BaseUser x = userRepository.findById(id).get();
+            BaseUser x = getUserByEmail(email);
             x.setRole(UserRole.Curator);
             userRepository.save(x);
             return new ResponseEntity<>("Curator added", HttpStatus.OK);
@@ -36,19 +33,25 @@ public class UserController {
     @PostMapping("/addAnimator/user{userEmail}")
     public ResponseEntity<Object> addAnimator(@RequestBody String managerEmail, @PathParam("userEmail") String email) {
         if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
-            int id= userRepository.selectByEmail(email);
-            BaseUser x = userRepository.findById(id).get();
+            BaseUser x = getUserByEmail(email);
             x.setRole(UserRole.Animator);
             userRepository.save(x);
             return new ResponseEntity<>("Animator added", HttpStatus.OK);
         }else throw new UserAlreadyInException();
     }
 
+    private BaseUser getUserByEmail(String email){
+        int id= userRepository.selectByEmail(email);
+        BaseUser x = userRepository.findById(id).get();
+        return x;
+    }
+
     @PostMapping("/updateContributor/user{contributorEmail}")
     public void changeRole(@RequestBody String managerEmail, @PathParam("contributorEmail") String email) {
         if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
-            int id= userRepository.selectByEmail(email);
-            userRepository.findById(id).get().setRole(UserRole.ContributorAuthorized);
+            BaseUser x = getUserByEmail(email);
+            x.setRole(UserRole.ContributorAuthorized);
+            userRepository.save(x);
         }else throw new UserAlreadyInException();
     }
 
@@ -71,7 +74,7 @@ public class UserController {
             int id= userRepository.selectByEmail(email);
             userRepository.deleteById(id);
             return new ResponseEntity<>("User deleted", HttpStatus.OK);
-        }else throw new UserNotInException();
+        }else throw new UserNotExistException();
     }
 
 }

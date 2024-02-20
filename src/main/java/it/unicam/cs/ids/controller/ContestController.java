@@ -4,6 +4,7 @@ import it.unicam.cs.ids.Exception.*;
 import it.unicam.cs.ids.controller.Repository.ContestRespository;
 import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
+import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.contest.Contest;
 import it.unicam.cs.ids.model.contest.IContest;
 import it.unicam.cs.ids.model.user.UserRole;
@@ -45,7 +46,7 @@ public class ContestController {
      *
      * @param contest The contest to be added.
      */
-    @PostMapping("/add/contest/{userId}")
+    @PostMapping("/add/contest{userId}")
     public void addContest(@RequestBody Contest contest, @PathParam(("userId")) int userId) {
         if (!(contestList.existsById(contest.getID()))) {
             if (users.existsById(userId) && users.findById(userId).get().getUserType().equals(UserRole.Animator)) {
@@ -61,7 +62,7 @@ public class ContestController {
      *
      * @param contestId The ID of the contest to be removed.
      */
-    @DeleteMapping("/delete/contest/{userId}")
+    @DeleteMapping("/delete/contest{userId}")
     public void removeContest(@RequestBody int contestId, @PathParam(("userId")) int userId) {
         if ((contestList.existsById(contestId))) {
             if (users.existsById(userId) && users.findById(userId).get().getUserType().equals(UserRole.Animator)) {
@@ -79,12 +80,15 @@ public class ContestController {
      * @throws ContestNotExistException If the contest does not exist.
      * @throws UserBadTypeException  If the user is not correct.
      */
-    @RequestMapping(value = "/invite/contest/{contestId}/{userId}", method = RequestMethod.PUT)
-    public void invite(@PathParam(("contestId")) int contestId, @PathParam(("userId")) int userId) {
+    @RequestMapping(value = "/invite/contest{contestId}{userId}{animatorId}", method = RequestMethod.PUT)
+    public void invite(@PathParam(("contestId")) int contestId, @PathParam(("userId")) int userId,@PathParam(("animatorId")) int animatorId) {
         if (contestList.existsById(contestId)) {
             if (users.existsById(userId)) {
                 if (contestList.findById(contestId).get().isPrivate()) {
-                    contestList.findById(contestId).get().addAllowedUsers(users.findById(userId).get());
+                    //TODO:CAMBIARE NEL CONTEST E SALVARE SOLO ID UTENTE
+                    Contest x = contestList.findById(contestId).get();
+                    x.addAllowedUsers(users.findById(userId).get());
+                    contestList.save(x);
                 }throw new UninvitableContestException();
             }
             throw new UserBadTypeException();
@@ -100,7 +104,7 @@ public class ContestController {
      * @throws MultimediaNotFoundException If the multimedia is not found.
      * @throws ContestNotExistException    If the contest does not exist.
      */
-    @RequestMapping(value = "/addMultimedia/contest/{contestId}/{multimediaId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/addMultimedia/contest{contestId}{multimediaId}", method = RequestMethod.POST)
     public void addMultimedia(@PathParam(("multimediaId")) int multimediaId, @PathParam(("contestId")) int contestId) {
         if (contestList.existsById(contestId)) {
             if (multimediaRepository.existsById(multimediaId)) {
@@ -119,7 +123,7 @@ public class ContestController {
      * @param animatorId   The ID of the user performing the validation.
      * @param choice       The choice for validation.
      */
-    @RequestMapping(value = "/validateMultimedia/contest/{contestId}/{multimediaId}/{animatorId}/{choice}", method = RequestMethod.POST)
+    @RequestMapping(value = "/validateMultimedia/contest{contestId}{multimediaId}{animatorId}{choice}", method = RequestMethod.POST)
     public void validateMultimedia(@PathParam(("multimediaId")) int multimediaId, @PathParam(("contestId")) int contestId, @PathParam(("animatorId")) int animatorId, @PathParam(("choice")) boolean choice) {
         if (users.findById(animatorId).get().getUserType().equals(UserRole.Animator) && this.contestList.existsById(contestId)) {
             if (this.contestList.findById(contestId).get().getMultimediaList().contains(multimediaId)) {
@@ -138,7 +142,7 @@ public class ContestController {
      * @throws MultimediaNotFoundException If the multimedia is not found.
      * @throws ContestNotExistException    If the contest does not exist.
      */
-    @RequestMapping(value = "/addMutlimediaPending/contest/{contestId}/{multimediaId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/addMutlimediaPending/contest{contestId}{multimediaId}", method = RequestMethod.POST)
     public void addWithPending(@PathParam(("multimediaId")) int multimediaId, @PathParam(("contestId")) int contestId) {
         if (contestList.existsById(contestId)) {
             if (multimediaRepository.existsById(multimediaId)) {
@@ -156,12 +160,12 @@ public class ContestController {
      * @param contestName The name of the contest to search for.
      * @return An Optional containing the found contest, if any.
      */
-    @RequestMapping(value = "/search/contest/{contestName}", method = RequestMethod.POST)
+    @RequestMapping(value = "/search/contest{contestName}", method = RequestMethod.POST)
     public Optional<IContest> searchContest(@PathParam(("contestName")) String contestName) {
         return Optional.of(contestList.findAllByTitle(contestName));
     }
 
-    @GetMapping(value ="/get/contest")
+    @GetMapping(value ="/get/contests")
     public ResponseEntity<Object> getContest(){
         return new ResponseEntity<>(contestList.findAll(), HttpStatus.OK);
     }
