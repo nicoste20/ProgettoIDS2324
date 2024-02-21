@@ -188,7 +188,9 @@ public class MultimediaController {
                 IUserPlatform user = users.findById(userId).get();
                 if (!(user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.PlatformManager)
                         || user.getUserType().equals(UserRole.Animator))){
-                    this.contentList.findById(id).get().setSignaled(true);
+                    Multimedia x = contentList.findById(id).get();
+                    x.setSignaled(true);
+                    contentList.save(x);
                     return new ResponseEntity<>("Multimedia signaled",HttpStatus.OK);
                 }else throw new UserBadTypeException();
             }else throw new MultimediaNotFoundException();

@@ -1,18 +1,5 @@
 package it.unicam.cs.ids.controllerTest;
 
-import it.unicam.cs.ids.controller.ContestController;
-import it.unicam.cs.ids.model.content.Multimedia;
-import it.unicam.cs.ids.model.contest.Contest;
-import it.unicam.cs.ids.model.contest.IContest;
-import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
-import it.unicam.cs.ids.model.user.UserRole;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
