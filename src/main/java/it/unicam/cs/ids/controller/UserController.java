@@ -11,16 +11,31 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
+/**
+ * Controller class for managing users.
+ */
 @RestController
+@RequestMapping("/users")
 public class UserController {
     UserRepository userRepository;
 
+    /**
+     * Constructs a new UserController with the specified UserRepository.
+     * @param userRepository The UserRepository to be used.
+     */
     @Autowired
     public UserController(UserRepository userRepository){
         this.userRepository = userRepository;
     }
 
-    @PostMapping("/addCurator/user{userEmail}")
+    /**
+     * Adds a user as a curator.
+     * @param managerEmail The email of the manager authorizing the action.
+     * @param email        The email of the user to be added as a curator.
+     * @return A ResponseEntity with the appropriate message and status code.
+     */
+    @PostMapping("/addCurator{userEmail}")
     public ResponseEntity<Object> addCurator(@RequestBody String managerEmail, @PathParam("userEmail") String email) {
         if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
             BaseUser x = getUserByEmail(email);
@@ -30,7 +45,13 @@ public class UserController {
         }else throw new UserAlreadyInException();
     }
 
-    @PostMapping("/addAnimator/user{userEmail}")
+    /**
+     * Adds a user as an animator.
+     * @param managerEmail The email of the manager authorizing the action.
+     * @param email        The email of the user to be added as an animator.
+     * @return A ResponseEntity with the appropriate message and status code.
+     */
+    @PostMapping("/addAnimator{userEmail}")
     public ResponseEntity<Object> addAnimator(@RequestBody String managerEmail, @PathParam("userEmail") String email) {
         if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
             BaseUser x = getUserByEmail(email);
@@ -40,13 +61,12 @@ public class UserController {
         }else throw new UserAlreadyInException();
     }
 
-    private BaseUser getUserByEmail(String email){
-        int id= userRepository.selectByEmail(email);
-        BaseUser x = userRepository.findById(id).get();
-        return x;
-    }
-
-    @PostMapping("/updateContributor/user{contributorEmail}")
+    /**
+     * Changes the role of a user to a contributor authorized.
+     * @param managerEmail The email of the manager authorizing the action.
+     * @param email        The email of the user whose role is to be changed.
+     */
+    @PostMapping("/updateContributor{contributorEmail}")
     public void changeRole(@RequestBody String managerEmail, @PathParam("contributorEmail") String email) {
         if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
             BaseUser x = getUserByEmail(email);
@@ -55,12 +75,21 @@ public class UserController {
         }else throw new UserAlreadyInException();
     }
 
-    @GetMapping(value ="/get/users")
+    /**
+     * Retrieves all users.
+     * @return A ResponseEntity containing a list of all users and the appropriate status code.
+     */
+    @GetMapping(value ="/getAll")
     public ResponseEntity<Object> getUsers(){
         return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping("/add/user")
+    /**
+     * Adds a new user.
+     * @param user The user to be added.
+     * @return A ResponseEntity with the appropriate message and status code.
+     */
+    @PostMapping("/add")
     public ResponseEntity<Object> addUser(@RequestBody BaseUser user){
         if(userRepository.findByEmail(user.getEmail())==0){
             userRepository.save(user);
@@ -68,7 +97,13 @@ public class UserController {
         }else throw new UserAlreadyInException();
     }
 
-    @DeleteMapping("/delete/user")
+
+    /**
+     * Deletes a user.
+     * @param email The email of the user to be deleted.
+     * @return A ResponseEntity with the appropriate message and status code.
+     */
+    @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteUser(@RequestBody String email){
         if(userRepository.findByEmail(email)!=0){
             int id= userRepository.selectByEmail(email);
@@ -77,4 +112,14 @@ public class UserController {
         }else throw new UserNotExistException();
     }
 
+    /**
+     * Return the user instance by the unique email
+     * @param email the email of the user
+     * @return the user corresponding to the email given
+     */
+    private BaseUser getUserByEmail(String email){
+        int id= userRepository.selectByEmail(email);
+        BaseUser x = userRepository.findById(id).get();
+        return x;
+    }
 }

@@ -1,13 +1,11 @@
 package it.unicam.cs.ids.model.content;
 
-import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
 /**
- * Represents a content item with user information, a photo, a description, and a list of comments.
- * Implements the  IContent interface.
+ * Represents a multimedia content item with user information, a photo, a description, and a signaling status.
+ * This class extends the Content class and inherits its properties.
  */
 @Entity
 public class Multimedia extends Content {
@@ -16,9 +14,11 @@ public class Multimedia extends Content {
     private String file;
 
     /**
-     * Constructs a new Content object with the specified user, photo, and description.
+     * Constructs a new Multimedia object with the specified name, file path or URL, and description.
      *
-     * @param file the file path or URL of the photo
+     * @param name        The name of the multimedia content.
+     * @param file        The file path or URL of the photo associated with the content.
+     * @param description The description of the multimedia content.
      */
     public Multimedia(String name , String file, String description) {
         super(name,description);
@@ -26,23 +26,33 @@ public class Multimedia extends Content {
         this.signaled =false;
     }
 
+    /**
+     * Default constructor.
+     */
     public Multimedia() {
         super(null,"");
     }
 
     /**
-     * Gets the file in a string format of the photo associated with the content.
-     *
-     * @return the file in a string format
+     * Gets the file path of the photo associated with the content.
+     * @return the file path
      */
     public String getFile() {
         return this.file;
     }
 
+    /**
+     * Checks if the multimedia content has been signaled.
+     * @return True if the multimedia content has been signaled, false otherwise.
+     */
     public boolean getSignaled() {
         return signaled;
     }
 
+    /**
+     * Sets the signaling status of the multimedia content.
+     * @param signaled signaled the signaling status to be set.
+     */
     public void setSignaled(boolean signaled) {
         this.signaled = signaled;
     }

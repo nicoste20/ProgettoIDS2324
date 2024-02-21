@@ -15,7 +15,6 @@ public class Square extends Point {
 
     /**
      * Constructs a Square object with the specified coordinates, type, name, and historical information.
-     *
      * @param x the x-coordinate of the square
      * @param y the y-coordinate of the square
      * @param type the type of the square (inherited from superclass)
@@ -32,7 +31,6 @@ public class Square extends Point {
      */
     public Square() {
     }
-
 
     /**
      * Retrieves the historical information about the square.

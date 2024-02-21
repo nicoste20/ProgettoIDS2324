@@ -4,8 +4,6 @@ import it.unicam.cs.ids.Exception.*;
 import it.unicam.cs.ids.controller.Repository.FestivalRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Festival;
-import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,14 +14,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 
 /**
- * The  Festival controller class manages the addition and removing of Festivals,
- * It interacts with instances of {@link UserRole}, {@link IUserPlatform}
+ * The FestivalController class manages the addition and removal of festivals.
  */
 @RestController
+@RequestMapping("/festivals")
 public class FestivalController {
     private final FestivalRepository festivals;
     private final UserRepository users;
 
+    /**
+     * Constructs a new FestivalController with the specified repositories.
+     * @param festivals The repository for Festival objects.
+     * @param users     The repository for User objects.
+     */
     @Autowired
     public FestivalController(FestivalRepository festivals, UserRepository users) {
         this.festivals = festivals;
@@ -31,12 +34,12 @@ public class FestivalController {
     }
 
     /**
-     * Adds a Festival to the list
-     *
-     * @param newfestival The Festival to be added.
-     * @return ResponseEntity with appropriate status and message
+     * Adds a festival.
+     * @param newfestival The festival to be added.
+     * @param userId      The ID of the user performing the action.
+     * @return A response entity indicating the success of the operation.
      */
-    @PostMapping("/add/festival{userId}")
+    @PostMapping("/add{userId}")
     public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival, @PathParam(("userId")) Integer userId){
         newfestival.setAuthor(userId);
         if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
@@ -50,12 +53,12 @@ public class FestivalController {
     }
 
     /**
-     * Remove a specific Festival searched by the title
-     *
-     * @param title the festival's title
-     * @return ResponseEntity with appropriate status and message.
+     * Removes a festival.
+     * @param title  The title of the festival to remove.
+     * @param userId The ID of the user performing the action.
+     * @return A response entity indicating the success of the operation.
      */
-    @RequestMapping(value = "/del/festival{title}{userId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete{title}{userId}", method = RequestMethod.DELETE)
     public ResponseEntity<Object>  removeFestival(@PathParam(("title")) String title, @PathParam(("userId")) int userId){
         if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
             if (festivals.countFestivalsWithDescription(title) > 0) {
@@ -68,7 +71,6 @@ public class FestivalController {
 
     /**
      * Gets if the festival is active
-     *
      * @param text The text description of the festival.
      * @return true if the Festival is active, false otherwise.
      */
@@ -78,7 +80,12 @@ public class FestivalController {
             return festivals.findById(id).get().getEndDate().after(new Date());
         } throw new FestivalNotFoundException();
     }
-    @GetMapping(value ="/get/festivals")
+
+    /**
+     * Retrieves all festivals.
+     * @return A response entity containing all festivals.
+     */
+    @GetMapping(value ="/getAll")
     public ResponseEntity<Object> getFestival(){
         return new ResponseEntity<>(festivals.findAll(), HttpStatus.OK);
     }

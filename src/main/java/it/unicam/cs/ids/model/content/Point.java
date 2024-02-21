@@ -8,46 +8,32 @@ import java.util.List;
 
 /**
  * Represents a point, a type of content that includes coordinates and a specific type.
- * Extends the base class Content.
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Point implements Cloneable{
 
-    public void setAuthor(int author) {
-        this.author = author;
-    }
-
     private int author;
-
-    /** The textual description of the content. */
     @Column(name="name", unique = true)
     private String name;
-
-    /** Flag indicating whether the content is validated or not. */
     @Column(name="isValidate")
     private boolean isValidate;
-
-    /** The unique identifier for the content. */
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
-    /** The type of the point. */
     @Column(name="type")
     private String type;
-
-    /** The coordinates of the point in 2D space. */
-    //@Column(name="x")
     private Float x;
-    // @Column(name="y")
     private Float y;
     @OneToMany
     private List<Multimedia> multimediaList;
+
     /**
      * Constructor to create a point with coordinates, type, author, text description, and a unique identifier.
-     *
-     * @param type   The type of the point.
+     * @param x the x-coordinate of the point
+     * @param y the y-coordinate of the point
      * @param name   The textual description of the point.
+     * @param type the type of the point
      */
     public Point(Float x , Float y, String type, String name) {
         this.name=name;
@@ -56,51 +42,74 @@ public abstract class Point implements Cloneable{
         this.y = y;
         this.type = type;
         this.multimediaList=new ArrayList<Multimedia>();
-        //new Point2D(x,y);
     }
 
+    /**
+     * Default constructor.
+     */
     public Point() {
 
     }
 
     /**
-     * Getter for the coordinates of the point.
-     *
-     * @return The coordinates of the point in 2D space.
+     * Getter for the x-coordinate of the point.
+     * @return The x-coordinate of the point.
      */
-
     public Float getX() {
         return x;
     }
 
+    /**
+     * Getter for the y-coordinate of the point.
+     * @return The y-coordinate of the point.
+     */
     public Float getY() {
         return y;
     }
 
     /**
      * Getter for the type of the point.
-     *
      * @return The type of the point.
      */
     public String getType() {
         return this.type;
     }
 
+    /**
+     * Adds a multimedia to the list associated with this point.
+     * @param multimedia The multimedia to add.
+     */
     public void addMultimedia(Multimedia multimedia){
         this.multimediaList.add(multimedia);
     }
 
+    /**
+     * Retrieves the list of multimedia associated with this point.
+     * @return The list of multimedia associated with this point.
+     */
     public List<Multimedia> getMultimediaList(){
         return this.multimediaList;
     }
+
+    /**
+     * Setter for the author of the point.
+     * @param author The author of the point.
+     */
+    public void setAuthor(int author) {
+        this.author = author;
+    }
+
+    /**
+     * Getter for the author of the point.
+     * @return The author of the point.
+     */
     public int getAuthor() {
         return author;
     }
 
     /**
-     * Getter for the textual description of the content.
-     *
-     * @return The textual description of the content.
+     * Getter for the name of the point.
+     * @return The name of the point.
      */
     public String getName() {
         return name;
@@ -108,7 +117,6 @@ public abstract class Point implements Cloneable{
 
     /**
      * Getter for the validation status of the content.
-     *
      * @return True if the content is validated, false otherwise.
      */
     public boolean isValidate() {
@@ -116,27 +124,16 @@ public abstract class Point implements Cloneable{
     }
 
     /**
-     * Setter for updating the validation status of the content.
-     *
-     * @param val The new validation status to be set.
+     * Getter for the validation status of the content.
+     * @return True if the content is validated, false otherwise.
      */
     public void setValidation(boolean val) {
         this.isValidate = val;
     }
 
     /**
-     * Returns a string representation of the Content object.
-     *
-     * @return A string containing the author and description of the content.
-     */
-    public String toString() {
-        return this.author + " " + this.name;
-    }
-
-    /**
-     * Getter for the unique identifier of the content.
-     *
-     * @return The unique identifier of the content.
+     * Getter for the unique identifier of the point.
+     * @return The unique identifier of the point.
      */
     public int getId() {
         return this.id;
@@ -148,6 +145,10 @@ public abstract class Point implements Cloneable{
      */
     public void setName(String description){this.name =description;}
 
+    /**
+     * Abstract method to create a clone of the Point object.
+     * @return A clone of the Point object.
+     */
     @Override
     public abstract Point clone();
 }

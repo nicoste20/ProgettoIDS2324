@@ -19,7 +19,6 @@ public class Restaurant extends Point {
 
     /**
      * Constructs a Restaurant object with the specified coordinates, type, name, restaurant type, and opening hours.
-     *
      * @param x the x-coordinate of the restaurant
      * @param y the y-coordinate of the restaurant
      * @param typeR the type of the restaurant (inherited from superclass)
