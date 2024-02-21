@@ -1,5 +1,7 @@
 package it.unicam.cs.ids.controller;
 
+import it.unicam.cs.ids.Exception.UserBadTypeException;
+import it.unicam.cs.ids.Exception.UserNotExistException;
 import it.unicam.cs.ids.controller.Repository.CommentRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Comment;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * The  Comment controller class manages the addition and validation of a general comment
@@ -39,13 +43,14 @@ public class CommentController {
     public void addComment(@RequestBody Comment comment , @PathParam("userId") int userId) {
         if(users.existsById(userId)){
             BaseUser user = users.findById(userId).get();
+            comment.setAuthorId(userId);
             if (user.getUserType().equals(UserRole.Contributor) || user.getUserType().equals(UserRole.TouristAuthorized)) {
+                    this.addWithPending(comment);
+            }else {
                 if((user.getUserType().equals(UserRole.ContributorAuthorized) || user.getUserType().equals(UserRole.Curator)))
                     this.addWithoutPending(comment);
-                else
-                    this.addWithPending(comment);
             }
-        }
+        }else throw new UserNotExistException();
     }
 
     /**
@@ -93,9 +98,15 @@ public class CommentController {
         }
     }
 
-    @GetMapping(value ="/get/comments")
+    @GetMapping(value = "/get/comments")
     public ResponseEntity<Object> getComment(){
         return new ResponseEntity<>(comments.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get/comments{contentId}")
+    public ResponseEntity<Object> getComment(@PathParam("contentId") Integer contentId){
+        List<Comment> commentsWithContentId = comments.findByContentId(contentId);
+        return new ResponseEntity<>(commentsWithContentId, HttpStatus.OK);
     }
 }
 
