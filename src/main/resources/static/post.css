@@ -1,0 +1,62 @@
+.photo-grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra le immagini verticalmente */
+    gap: 70px;
+}
+
+.photo-row {
+    display: flex;
+    flex-direction: column; /* Visualizza le immagini in una colonna */
+    gap: 40px; /* Aumenta lo spazio tra le righe di immagini */
+}
+
+
+.photo-container {
+    flex: none;
+    position: relative;
+    overflow: hidden; /* Nasconde il testo che esce dai bordi del contenitore */
+    transition: transform 0.3s ease-in-out; /* Animazione per il movimento */
+    margin-bottom: 20px; /* Aggiunge del margine tra le immagini */
+    margin-top: 30px;
+    position: relative;
+}
+
+.photo-container:hover {
+    transform: scale(1.05); /* Ingrandisce leggermente l'immagine al passaggio del mouse */
+}
+
+.photo {
+    width: 100%;
+    height: auto; /* Consente all'immagine di mantenere le proporzioni originali */
+    object-fit: cover; /* Riempie completamente lo spazio disponibile mantenendo le proporzioni */
+    border-radius: 5px;
+    transition: transform 0.3s ease-in-out; /* Animazione per il movimento */
+}
+
+.btn-comment {
+    position: relative;
+    top: -10px; /* Riduci la distanza tra il bottone e l'immagine */
+    width: 10%;
+    height: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff;
+    color: #000;
+    border-radius: 5px;
+    padding: 10px 10px; /* Riduci il padding del bottone */
+    font-size: 20px; /* Riduci la dimensione del testo */
+}
+
+.btn-comment i {
+    font-size: 10em;
+    border: 4px;
+    border-color: #000
+
+}
+
+.btn-comment:hover {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
