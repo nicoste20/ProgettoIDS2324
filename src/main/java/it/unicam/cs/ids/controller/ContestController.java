@@ -46,12 +46,12 @@ public class ContestController {
      * @param contest The contest to be added.
      */
     @PostMapping("/add/contest{userId}")
-    public void addContest(@RequestBody Contest contest, @PathParam(("userId")) int userId) {
+    public ResponseEntity<Object> addContest(@RequestBody Contest contest, @PathParam(("userId")) int userId) {
         contest.setAuthor(userId);
         if (!(contestList.existsById(contest.getId()))) {
             if (users.existsById(userId) && users.findById(userId).get().getUserType().equals(UserRole.Animator)) {
                 this.contestList.save(contest);
-
+                return new ResponseEntity<>("Contest created", HttpStatus.OK);
             }else throw new UserBadTypeException();
         }else throw new ContestAlreadyInException();
     }
@@ -60,12 +60,14 @@ public class ContestController {
      * Removes a contest from the list of contests.
      *
      * @param contestId The ID of the contest to be removed.
+     * @return
      */
     @DeleteMapping("/delete/contest{userId}")
-    public void removeContest(@RequestBody int contestId, @PathParam(("userId")) int userId) {
+    public ResponseEntity<Object> removeContest(@RequestBody int contestId, @PathParam(("userId")) int userId) {
         if ((contestList.existsById(contestId))) {
             if (users.existsById(userId) && users.findById(userId).get().getUserType().equals(UserRole.Animator)) {
                 this.contestList.deleteById(contestId);
+                return new ResponseEntity<>("Contest deleted", HttpStatus.OK);
             }else throw new UserBadTypeException();
         }else throw new ContestNotExistException();
     }
@@ -75,17 +77,19 @@ public class ContestController {
      *
      * @param contestId The ID of the contest to invite the user to.
      * @param userId    The ID of the user to be invited.
+     * @return
      * @throws ContestNotExistException If the contest does not exist.
-     * @throws UserBadTypeException  If the user is not correct.
+     * @throws UserBadTypeException     If the user is not correct.
      */
     @RequestMapping(value = "/invite/contest{contestId}{userId}{animatorId}", method = RequestMethod.PUT)
-    public void invite(@PathParam(("contestId")) int contestId, @PathParam(("userId")) int userId,@PathParam(("animatorId")) int animatorId) {
+    public ResponseEntity<Object> invite(@PathParam(("contestId")) int contestId, @PathParam(("userId")) int userId, @PathParam(("animatorId")) int animatorId) {
         if (contestList.existsById(contestId)) {
             if (users.existsById(userId)) {
                 if (contestList.findById(contestId).get().isPrivacy()) {
                     Contest x = contestList.findById(contestId).get();
                     x.addAllowedUsers(userId);
                     contestList.save(x);
+                    return new ResponseEntity<>("User invited", HttpStatus.OK);
                 }else throw new UninvitableContestException();
             }else throw new UserBadTypeException();
         }else throw new ContestNotExistException();
@@ -99,21 +103,26 @@ public class ContestController {
      * @param contestId    The ID of the contest containing the multimedia.
      * @param animatorId   The ID of the user performing the validation.
      * @param choice       The choice for validation.
+     * @return
      */
     @RequestMapping(value = "/validateMultimedia/contest{contestId}{multimediaId}{animatorId}{choice}", method = RequestMethod.POST)
-    public void validateMultimedia(@PathParam(("multimediaId")) int multimediaId, @PathParam(("contestId")) int contestId, @PathParam(("animatorId")) int animatorId, @PathParam(("choice")) boolean choice) {
+    public ResponseEntity<Object> validateMultimedia(@PathParam(("multimediaId")) int multimediaId, @PathParam(("contestId")) int contestId, @PathParam(("animatorId")) int animatorId, @PathParam(("choice")) boolean choice) {
         if (users.findById(animatorId).get().getUserType().equals(UserRole.Animator) && this.contestList.existsById(contestId)) {
             if (this.contestList.findById(contestId).get().getMultimediaList().contains(multimediaId)) {
                 if (choice) {
+                    //TODO:Controllare
                     Contest x = contestList.findById(contestId).get();
                     Multimedia y = multimediaRepository.findById(multimediaId).get();
                     y.setValidation(true);
                     multimediaRepository.save(y);
                     x.addMultimedia(y.getId());
+                    contestList.findById(contestId).get().deleteMultimedia(multimediaId);
                     contestList.save(x);
+                    return new ResponseEntity<>("multimedia validated", HttpStatus.OK);
                 }
             }
         }else throw new UserBadTypeException();
+        return new ResponseEntity<>("Multimedia not validated", HttpStatus.OK);
     }
 
     /**
@@ -121,19 +130,22 @@ public class ContestController {
      *
      * @param multimediaId The ID of the multimedia to be added.
      * @param contestId    The ID of the contest to which multimedia is added.
+     * @return
      * @throws MultimediaNotFoundException If the multimedia is not found.
      * @throws ContestNotExistException    If the contest does not exist.
      */
     @RequestMapping(value = "/addMultimediaPending/contest{contestId}{multimediaId}", method = RequestMethod.POST)
-    public void addWithPending(@PathParam(("multimediaId")) int multimediaId, @PathParam(("contestId")) int contestId) {
+    public ResponseEntity<Object> addWithPending(@PathParam(("multimediaId")) int multimediaId, @PathParam(("contestId")) int contestId) {
         if (contestList.existsById(contestId)) {
             if (multimediaRepository.existsById(multimediaId)) {
+                //TODO:Controllare
                 Contest x = contestList.findById(contestId).get();
                 Multimedia y = multimediaRepository.findById(multimediaId).get();
                 y.setValidation(false);
                 multimediaRepository.save(y);
-                x.addMultimedia(y.getId());
+                x.addMultimedia(multimediaRepository.findById(multimediaId).get().getId());
                 contestList.save(x);
+                return new ResponseEntity<>("Multimedia added", HttpStatus.OK);
             }else throw new MultimediaNotFoundException();
         }else throw new ContestNotExistException();
     }

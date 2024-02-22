@@ -23,9 +23,8 @@ public class BaseUser implements IUserPlatform {
 
     /**
      * Constructs a new BaseUser object with the specified parameters.
-     *
      * @param id       The unique identifier of the user.
-     * @param role The role of the user represented by the {@link UserRole} enum.
+     * @param role     The role of the user represented by the {@link UserRole} enum.
      * @param name     The first name of the user.
      * @param surname  The last name of the user.
      * @param username The username of the user.
@@ -43,6 +42,9 @@ public class BaseUser implements IUserPlatform {
         this.postCount=0;
     }
 
+    /**
+     * Default constructor for BaseUser class.
+     */
     public BaseUser() {
 
     }

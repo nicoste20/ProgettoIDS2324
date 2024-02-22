@@ -60,6 +60,5 @@ public class Monument extends Point {
     @Override
     public Monument clone() {
         return new Monument(this.getX(), this.getY(),super.getName(), super.getType(), this.getInaugurationDate(), this.getStory());
-
     }
 }

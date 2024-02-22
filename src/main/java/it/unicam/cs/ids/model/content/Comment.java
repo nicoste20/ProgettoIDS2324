@@ -1,6 +1,5 @@
 package it.unicam.cs.ids.model.content;
 
-import it.unicam.cs.ids.model.user.BaseUser;
 import jakarta.persistence.*;
 
 /**
@@ -11,11 +10,8 @@ import jakarta.persistence.*;
 public class Comment{
 
     private boolean isValidate;
-
     private int contentId;
-
     private int authorId;
-
     private String comment;
 
     @Id
@@ -25,8 +21,8 @@ public class Comment{
     /**
      * Constructs a new Contest object with the specified parameters.
      *
-     * @param comment  The text of a comment
-     * @param contentId The content associated with a comment.
+     * @param contentId The ID of the content associated with the comment.
+     * @param comment   The text of the comment.
      */
     public Comment(int contentId, String comment) {
         this.contentId = contentId;
@@ -34,48 +30,70 @@ public class Comment{
         this.comment = comment;
     }
 
+    /**
+     * Default constructor.
+     */
     public Comment() {
         this.isValidate = false;
     }
 
-    public int getContentId() {
-        return contentId;
-    }
-
-    public void setContentId(int contentId) {
-        this.contentId = contentId;
-    }
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public boolean isValidate() {
-        return isValidate;
-    }
-
-    public void setValidation(boolean validate) {
-        isValidate = validate;
-    }
-
+    /**
+     * Retrieves the ID of the author who wrote the comment.
+     *
+     * @return The author ID.
+     */
     public int getAuthorId() {
         return authorId;
     }
 
+    /**
+     * Sets the ID of the author who wrote the comment.
+     *
+     * @param authorId The author ID to set.
+     */
     public void setAuthorId(int authorId) {
         this.authorId = authorId;
     }
 
+    /**
+     * Retrieves the text of the comment.
+     *
+     * @return The comment text.
+     */
     public String getComment() {
         return comment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+
+    /**
+     * Retrieves the ID of the comment.
+     * @return The comment ID.
+     */
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * Sets the ID of the comment.
+     * @param id The comment ID to set.
+     */
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * Checks if the comment is validated.
+     * @return True if the comment is validated, false otherwise.
+     */
+    public boolean isValidate() {
+        return isValidate;
+    }
+
+    /**
+     * Sets the validation status of the comment.
+     * @param validate The validation status to set.
+     */
+    public void setValidation(boolean validate) {
+        isValidate = validate;
     }
 }

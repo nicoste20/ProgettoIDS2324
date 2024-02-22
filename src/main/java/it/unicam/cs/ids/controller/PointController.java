@@ -21,19 +21,21 @@ import java.util.Optional;
 
 /**
  * The PointController class handles the logic for managing Point objects, including addition,
- * validation, and searching operations. It leverages the IUserPlatform interface and UserRole
- * enumeration to determine user roles and permissions.
+ * validation, and searching operations.
  */
 @RestController
+@RequestMapping("/points")
 public class PointController {
-    /**
-     * List to store Point objects managed by the controller.
-     */
     private final PointRepository points;
     private final Point2DRepository points2D;
-
     private final UserRepository users;
 
+    /**
+     * Constructs a new PointController with the specified repositories.
+     * @param points    The repository for Point objects.
+     * @param points2D  The repository for Point2D objects.
+     * @param users     The repository for User objects.
+     */
     @Autowired
     public PointController(PointRepository points, Point2DRepository points2D, UserRepository users) {
         this.points = points;
@@ -42,51 +44,67 @@ public class PointController {
     }
 
     /**
-     * Adds a Point to the list based on the user's role.
-     *
-     * @param point  The Point to be added.
-     * @param userId The user performing the operation.
+     * Adds a restaurant point.
+     * @param point  The restaurant point to add.
+     * @param userId The ID of the user performing the action.
      */
-
-    //TODO: quando costruisci oggetto da grafica mettere il tipo !!
-    @PostMapping("/addRestaurant/point{userId}")
+    @PostMapping("/addRestaurant{userId}")
     public void addPointRestaurant(@RequestBody Restaurant point, @PathParam(("userId")) int userId) {
         addPoint(point,userId);
     }
 
-    @PostMapping("/addMonument/point{userId}")
+    /**
+     * Adds a monument point.
+     * @param point  The monument point to add.
+     * @param userId The ID of the user performing the action.
+     */
+    @PostMapping("/addMonument{userId}")
     public void addPointMonument(@RequestBody Monument point, @PathParam(("userId")) int userId) {
         addPoint(point,userId);
     }
-    @PostMapping("/addGreenZone/point{userId}")
+
+    /**
+     * Adds a green zone point.
+     * @param point  The green zone point to add.
+     * @param userId The ID of the user performing the action.
+     */
+    @PostMapping("/addGreenZone{userId}")
     public void addPointGreenZone(@RequestBody GreenZone point, @PathParam(("userId")) int userId) {
         addPoint(point, userId);
     }
 
-    @PostMapping("/addSquare/point{userId}")
+    /**
+     * Adds a square point.
+     * @param point  The square point to add.
+     * @param userId The ID of the user performing the action.
+     */
+    @PostMapping("/addSquare{userId}")
     public void addPointSquare(@RequestBody Square point, @PathParam(("userId")) int userId) {
         addPoint(point, userId);
     }
 
+    /**
+     * Private method to add a point
+     * @param point the point to add
+     * @param userId the id of the user who created the point
+     * @return A response entity indicating the success of the operation.
+     */
     private ResponseEntity<Object> addPoint(Point point,  int userId) {
         if (points.isAlreadyIn(point.getX(), point.getY()) == 0) {
             points2D.save(new Point2D(point.getX(), point.getY()));
             if (users.existsById(userId)) {
                 point.setAuthor(userId);
-                if (users.findById(userId).get().getUserType().equals(UserRole.Contributor)) {
+                if(users.findById(userId).get().getUserType().equals(UserRole.Contributor))
                     this.addWithPending(point);
-                } else {
+                else
                     this.addWithoutPending(point);
-                }
                 return new ResponseEntity<>("Point created", HttpStatus.OK);
             } else throw new UserBadTypeException();
         }else throw new PointAlreadyInException();
     }
 
     /**
-     * Adds a Point with pending validation to the list.
-     *
-     * @param point The Point to be added.
+     * Private method to add a point with pending validation
      */
     private void addWithPending(Point point) {
         point.setValidation(false);
@@ -94,23 +112,20 @@ public class PointController {
     }
 
     /**
-     * Adds a Point without pending validation to the list.
-     *
-     * @param point The Point to be added.
+     *  Private method to add a point without pending validation
      */
     private void addWithoutPending(Point point) {
         point.setValidation(true);
         this.points.save(point);
     }
-
     /**
-     * Validates or removes a Point based on the user's choice.
-     *
-     * @param choice The user's choice for validation.
-     * @param userId   The user performing the validation.
-     * @param pointId  The Point to be validated or removed.
+     * Validates or deletes a point based on the curator's choice.
+     * @param choice  True to validate, false to delete.
+     * @param userId  The ID of the curator performing the action.
+     * @param pointId The ID of the point to validate or delete.
+     * @return A response entity indicating the success of the operation.
      */
-    @RequestMapping(value = "/validate/point{choice}{userId}{pointId}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/validate{choice}{userId}{pointId}", method = RequestMethod.PUT)
     public ResponseEntity<Object> validatePoint(@PathParam("choice") boolean choice, @PathParam("userId") int userId, @PathParam("pointId") int pointId) {
         if (users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
             if (points.existsById(pointId)) {
@@ -129,17 +144,20 @@ public class PointController {
     }
 
     /**
-     * Searches for a Point by its title in the list.
-     *
-     * @param title The title of the Point to be searched.
-     * @return An Optional containing the found Point, or empty if not found.
+     * Searches for a point by its title.
+     * @param title The title of the point to search for.
+     * @return An optional containing the found point, if any.
      */
-    @RequestMapping(value = "/search/point{title}" , method = RequestMethod.PUT)
+    @RequestMapping(value = "/search{title}" , method = RequestMethod.PUT)
     public Optional<Point> searchPoint(@PathParam("title") String title) {
         return Optional.of(points.findAllByTitle(title));
     }
 
-    @GetMapping(value ="get/points")
+    /**
+     * Retrieves all points.
+     * @return A response entity containing all points.
+     */
+    @GetMapping(value ="/getAll")
     public ResponseEntity<Object> getPoints(){
         return new ResponseEntity<>(points.findAll(),HttpStatus.OK);
     }
