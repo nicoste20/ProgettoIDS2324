@@ -5,7 +5,7 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     var email = document.getElementById('email').value.toLowerCase();
     switch (true){
         case email.includes('animatore'):
-            window.location.href = '/templates/UsersType/animatore.html';
+            window.location.href = '../templates/UsersType/animatore/animatore.html';
             break;
         case email.includes('contributorautorizzato'):
             window.location.href = '../templates/UsersType/contributorAutorizzato/contributorAutorizzato.html';

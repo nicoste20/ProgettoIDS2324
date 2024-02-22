@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="/static/Login.css" rel="stylesheet">
+    <link href="/static/aggiuntaRuolo.css" rel="stylesheet">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand"  href="/templates/UsersType/gestorePiattaforma/gestorePiattaforma.html">
+            <span>Piattaforma Comunale</span>
+        </a>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="mappa.html" id="mappaLink" >Mappa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="post.html" id= "postLink">Post</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="itinerari.html" id=" itinerarioLink">Itinerari</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="aggiuntaRuolo.html" id=" aggiuntaRuoloLink">Aggiungi Ruolo</a>
+                </li>
+            </ul>
+        </div>
+        <div class="d-flex">
+            <button id="loginButton" class="btn btn-primary me-2">Login</button>
+        </div>
+    </div>
+</nav>
+<div class="board">
+    <h2>Utenti</h2>
+    <ul class="user-list">
+        <li>Turista 1 <button class="editButton btn btn-secondary">Modifica ruolo</button></li>
+        <li>Turista 2 <button class="editButton btn btn-secondary">Modifica ruolo</button></li>
+        <li>Turista 3 <button class="editButton btn btn-secondary">Modifica ruolo</button></li>
+        <!-- Aggiungi altri utenti se necessario -->
+    </ul>
+</div>
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Richieste
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">Richiesta 1</a>
+        <a class="dropdown-item" href="#">Richiesta 2</a>
+        <a class="dropdown-item" href="#">Richiesta 3</a>
+        <!-- Aggiungi altre richieste se necessario -->
+    </div>
+</div>
+
+
+
+<!-- Script JavaScript -->
+<script src="/static/home.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
