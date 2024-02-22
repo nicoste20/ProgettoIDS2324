@@ -81,11 +81,10 @@
     color: #b4d4f5;
 }
 /* Stili per il testo animato */
-/* Stili per il testo animato */
 #animatedText {
     position: fixed;
     top: 40%;
-    left: 15%;
+    left: 5%; /* Riduci ulteriormente la distanza dal bordo sinistro */
     font-size: 24px; /* Dimensione del carattere */
     color: #007bff; /* Colore del testo */
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Ombra del testo */
@@ -94,9 +93,7 @@
     background-color: #dde3f7; /* Colore di sfondo nero */
     border-color: #000000;
     border: solid;
-
 }
-
 
 /* Effetto hover sul testo */
 #animatedText:hover {
@@ -109,14 +106,14 @@
     font-size: 18px; /* Aumenta la dimensione del sottotesto */
     margin-top: 10px; /* Spazio tra il testo principale e il sottotesto */
 }
-/* Stili per l'immagine */
+
 /* Stili per l'immagine */
 .img-fluid {
-    position: fixed;
+    position: absolute;
     top: 45%;
-    left: 70%;
+    right: 1%; /* Sposta l'immagine ancora più verso destra */
     transform: translate(-50%, -50%);
-    max-width: 35%; /* Rimpicciolisci l'immagine */
+    max-width: 30%; /* Rimpicciolisci l'immagine */
     border: 2px solid #030000; /* Aggiungi un bordo */
     border-radius: 10px; /* Aggiungi bordi arrotondati */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Aggiungi un'ombra */
@@ -127,7 +124,5 @@
 .img-fluid:hover {
     transform: translate(-50%, -50%) scale(1.05); /* Ingrandisci leggermente l'immagine */
     border-color: #007bff; /* Cambia colore del bordo */
-    box-shadow: 0 0 15px
-    rgba(0, 0, 0, 0.7); /* Aumenta l'ombra */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.7); /* Aumenta l'ombra */
 }
-
