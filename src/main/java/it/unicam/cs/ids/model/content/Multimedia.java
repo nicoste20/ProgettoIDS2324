@@ -11,18 +11,17 @@ import jakarta.persistence.Entity;
 public class Multimedia extends Content {
     @Column
     private boolean signaled;
-    private String file;
+    private String path;
+    private Integer pointId;
 
     /**
      * Constructs a new Multimedia object with the specified name, file path or URL, and description.
      *
      * @param name        The name of the multimedia content.
-     * @param file        The file path or URL of the photo associated with the content.
      * @param description The description of the multimedia content.
      */
-    public Multimedia(String name , String file, String description) {
+    public Multimedia(String name , String description) {
         super(name,description);
-        this.file = file;
         this.signaled =false;
     }
 
@@ -37,8 +36,12 @@ public class Multimedia extends Content {
      * Gets the file path of the photo associated with the content.
      * @return the file path
      */
-    public String getFile() {
-        return this.file;
+    public String getPath() {
+        return this.path;
+    }
+
+    public void setPath(String path){
+        this.path = path;
     }
 
     /**
@@ -55,6 +58,14 @@ public class Multimedia extends Content {
      */
     public void setSignaled(boolean signaled) {
         this.signaled = signaled;
+    }
+
+    public Integer getPointId() {
+        return pointId;
+    }
+
+    public void setPointId(Integer pointId) {
+        this.pointId = pointId;
     }
 
 
