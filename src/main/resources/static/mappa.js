@@ -37,4 +37,26 @@ centerMapButton.addEventListener('click', function() {
         .setContent('Centro di Jesi')
         .openOn(map);
 });
+document.addEventListener('DOMContentLoaded', function() {
+    // Funzione per caricare i punti dal database
+    function loadPointsFromDatabase() {
+        // Effettua una richiesta AJAX per ottenere i dati dei punti dal server
+        // Assicurati di sostituire 'url_del_tuo_server' con l'URL effettivo del tuo server e gestire eventuali errori
+        fetch('localhost:8080/points/getAll')
+            .then(response => response.json())
+            .then(data => {
+                // Itera sui dati ricevuti e aggiungi i marker alla mappa
+                data.forEach(point => {
+                    const { latitude, longitude, popupContent } = point;
+                    const marker = L.marker([latitude, longitude]).addTo(map)
+                        .bindPopup(popupContent);
+                });
+            })
+            .catch(error => {
+                console.error('Si è verificato un errore durante il caricamento dei punti:', error);
+            });
+    }
+    // Chiamare la funzione per caricare i punti al caricamento della pagina
+    loadPointsFromDatabase();
+});
 

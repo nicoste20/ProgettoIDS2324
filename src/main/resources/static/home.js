@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (loginButton) {
         loginButton.addEventListener('click', function() {
-            window.location.href = 'login.html';
+            window.location.href = 'Login.html';
         });
     }
 
@@ -18,7 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'mappa.html';
         });
     }
-
+    if (aggiuntaRuoloLink) {
+        mapLink.addEventListener('click', function() {
+            window.location.href = 'aggiuntaRuolo.html';
+        });
+    }
 });
+
 
 

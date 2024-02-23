@@ -7,5 +7,3 @@ commentButtons.forEach(button => {
         window.location.href = 'commenti.html';
     });
 });
-
-
