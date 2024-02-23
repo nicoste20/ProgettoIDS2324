@@ -1,0 +1,79 @@
+/* Stile predefinito del bottone di segnalazione */
+.btn-report {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: transparent;
+    border: 2px solid red;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    transition: all 0.3s ease; /* Aggiungi una transizione a tutte le proprietà */
+}
+
+.btn-report i {
+    color: red;
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.3s ease; /* Aggiungi una transizione al punto esclamativo */
+}
+
+/* Effetti al passaggio del mouse */
+.btn-report:hover {
+    transform: scale(1.1); /* Ingrandisci il bottone al passaggio del mouse */
+    border-color: darkred; /* Cambia il colore del bordo */
+}
+
+.btn-report:hover i {
+    color: darkred; /* Cambia il colore del punto esclamativo al passaggio del mouse */
+}
+/* Stile per il modale */
+/* Stile per il modale */
+.modal {
+    display: none; /* Inizialmente nascosto */
+    position: fixed; /* Posizionamento fisso */
+    top: 50%; /* Allineamento verticale al centro */
+    left: 50%; /* Allineamento orizzontale al centro */
+    transform: translate(-50%, -50%); /* Spostamento al centro della pagina */
+    max-width: max-content; /* Massima larghezza del modale */
+    max-height: 25%;
+    padding: 20px; /* Spazio interno */
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    text-align: center; /* Testo centrato */
+}
+
+.modal-content {
+    padding: 20px; /* Spazio interno */
+    border-radius: 10px; /* Bordi arrotondati */
+    background-color: rgba(255, 255, 255, 0.9); /* Sfondo bianco con opacità */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Ombra leggera */
+}
+
+/* Stile per i pulsanti "Sì" e "No" */
+#btn-confirm-yes,
+#btn-confirm-no {
+    padding: 10px 20px; /* Spazio interno */
+    margin: 10px; /* Margine esterno */
+    background-color: #007bff; /* Colore di sfondo */
+    color: #fff; /* Colore del testo */
+    border: none; /* Nessun bordo */
+    border-radius: 5px; /* Bordi arrotondati */
+    cursor: pointer; /* Cambio del cursore al passaggio */
+    transition: background-color 0.3s ease; /* Transizione fluida del colore di sfondo */
+}
+
+/* Stile per il pulsante "Sì" al passaggio del mouse */
+#btn-confirm-yes:hover {
+    background-color: #0056b3; /* Cambio del colore di sfondo al passaggio */
+}
+
+/* Stile per il pulsante "No" al passaggio del mouse */
+#btn-confirm-no:hover {
+    background-color: #6c757d; /* Cambio del colore di sfondo al passaggio */
+}

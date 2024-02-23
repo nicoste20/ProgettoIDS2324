@@ -1,0 +1,46 @@
+/* Aggiungi stili al bottone */
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.5);
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Stili aggiuntivi per il bottone */
+#submit-comment {
+    margin-top: 10px;
+}
+
+.board {
+    position: fixed;
+    top: 100px; /* Altezza della navbar + spazio aggiuntivo */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 20px;
+    overflow-y: auto; /* Aggiunge una scrollbar se i commenti diventano troppo lunghi */
+    max-height: calc(100vh - 100px); /* Impedisce al box dei commenti di estendersi oltre il viewport */
+    border: 1px solid #ccc; /* Aggiungi bordo */
+    background-color: #fff; /* Sfondo bianco */
+}
+
+#new-comment-form {
+    margin-top: 20px; /* Spazio sopra il box dei commenti */
+}
+
+.comment {
+    margin-bottom: 20px; /* Spazio tra i commenti */
+}

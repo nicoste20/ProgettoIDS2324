@@ -60,3 +60,10 @@
     color: #fff;
     border-color: #007bff;
 }
+p {
+    text-align: center;
+    font-size: 18px; /* Dimensione del carattere */
+    font-style: italic; /* Stile del carattere */
+    color: #333; /* Colore del testo */
+    margin-top: 10px; /* Spazio sopra il testo */
+}

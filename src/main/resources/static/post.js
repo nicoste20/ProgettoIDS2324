@@ -4,8 +4,6 @@ const commentButtons = document.querySelectorAll('.btn-comment');
 commentButtons.forEach(button => {
     button.addEventListener('click', function() {
         // Effettua il reindirizzamento alla pagina dei commenti
-        window.location.href = 'commentiModifica.html';
+        window.location.href = 'commenti.html';
     });
 });
-
-
