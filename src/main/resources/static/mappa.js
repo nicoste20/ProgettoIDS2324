@@ -16,7 +16,7 @@ const popup = L.popup()
 function onMapClick(e) {
     popup
         .setLatLng(e.latlng)
-        .setContent(`Hai cliccato la mappa nelle cordinate: ${e.latlng.toString()}`)
+        .setContent(`Hai cliccato la mappa nelle coordinate: ${e.latlng.toString()}`)
         .openOn(map);
 }
 map.on('click', onMapClick);
@@ -37,31 +37,26 @@ centerMapButton.addEventListener('click', function() {
         .setContent('Centro di Jesi')
         .openOn(map);
 });
-
-
-
-// Funzione che viene eseguita ogni volta che la pagina viene caricata o aggiornata
-function onPageLoad() {
-    fetch('http://localhost:8080/points/getAll')
-        .then(response => response.json())
-        .then(data => {
-            var iconMapping = {
-                Monument: L.icon({iconUrl: 'monument-icon.png', iconSize: [32, 32]}),
-                GreenZone: L.icon({iconUrl: 'greenzone-icon.png', iconSize: [32, 32]}),
-                Restaurant: L.icon({iconUrl: 'restaurant-icon.png', iconSize: [32, 32]}),
-                Square: L.icon({iconUrl: 'square-icon.png', iconSize: [32, 32]})
-            };
-            data.forEach(point => {
-                var aa = L.marker([point.x, point.y],{icon: icon}).addTo(map);
-                aa.bindPopup(`<b>${point.name}</b><br>Tipo: ${point.type}`);
+document.addEventListener('DOMContentLoaded', function() {
+    // Funzione per caricare i punti dal database
+    function loadPointsFromDatabase() {
+        // Effettua una richiesta AJAX per ottenere i dati dei punti dal server
+        // Assicurati di sostituire 'url_del_tuo_server' con l'URL effettivo del tuo server e gestire eventuali errori
+        fetch('localhost:8080/points/getAll')
+            .then(response => response.json())
+            .then(data => {
+                // Itera sui dati ricevuti e aggiungi i marker alla mappa
+                data.forEach(point => {
+                    const { latitude, longitude, popupContent } = point;
+                    const marker = L.marker([latitude, longitude]).addTo(map)
+                        .bindPopup(popupContent);
+                });
+            })
+            .catch(error => {
+                console.error('Si è verificato un errore durante il caricamento dei punti:', error);
             });
-        })
-        .catch(error => {
-            console.error('Si è verificato un errore durante il caricamento dei punti:', error);
-        });
-}
-
-// Chiama la funzione onPageLoad quando la pagina è completamente caricata
-document.addEventListener('DOMContentLoaded', onPageLoad);
-
+    }
+    // Chiamare la funzione per caricare i punti al caricamento della pagina
+    loadPointsFromDatabase();
+});
 
