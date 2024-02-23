@@ -47,3 +47,26 @@ commentButtons.forEach(button => {
         window.location.href = 'commentiModifica.html';
     });
 });
+// Trova tutti i bottoni "Modifica"
+var modifyButtons = document.querySelectorAll('.btn-modify');
+
+var modifyButtons = document.querySelectorAll('.btn-modify');
+
+modifyButtons.forEach(function(button) {
+    button.addEventListener('click', function() {
+        var paragraph = button.previousElementSibling;
+
+        if (button.textContent === 'Modifica') {
+            // Rendi il paragrafo editabile solo se il testo del bottone è "Modifica"
+            paragraph.contentEditable = true;
+            paragraph.focus();
+            // Cambia il testo del bottone in "Salva"
+            button.textContent = 'Salva';
+        } else {
+            // Quando il testo del bottone è "Salva", salva le modifiche e ripristina il bottone a "Modifica"
+            paragraph.contentEditable = false;
+            button.textContent = 'Modifica';
+        }
+    });
+});
+

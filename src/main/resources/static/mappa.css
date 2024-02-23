@@ -54,3 +54,21 @@
     align-items: center; /* Centra verticalmente */
 }
 
+#aggiungiButton {
+    background-color: white; /* Imposta il colore di sfondo del bottone su bianco */
+    color: #007bff; /* Imposta il colore del testo su blu (colore primario di default di Bootstrap) */
+    border: 2px solid #007bff; /* Aggiungi un bordo solido blu al bottone */
+    border-radius: 5px; /* Aggiungi bordi arrotondati al bottone */
+    padding: 10px 20px; /* Aggiusta il padding per una dimensione più confortevole */
+    font-size: 16px; /* Aumenta la dimensione del testo */
+    font-weight: bold; /* Rendi il testo in grassetto */
+    position: absolute; /* Imposta il posizionamento assoluto */
+    left: 10px; /* Posiziona il bottone 10px dalla sinistra della pagina */
+    top: 30%; /* Posiziona il bottone 10px dall'alto della pagina */
+    transition: all 0.3s ease; /* Aggiungi una transizione per un effetto più fluido */
+}
+
+#aggiungiButton:hover {
+    background-color: #007bff; /* Cambia il colore di sfondo quando il mouse è sopra il bottone */
+    color: white; /* Cambia il colore del testo in bianco quando il mouse è sopra il bottone */
+}

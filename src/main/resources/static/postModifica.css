@@ -77,3 +77,23 @@
 #btn-confirm-no:hover {
     background-color: #6c757d; /* Cambio del colore di sfondo al passaggio */
 }
+/* Stile per il bottone di modifica */
+
+.btn-modify {
+    background-color: #eef6ff; /* Colore di sfondo verde */
+    color: #007bff; /* Testo bianco */
+    padding: 5px 10px; /* Spaziatura interna ridotta */
+    border: 15px; /* Nessun bordo */
+    border-color: #030000;
+    border-radius: 3px; /* Angoli arrotondati */
+    cursor: pointer; /* Cambia il cursore al passaggio */
+    position: relative; /* Posizionamento relativo */
+    top: -15px; /* Sposta leggermente verso l'alto per allinearlo con il paragrafo */
+    align-self: center;
+}
+
+/* Stile per il bottone di modifica al passaggio del mouse */
+.btn-modify:hover {
+    background-color: #0056b3; /* Cambia il colore di sfondo al passaggio del mouse */
+}
+

@@ -35,3 +35,32 @@ centerMapButton.addEventListener('click', function() {
         .setContent('Centro di Jesi')
         .openOn(map);
 });
+
+
+function onPageLoad() {
+    fetch('http://localhost:8080/itineraries/getAll')
+        .then(response => response.json())
+        .then(data => {
+            // Itera sui dati ricevuti
+            data.forEach(itinerary => {
+                // Array per memorizzare le coordinate dei punti dell'itinerario corrente
+                var itineraryPoints = [];
+
+                // Itera sui punti dell'itinerario corrente
+                itinerary.points.forEach(point => {
+                    // Aggiungi le coordinate del punto all'array
+                    itineraryPoints.push([point.x, point.y]);
+                });
+
+                // Aggiungi il tracciato per l'itinerario corrente sulla mappa
+                var polyline = L.polygon(itineraryPoints).addTo(map);
+                map.fitBounds(polyline.getBounds());
+            });
+        })
+        .catch(error => {
+            console.error('Si è verificato un errore durante il caricamento dei punti:', error);
+        });
+}
+
+// Chiama la funzione onPageLoad quando la pagina è completamente caricata
+document.addEventListener('DOMContentLoaded', onPageLoad);
