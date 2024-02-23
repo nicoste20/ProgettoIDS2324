@@ -21,6 +21,7 @@ import java.util.stream.StreamSupport;
  * The Itinerary controller class manages the addition and validation of itinerary,
  * differentiating between immediate addition and pending approval based on the user's role.
  */
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/itineraries")
 public class ItineraryController {
@@ -140,4 +141,6 @@ public class ItineraryController {
     public ResponseEntity<Object> getItineraries(){
         return new ResponseEntity<>(itineraries.findAll(), HttpStatus.OK);
     }
+
+
 }

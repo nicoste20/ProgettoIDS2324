@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.model.point;
 
 import it.unicam.cs.ids.model.content.Point;
+import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,9 +27,9 @@ public class Restaurant extends Point {
      * @param type the type of restaurant
      * @param openingHours the opening hours of the restaurant
      */
-    public Restaurant(Float x, Float y,String typeR, String name, RestaurantType type, String openingHours) {
+    public Restaurant(Float x, Float y,String typeR, String name, String type, String openingHours) {
         super(x, y, typeR, name);
-        this.typeRestaurant = type;
+        this.typeRestaurant = RestaurantType.valueOf(RestaurantType.class,type);
         this.openingHours = openingHours;
     }
 
@@ -60,7 +61,7 @@ public class Restaurant extends Point {
      */
     @Override
     public Restaurant clone() {
-        return new Restaurant(this.getX(), this.getY(), super.getName(),super.getType(), this.getTypeRestaurant(), this.getOpeningHours());
+        return new Restaurant(this.getX(), this.getY(), super.getName(),super.getType(), this.getTypeRestaurant().toString(), this.getOpeningHours());
     }
 }
 

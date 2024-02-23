@@ -173,18 +173,19 @@ map.on('click', function (e) {
                     var longitude = e.latlng.lng;
                     var name = prompt('Inserisci il nome per il nuovo punto:');
                     var opening = prompt('Inserisci un orario di apertura (formato HH:MM):');
-                    if (subResult.isConfirmed) {
+                   // if (subResult.isConfirmed) {
                         if (name && opening) {
-                            createPointRestaurant(name,latitude, longitude, type, subType , opening );
+                            createPointRestaurant(name, latitude, longitude, type, subType, opening);
                         }
-                    }
+
+                    ricaricaPaginaDopoTempo(2000);
                 });
-            } else if(type==="Monument"){
+            } else if (type === "Monument") {
                 // Altrimenti, aggiungi il marker con il tipo selezionato
                 var latitude = e.latlng.lat;
                 var longitude = e.latlng.lng;
                 var name = prompt('Inserisci il nome per il nuovo punto:');
-                var history= prompt("Inserisci la storia per questo monumento:")
+                var history = prompt("Inserisci la storia per questo monumento:")
                 var date;
                 do {
                     date = prompt('Inserisci una data nel formato YYYY-MM-DD:');
@@ -195,27 +196,60 @@ map.on('click', function (e) {
                     var regex = /^\d{4}-\d{2}-\d{2}$/;
                     return regex.test(dateString);
                 }
+
                 if (name && date) {
-                    createPointMonument(name, latitude, longitude, type, date , history);
+                    createPointMonument(name, latitude, longitude, type, date, history);
                 }
+
+                ricaricaPaginaDopoTempo(2000);
+            } else if (type === "Greenzone") {
+                // Altrimenti, aggiungi il marker con il tipo selezionato
+                var latitude = e.latlng.lat;
+                var longitude = e.latlng.lng;
+                var name = prompt('Inserisci il nome per il nuovo punto:');
+                var characteristics = prompt("Inserisci la storia per questo parco:")
+                if (name && characteristics) {
+                    createPointGreenZone(name, latitude, longitude, type, characteristics);
+                }
+
+                ricaricaPaginaDopoTempo(2000);
+            } else {
+                // Altrimenti, aggiungi il marker con il tipo selezionato
+                var latitude = e.latlng.lat;
+                var longitude = e.latlng.lng;
+                var name = prompt('Inserisci il nome per il nuovo punto:');
+                var history = prompt("Inserisci la storia per questa piazza:")
+                if (name && history) {
+                    createPointSquare(name, latitude, longitude, type, history)
+                }
+
+                ricaricaPaginaDopoTempo(2000);
             }
+
+
         }
     });
 });
 
-// Funzione per caricare i marker dalla memoria locale e mostrarli sulla mappa
+function ricaricaPaginaDopoTempo(tempo) {
+    setTimeout(function() {
+        location.reload();
+    }, tempo);
+}
+
 function onPageLoad() {
     fetch('http://localhost:8080/points/getAll')
         .then(response => response.json())
         .then(data => {
             data.forEach(point => {
                 var aa = L.marker([point.x, point.y]).addTo(map);
-                aa.bindPopup('<b>${point.name}</b><br>Tipo: ${point.type}');
-                    });
-                    })
-                    .catch(error => {
-                        console.error('Si è verificato un errore durante il caricamento dei punti:', error);
-                    });
-                    }
-                    document.addEventListener('DOMContentLoaded', onPageLoad);
+                aa.bindPopup(`<b>${point.name}</b><br>Tipo: ${point.type}`);
+            });
+        })
+        .catch(error => {
+            console.error('Si è verificato un errore durante il caricamento dei punti:', error);
+        });
+}
 
+// Chiama la funzione onPageLoad quando la pagina è completamente caricata
+document.addEventListener('DOMContentLoaded', onPageLoad);
