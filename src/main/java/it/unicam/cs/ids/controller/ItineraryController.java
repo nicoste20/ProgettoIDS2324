@@ -183,4 +183,11 @@ public class ItineraryController {
         return new ResponseEntity<>(points, HttpStatus.OK);
     }
 
+    @DeleteMapping("/delete{itineraryId}")
+    public ResponseEntity<Object> deleteItinerary(@PathParam("itineraryId") int itineraryId){
+        if(this.itineraryRepository.findById(itineraryId).isPresent())
+        itineraryRepository.deleteById(itineraryId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
