@@ -39,20 +39,13 @@ centerMapButton.addEventListener('click', function() {
 });
 
 
-
 // Funzione che viene eseguita ogni volta che la pagina viene caricata o aggiornata
 function onPageLoad() {
     fetch('http://localhost:8080/points/getAll')
         .then(response => response.json())
         .then(data => {
-            var iconMapping = {
-                Monument: L.icon({iconUrl: 'monument-icon.png', iconSize: [32, 32]}),
-                GreenZone: L.icon({iconUrl: 'greenzone-icon.png', iconSize: [32, 32]}),
-                Restaurant: L.icon({iconUrl: 'restaurant-icon.png', iconSize: [32, 32]}),
-                Square: L.icon({iconUrl: 'square-icon.png', iconSize: [32, 32]})
-            };
             data.forEach(point => {
-                var aa = L.marker([point.x, point.y],{icon: icon}).addTo(map);
+                var aa = L.marker([point.x, point.y]).addTo(map);
                 aa.bindPopup(`<b>${point.name}</b><br>Tipo: ${point.type}`);
             });
         })
