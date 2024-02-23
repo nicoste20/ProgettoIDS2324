@@ -203,22 +203,6 @@ map.on('click', function (e) {
     });
 });
 
-// Funzione per ottenere il nome del tipo basato sul valore
-function getTypeName(type) {
-    switch (type) {
-        case 'type1':
-            return 'Monumento';
-        case 'type2':
-            return 'Ristorante';
-        case 'type3':
-            return 'Green Zone';
-        case 'type4':
-            return 'Square';
-        default:
-            return type;
-    }
-}
-
 // Funzione per caricare i marker dalla memoria locale e mostrarli sulla mappa
 function onPageLoad() {
     fetch('http://localhost:8080/points/getAll')
