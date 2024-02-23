@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class Point implements Cloneable{
+public abstract class Point{
 
     private int author;
     @Column(name="name", unique = true)

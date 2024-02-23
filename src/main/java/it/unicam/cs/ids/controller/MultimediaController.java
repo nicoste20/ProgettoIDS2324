@@ -1,10 +1,12 @@
 package it.unicam.cs.ids.controller;
 
+import it.unicam.cs.ids.Exception.ContestNotExistException;
 import it.unicam.cs.ids.Exception.MultimediaNotFoundException;
 import it.unicam.cs.ids.Exception.UserBadTypeException;
+import it.unicam.cs.ids.controller.Repository.ContestRespository;
 import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
-import it.unicam.cs.ids.model.content.Content;
+import it.unicam.cs.ids.model.content.Contest;
 import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
@@ -30,16 +32,20 @@ public class MultimediaController {
 
     private final UserRepository users;
 
+    private final ContestRespository contestList;
+
     /**
      * Constructs a new {@code MultimediaController} with empty content lists.
      *
      * @param contentList the repository for multimedia content
      * @param users
+     * @param contestList
      */
     @Autowired
-    public MultimediaController(MultimediaRepository contentList, UserRepository users) {
+    public MultimediaController(MultimediaRepository contentList, UserRepository users, ContestRespository contestList) {
         this.contentList = contentList;
         this.users = users;
+        this.contestList = contestList;
     }
     /**
      * Adds content to the appropriate list based on the user's role.
@@ -154,18 +160,23 @@ public class MultimediaController {
 
     /**
      * Delete a multimedia content
-     * @param idUser the curator user
+     * @param userId the curator user
      * @param id the content to be removed
      * @return a ResponseEntity representing the status of the operation
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
     @DeleteMapping("/delete/multimedia{id}{userId}")
-    public ResponseEntity<Object> deleteContent(@PathParam("userId") int idUser,@PathParam("id") int id){
-        if(users.existsById(idUser)) {
-            if (users.findById(idUser).get().getUserType().equals(UserRole.Curator)) {
+    public ResponseEntity<Object> deleteContent(@PathParam("userId") int userId,@PathParam("id") int id){
+        if(users.existsById(userId)) {
+            if (users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
                 if (contentList.existsById(id)) {
                     contentList.deleteById(id);
+                    for (Contest contest: contestList.findAll()) {
+                        if(contest.getMultimediaList().contains(id)){
+                            contest.deleteMultimedia(id);
+                        }
+                    }
                     return new ResponseEntity<>("Multimedia deleted", HttpStatus.OK);
                 } else throw new MultimediaNotFoundException();
             } else throw new UserBadTypeException();
@@ -200,5 +211,27 @@ public class MultimediaController {
     @GetMapping(value ="/get/multimedias")
     public ResponseEntity<Object> getMultimedia(){
         return new ResponseEntity<>(contentList.findAll(), HttpStatus.OK);
+    }
+
+    /**
+     * Adds multimedia to a contest with pending validation.
+     *
+     * @param multimedia The multimedia to be added.
+     * @param contestId    The ID of the contest to which multimedia is added.
+     * @throws MultimediaNotFoundException If the multimedia is not found.
+     * @throws ContestNotExistException    If the contest does not exist.
+     */
+    @RequestMapping(value = "/addMultimediaPending/contest{contestId}{userId}", method = RequestMethod.POST)
+    public ResponseEntity<Object> addWithPending(@RequestBody Multimedia multimedia, @PathParam(("contestId")) int contestId, @PathParam("userId") int userId)
+    {
+        if (contestList.existsById(contestId)) {
+            multimedia.setValidation(false);
+            this.addContent(multimedia,userId);
+            int multimediaId = multimedia.getId();
+            Contest contest = contestList.findById(contestId).get();
+            contest.addMultimedia(multimediaId);
+            contestList.save(contest);
+            return new ResponseEntity<>("Multimedia added", HttpStatus.OK);
+        }else throw new ContestNotExistException();
     }
 }

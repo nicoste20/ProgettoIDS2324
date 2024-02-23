@@ -29,7 +29,6 @@ public class Contest extends Content {
      */
     public Contest(int id, String name, String description, boolean privacy) {
         super(name,description);
-        super.setValidation(true);
         this.privacy = privacy;
         this.multimediaList=new ArrayList<Integer>();
     }
@@ -52,7 +51,7 @@ public class Contest extends Content {
      * @return True if the contest is private, false otherwise.
      */
     public boolean isPrivacy(){ return this.privacy;}
-    //TODO:CONTROLLARE
+
     public void deleteMultimedia(int id){
         int index=-1;
         for(int x : multimediaList){
