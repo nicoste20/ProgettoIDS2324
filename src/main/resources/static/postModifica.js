@@ -50,8 +50,6 @@ commentButtons.forEach(button => {
 // Trova tutti i bottoni "Modifica"
 var modifyButtons = document.querySelectorAll('.btn-modify');
 
-var modifyButtons = document.querySelectorAll('.btn-modify');
-
 modifyButtons.forEach(function(button) {
     button.addEventListener('click', function() {
         var paragraph = button.previousElementSibling;

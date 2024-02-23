@@ -47,6 +47,46 @@
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 999;
 }
+.rimozioneUtente-btn {
+    background-color: crimson; /* Colore di sfondo */
+    color: #fff; /* Colore del testo */
+    border: none; /* Nessun bordo */
+    padding: 10px 20px; /* Spaziatura interna */
+    font-size: 16px; /* Dimensione del testo */
+    border-radius: 5px; /* Bordi arrotondati */
+    cursor: pointer; /* Cambia il cursore al passaggio del mouse */
+    transition: background-color 0.3s ease; /* Transizione fluida del colore di sfondo */
+    position: fixed;
+    right: 0;
+    top: 25%; /* Più in alto */
+    transform: translateY(-50%);
+    margin-right: 20px; /* Aggiungi margine a sinistra per separarlo dalla bacheca */
+}
+
+.rimozioneUtente-btn:hover {
+    background-color: darkred; /* Cambia il colore di sfondo al passaggio del mouse */
+}
+
+.aggiuntaUtente-btn {
+    background-color: #007bff; /* Colore di sfondo */
+    color: #fff; /* Colore del testo */
+    border: none; /* Nessun bordo */
+    padding: 10px 20px; /* Spaziatura interna */
+    font-size: 16px; /* Dimensione del testo */
+    border-radius: 5px; /* Bordi arrotondati */
+    cursor: pointer; /* Cambia il cursore al passaggio del mouse */
+    transition: background-color 0.3s ease; /* Transizione fluida del colore di sfondo */
+    position: fixed;
+    right: 0;
+    top: 20%; /* Più in alto */
+    transform: translateY(-50%);
+    margin-right: 20px; /* Aggiungi margine a sinistra per separarlo dalla bacheca */
+}
+
+.aggiuntaUtente-btn:hover {
+    background-color: #0056b3; /* Cambia il colore di sfondo al passaggio del mouse */
+}
+
 /* Stili per il bottone "Richieste" */
 .custom-dropdown {
     background-color: white; /* Colore di sfondo bianco */
@@ -68,4 +108,85 @@
     top: 20%; /* Più in alto */
     transform: translateY(-50%);
     margin-left: 20px; /* Aggiungi margine a sinistra per separarlo dalla bacheca */
+}
+/* CSS per il bottone "Aggiungi Utente" */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 50px;
+    z-index: 9999; /* Assicura che il popup sia sopra gli altri elementi */
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5); /* Ombra leggera */
+    width: 750px; /* Larghezza del popup */
+    height: 750px
+}
+
+/* Stile per lo sfondo del popup */
+.popup-background {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Sfondo scuro semi-trasparente */
+    z-index: 9998; /* Assicura che lo sfondo sia dietro il popup */
+}
+
+/* Stile per il form */
+#registrazioneForm {
+    display: none;
+    flex-direction: column;
+    gap: 10px; /* Spazio tra gli elementi del form */
+}
+
+/* Stile per le etichette del form */
+#registrazioneForm label {
+    font-weight: bold;
+}
+
+/* Stile per gli input del form */
+#registrazioneForm input,
+#registrazioneForm select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 100%; /* Larghezza al 100% */
+}
+
+/* Stile per il pulsante di invio del form */
+.submit-btn {
+    padding: 10px;
+    background-color: #007bff; /* Colore di sfondo blu */
+    color: white; /* Testo bianco */
+    border: none; /* Nessun bordo */
+    border-radius: 3px;
+    cursor: pointer; /* Mostra un cursore puntatore al passaggio sopra il pulsante */
+    width: 100%; /* Larghezza al 100% */
+}
+.close-button {
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%; /* Rendi completamente rotondo il pulsante */
+    padding: 10px; /* Aggiungi spazio interno al pulsante */
+    cursor: pointer;
+    position: absolute;
+    top: 15px; /* Distanza dal bordo superiore */
+    right: 15px; /* Distanza dal bordo destro */
+    padding-top: 6px;
+    z-index: 9998; /* Assicura che sia sopra il contenuto del form */
+    transition: all 0.3s ease; /* Aggiungi una transizione per un effetto più fluido */
+    width: 5%;
+    height: 5%;
+}
+
+/* Effetto hover */
+.close-button:hover {
+    background-color: darkred; /* Cambia il colore del pulsante al passaggio del mouse */
 }
