@@ -21,6 +21,7 @@ import java.util.List;
  * differentiating between immediate addition and pending approval based on the user's role.
  * It interacts with instances of {@link BaseUser}, {@link UserRole}, {@link IUserPlatform}, {@link Comment}
  */
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 public class CommentController {
 

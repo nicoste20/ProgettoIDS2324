@@ -23,6 +23,7 @@ import java.util.Optional;
  * The PointController class handles the logic for managing Point objects, including addition,
  * validation, and searching operations.
  */
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/points")
 public class PointController {

@@ -21,6 +21,7 @@ import java.util.Optional;
  * The ContestController class manages operations related to contests and multimedia within a platform.
  * This controller provides endpoints for adding, removing, inviting users, and managing multimedia in contests.
  */
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 public class ContestController {
 
