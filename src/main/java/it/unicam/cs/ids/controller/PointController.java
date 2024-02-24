@@ -9,9 +9,11 @@ import it.unicam.cs.ids.model.point.GreenZone;
 import it.unicam.cs.ids.model.point.Monument;
 import it.unicam.cs.ids.model.point.Restaurant;
 import it.unicam.cs.ids.model.point.Square;
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import it.unicam.cs.ids.util.Point2D;
 import jakarta.websocket.server.PathParam;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -161,6 +163,18 @@ public class PointController {
     @GetMapping(value ="/getAll")
     public ResponseEntity<Object> getPoints(){
         return new ResponseEntity<>(points.findAll(),HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/delete{id}{userId}")
+    public ResponseEntity<Object> pointDelete(@PathParam("id") int id, @PathParam("userId") int userId){
+        if(users.findById(userId).isPresent() && points.findById(id).isPresent()){
+            BaseUser user = users.findById(userId).get();
+            Point point = points.findById(id).get();
+            if(user.getUserType().equals(UserRole.Curator) || point.getAuthor() == userId){
+                points.delete(point);
+            }
+        }
+        return new ResponseEntity<>("Point Deleted", HttpStatus.OK);
     }
 }
 

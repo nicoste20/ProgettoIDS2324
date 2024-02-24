@@ -105,8 +105,8 @@ public class UserController {
      */
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteUser(@RequestBody String email){
-        if(userRepository.findByEmail(email)!=0){
-            int id= userRepository.selectByEmail(email);
+        if(userRepository.findByEmail(email) != 0){
+            int id = userRepository.selectByEmail(email);
             userRepository.deleteById(id);
             return new ResponseEntity<>("User deleted", HttpStatus.OK);
         }else throw new UserNotExistException();

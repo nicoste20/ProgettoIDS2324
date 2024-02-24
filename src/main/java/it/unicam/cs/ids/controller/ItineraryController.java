@@ -8,6 +8,7 @@ import it.unicam.cs.ids.controller.Repository.PointRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Itinerary;
 import it.unicam.cs.ids.model.content.Point;
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
@@ -183,11 +184,21 @@ public class ItineraryController {
         return new ResponseEntity<>(points, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete{itineraryId}")
-    public ResponseEntity<Object> deleteItinerary(@PathParam("itineraryId") int itineraryId){
-        if(this.itineraryRepository.findById(itineraryId).isPresent())
-        itineraryRepository.deleteById(itineraryId);
+    @DeleteMapping("/delete{itineraryId}{userId}")
+    public ResponseEntity<Object> deleteItinerary(@PathParam("itineraryId") int itineraryId , @PathParam("userId") int userId){
+        if(users.findById(userId).isEmpty())
+            throw new UserNotExistException();
+        if(this.itineraryRepository.findById(itineraryId).isPresent()){
+            Itinerary itinerary = itineraryRepository.findById(itineraryId).get();
+            if(users.findById(userId).get().getId() == itinerary.getAuthor() || users.findById(userId).get().getUserType().equals(UserRole.Curator))
+                itineraryRepository.delete(itinerary);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/getAllNames")
+    public ResponseEntity<Object> getAllNames(){
+        return new ResponseEntity<>(this.itineraryRepository.findAllNames(),HttpStatus.OK);
     }
 
 }
