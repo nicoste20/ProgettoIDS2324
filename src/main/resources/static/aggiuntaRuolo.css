@@ -61,6 +61,7 @@
     top: 25%; /* Più in alto */
     transform: translateY(-50%);
     margin-right: 20px; /* Aggiungi margine a sinistra per separarlo dalla bacheca */
+    width: 10%;
 }
 
 .rimozioneUtente-btn:hover {
@@ -81,6 +82,7 @@
     top: 20%; /* Più in alto */
     transform: translateY(-50%);
     margin-right: 20px; /* Aggiungi margine a sinistra per separarlo dalla bacheca */
+    width: 10%;
 }
 
 .aggiuntaUtente-btn:hover {
@@ -149,6 +151,9 @@
 #registrazioneForm label {
     font-weight: bold;
 }
+#registrazioneForm .submit-btn:hover {
+    background-color: #0056b3;
+}
 
 /* Stile per gli input del form */
 #registrazioneForm input,
@@ -188,5 +193,48 @@
 
 /* Effetto hover */
 .close-button:hover {
+    background-color: darkred; /* Cambia il colore del pulsante al passaggio del mouse */
+}
+#rimozioneFormForm {
+    display: none;
+    flex-direction: column;
+    gap: 10px; /* Spazio tra gli elementi del form */
+}
+
+/* Stile per le etichette del form */
+#rimozioneForm label {
+    font-weight: bold;
+}
+#rimozioneForm .submit-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Stile per gli input del form */
+#rimozioneForm input,
+#rimozioneForm select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 100%; /* Larghezza al 100% */
+}
+.close-button2 {
+     background-color: red;
+     color: white;
+     border: none;
+     border-radius: 50%; /* Rendi completamente rotondo il pulsante */
+     padding: 10px; /* Aggiungi spazio interno al pulsante */
+     cursor: pointer;
+     position: absolute;
+     top: 15px; /* Distanza dal bordo superiore */
+     right: 15px; /* Distanza dal bordo destro */
+     padding-top: 6px;
+     z-index: 9998; /* Assicura che sia sopra il contenuto del form */
+     transition: all 0.3s ease; /* Aggiungi una transizione per un effetto più fluido */
+     width: 5%;
+     height: 5%;
+ }
+
+/* Effetto hover */
+.close-button2:hover {
     background-color: darkred; /* Cambia il colore del pulsante al passaggio del mouse */
 }
