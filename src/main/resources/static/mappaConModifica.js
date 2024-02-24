@@ -27,6 +27,8 @@ function centerMapToLocation(latitude, longitude) {
 // Trova il bottone nella pagina
 var centerMapButton = document.getElementById('centerMapButton');
 
+const user=4;
+
 // Aggiungi un gestore di eventi al bottone
 centerMapButton.addEventListener('click', function () {
     // Chiama la funzione per spostare la mappa al centro di una posizione selezionata
@@ -38,7 +40,7 @@ centerMapButton.addEventListener('click', function () {
 });
 function createPointMonument(name, x, y, type, inaugurationDate , story) {
     const monument= {name: name, x:x, y:y, type:type, inaugurationDate: inaugurationDate, story:story};
-    fetch('http://localhost:8080/points/addMonument?userId=4',
+    fetch(`http://localhost:8080/points/addMonument?userId=${user}`,
     {
     method: 'POST',
         headers: {
@@ -52,7 +54,7 @@ function createPointMonument(name, x, y, type, inaugurationDate , story) {
 }
 function createPointRestaurant(name, x, y, type, typeRestaurant , openingHours) {
     const restaurant= {name: name, x:x, y:y, type:type, typeRestaurant: typeRestaurant, openingHours:openingHours};
-    fetch('http://localhost:8080/points/addRestaurant?userId=4',
+    fetch(`http://localhost:8080/points/addRestaurant?userId=${user}`,
         {
             method: 'POST',
             headers: {
@@ -66,7 +68,7 @@ function createPointRestaurant(name, x, y, type, typeRestaurant , openingHours) 
 }
 function createPointGreenZone(name, x, y, type, characteristics) {
     const greenZone= {name: name, x:x, y:y, type:type, characteristics: characteristics};
-    fetch('http://localhost:8080/points/addGreenZone?userId=4',
+    fetch(`http://localhost:8080/points/addGreenZone?userId=${user}`,
         {
             method: 'POST',
             headers: {
@@ -80,7 +82,7 @@ function createPointGreenZone(name, x, y, type, characteristics) {
 }
 function createPointSquare(name, x, y, type, history) {
     const square= {name: name, x:x, y:y, type:type, history: history};
-    fetch('http://localhost:8080/points/addGreenZone?userId=4',
+    fetch(`http://localhost:8080/points/addGreenZone?userId=${user}`,
         {
             method: 'POST',
             headers: {

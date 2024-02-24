@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Controller class for managing users.
  */
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -105,8 +106,8 @@ public class UserController {
      */
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteUser(@RequestBody String email){
-        if(userRepository.findByEmail(email) != 0){
-            int id = userRepository.selectByEmail(email);
+        if(userRepository.findByEmail(email)!=0){
+            int id= userRepository.selectByEmail(email);
             userRepository.deleteById(id);
             return new ResponseEntity<>("User deleted", HttpStatus.OK);
         }else throw new UserNotExistException();

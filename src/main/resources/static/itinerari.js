@@ -37,30 +37,45 @@ centerMapButton.addEventListener('click', function() {
 });
 
 
-function onPageLoad() {
-    fetch('http://localhost:8080/itineraries/getAll')
+fetch('http://localhost:8080/itineraries/getAll')
+    .then(response => response.json())
+    .then(data => {
+        // Popola il menu a tendina con gli itinerari ottenuti
+        const selectItinerario = document.getElementById('selectItinerario');
+        data.forEach(itinerario => {
+            const option = document.createElement('option');
+            option.value = itinerario.id;
+            option.textContent = itinerario.name;
+            selectItinerario.appendChild(option);
+        });
+    })
+    .catch(error => console.error('Errore durante il recupero degli itinerari:', error));
+
+selectItinerario.addEventListener('change', function() {
+    const selectedItineraryId = this.value;
+    console.log(selectedItineraryId);
+
+    // Rimuovi tutti i marker e le polyline dalla mappa
+    map.eachLayer(function(layer) {
+        if (layer instanceof L.Marker || layer instanceof L.Polyline) {
+            map.removeLayer(layer);
+        }
+    });
+
+    // Fetch per ottenere i punti dell'itinerario selezionato e aggiungerli sulla mappa
+    fetch(`http://localhost:8080/itineraries/get/itinerary?id=${selectedItineraryId}`)
         .then(response => response.json())
         .then(data => {
-            // Itera sui dati ricevuti
-            data.forEach(itinerary => {
-                // Array per memorizzare le coordinate dei punti dell'itinerario corrente
-                var itineraryPoints = [];
-
-                // Itera sui punti dell'itinerario corrente
-                itinerary.points.forEach(point => {
-                    // Aggiungi le coordinate del punto all'array
-                    itineraryPoints.push([point.x, point.y]);
-                });
-
-                // Aggiungi il tracciato per l'itinerario corrente sulla mappa
-                var polyline = L.polygon(itineraryPoints).addTo(map);
-                map.fitBounds(polyline.getBounds());
+            let points = [];
+            data.forEach(point => {
+                points.push([point.x, point.y]);
+                var marker = L.marker([point.x, point.y]).addTo(map);
+                marker.bindPopup(`<b>${point.name}</b><br>Tipo: ${point.type}`);
             });
+            // Crea una polyline con i punti dell'itinerario e aggiungila alla mappa
+            var polyline = L.polyline(points, {color: 'blue'}).addTo(map);
         })
-        .catch(error => {
-            console.error('Si è verificato un errore durante il caricamento dei punti:', error);
-        });
-}
+        .catch(error => console.error('Errore durante il recupero dell\'itinerario:', error));
+});
 
-// Chiama la funzione onPageLoad quando la pagina è completamente caricata
-document.addEventListener('DOMContentLoaded', onPageLoad);
+

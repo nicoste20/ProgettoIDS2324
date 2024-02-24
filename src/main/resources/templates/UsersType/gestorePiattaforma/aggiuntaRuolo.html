@@ -74,25 +74,25 @@
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" required><br><br>
 
+
     <label for="ruolo">Ruolo:</label>
     <select id="ruolo" name="ruolo">
-        <option value="Curatore">Curatore</option>
-        <option value="Animatore">Animatore</option>
+        <option value="Curator">Curatore</option>
+        <option value="Animator">Animatore</option>
         <option value="Contributor">Contributor</option>
-        <option value="Contributor Autorizzato">Contributor Autorizzato</option>
-        <option value="Turista">Turista</option>
-        <option value="Turista Autorizzato">Turista Autorizzato</option>
+        <option value="ContributorAuthorized">Contributor Autorizzato</option>
+        <option value="TouristAuthorized">Turista Autorizzato</option>
     </select><br><br>
 
-    <button class="submit-btn" type="submit">Aggiungi</button>
+    <button class="submit-btn" type="submit" onclick="createUser()">Aggiungi</button>
 </form>
 
 <form class="popup" id="rimozioneForm">
     <button class="close-button">X</button>
     <label for="email">Email:</label>
-    <input type="email" id="mail" name="email" required><br><br>
+    <input type="email" id="mail" name="emailRemove" required><br><br>
 
-    <button class="submit-btn" type="submit">Rimuovi</button>
+    <button class="submit-btn" type="submit" onclick="deleteUser()">Rimuovi</button>
 </form>
 
 <!-- Script JavaScript -->
