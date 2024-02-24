@@ -15,7 +15,4 @@ public interface ItineraryRepository extends JpaRepository<Itinerary,Integer> {
     @Query("SELECT i FROM Itinerary i")
     List<Itinerary> findAllItineraries();
 
-    @Query("SELECT i.name FROM Itinerary i")
-    List<String> findAllNames();
-
 }

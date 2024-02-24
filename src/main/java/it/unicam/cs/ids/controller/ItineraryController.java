@@ -196,9 +196,4 @@ public class ItineraryController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/getAllNames")
-    public ResponseEntity<Object> getAllNames(){
-        return new ResponseEntity<>(this.itineraryRepository.findAllNames(),HttpStatus.OK);
-    }
-
 }
