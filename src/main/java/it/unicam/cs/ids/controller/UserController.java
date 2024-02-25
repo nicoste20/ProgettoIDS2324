@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.controller;
 
 import it.unicam.cs.ids.Exception.UserAlreadyInException;
+import it.unicam.cs.ids.Exception.UserBadTypeException;
 import it.unicam.cs.ids.Exception.UserNotExistException;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.user.BaseUser;
@@ -38,12 +39,13 @@ public class UserController {
      */
     @PostMapping("/addCurator{email}")
     public ResponseEntity<Object> addCurator(@RequestBody String managerEmail, @PathParam("email") String email) {
-        if(userRepository.findByEmail(email)==1 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
-            BaseUser x = getUserByEmail(email);
-            x.setRole(UserRole.Curator);
-            userRepository.save(x);
+        BaseUser manager = this.getUserByEmail(managerEmail);
+        if(manager.getUserType().equals(UserRole.PlatformManager)){
+            BaseUser user = getUserByEmail(email);
+            user.setRole(UserRole.Curator);
+            userRepository.save(user);
             return new ResponseEntity<>("Curator added", HttpStatus.OK);
-        }else throw new UserNotExistException();
+        }else throw new UserBadTypeException();
     }
 
     /**
@@ -54,13 +56,13 @@ public class UserController {
      */
     @PostMapping("/addAnimator{email}")
     public ResponseEntity<Object> addAnimator(@RequestBody String managerEmail, @PathParam("email") String email) {
-
-        if(userRepository.findByEmail(email)==1 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
-            BaseUser x = getUserByEmail(email);
-            x.setRole(UserRole.Animator);
-            userRepository.save(x);
+        BaseUser manager = this.getUserByEmail(managerEmail);
+        if(manager.getUserType().equals(UserRole.PlatformManager)){
+            BaseUser user = getUserByEmail(email);
+            user.setRole(UserRole.Curator);
+            userRepository.save(user);
             return new ResponseEntity<>("Animator added", HttpStatus.OK);
-        }else throw new UserNotExistException();
+        }else throw new UserBadTypeException();
     }
 
     /**
@@ -70,10 +72,11 @@ public class UserController {
      */
     @PostMapping("/updateContributor{contributorEmail}")
     public void changeRole(@RequestBody String managerEmail, @PathParam("contributorEmail") String email) {
-        if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
-            BaseUser x = getUserByEmail(email);
-            x.setRole(UserRole.ContributorAuthorized);
-            userRepository.save(x);
+        BaseUser manager = this.getUserByEmail(managerEmail);
+        if(manager.getUserType().equals(UserRole.PlatformManager)){
+            BaseUser user = getUserByEmail(email);
+            user.setRole(UserRole.ContributorAuthorized);
+            userRepository.save(user);
         }else throw new UserAlreadyInException();
     }
 
@@ -93,7 +96,7 @@ public class UserController {
      */
     @PostMapping("/add")
     public ResponseEntity<Object> addUser(@RequestBody BaseUser user){
-        if(userRepository.findByEmail(user.getEmail())==0){
+        if(userRepository.countByEmail(user.getEmail()) == 0){
             userRepository.save(user);
             return new ResponseEntity<>("User created", HttpStatus.OK);
         }else throw new UserAlreadyInException();
@@ -107,11 +110,9 @@ public class UserController {
      */
     @DeleteMapping("/delete")
     public ResponseEntity<Object> deleteUser(@RequestBody String email){
-        if(userRepository.findByEmail(email)!=0){
-            int id= userRepository.selectByEmail(email);
-            userRepository.deleteById(id);
-            return new ResponseEntity<>("User deleted", HttpStatus.OK);
-        }else throw new UserNotExistException();
+        BaseUser user = this.getUserByEmail(email);
+        this.userRepository.delete(user);
+        return new ResponseEntity<>("User deleted", HttpStatus.OK);
     }
 
     /**
@@ -120,8 +121,8 @@ public class UserController {
      * @return the user corresponding to the email given
      */
     private BaseUser getUserByEmail(String email){
-        int id= userRepository.selectByEmail(email);
-        BaseUser x = userRepository.findById(id).get();
-        return x;
+       if(userRepository.countByEmail(email) == 0)
+           throw new UserNotExistException();
+       return userRepository.selectByEmail(email);
     }
 }

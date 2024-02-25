@@ -50,7 +50,7 @@ public class Contest extends Content {
      * Checks the privacy status of the contest.
      * @return True if the contest is private, false otherwise.
      */
-    public boolean isPrivacy(){ return this.privacy;}
+    public boolean isPrivate(){ return this.privacy;}
 
     public void deleteMultimedia(int id){
         int index=-1;

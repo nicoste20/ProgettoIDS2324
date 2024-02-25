@@ -4,6 +4,7 @@ import it.unicam.cs.ids.Exception.*;
 import it.unicam.cs.ids.controller.Repository.FestivalRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Festival;
+import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,13 +43,14 @@ public class FestivalController {
     @PostMapping("/add{userId}")
     public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival, @PathParam(("userId")) Integer userId){
         newfestival.setAuthor(userId);
-        if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
+        BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
+        if(user.getUserType().equals(UserRole.Curator)) {
             if (newfestival.getEndDate().after(new Date())) {
-                if (festivals.countFestivalsWithDescription(newfestival.getName()) == 0) {
+                if (festivals.countFestivalsWithName(newfestival.getName()) == 0) {
                     festivals.save(newfestival);
                     return new ResponseEntity<>("Festival created", HttpStatus.OK);
-                } else throw new FestivalNotFoundException();
-            }else throw new FestivalAlreadyInException();
+                } else throw new FestivalAlreadyInException();
+            }else throw new FestivalNotFoundException();
         }else throw new UserBadTypeException();
     }
 
@@ -59,9 +61,9 @@ public class FestivalController {
      * @return A response entity indicating the success of the operation.
      */
     @RequestMapping(value = "/delete{title}{userId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object>  removeFestival(@PathParam(("title")) String title, @PathParam(("userId")) int userId){
+    public ResponseEntity<Object> removeFestival(@PathParam(("title")) String title, @PathParam(("userId")) int userId){
         if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
-            if (festivals.countFestivalsWithDescription(title) > 0) {
+            if (festivals.countFestivalsWithName(title) > 0) {
                 festivals.deleteById(festivals.findFestivalIdByDescription(title));
                 return new ResponseEntity<>("Festival cancelled", HttpStatus.OK);
             }
@@ -75,7 +77,7 @@ public class FestivalController {
      * @return true if the Festival is active, false otherwise.
      */
     private boolean isActive(String text){
-        if(festivals.countFestivalsWithDescription(text)>0){
+        if(festivals.countFestivalsWithName(text)>0){
             int id = festivals.findFestivalIdByDescription(text);
             return festivals.findById(id).get().getEndDate().after(new Date());
         } throw new FestivalNotFoundException();

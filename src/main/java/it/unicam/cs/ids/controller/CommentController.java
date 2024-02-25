@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.controller;
 
-import it.unicam.cs.ids.Exception.UserBadTypeException;
+import it.unicam.cs.ids.Exception.CommentNotExistExcpetion;
 import it.unicam.cs.ids.Exception.UserNotExistException;
 import it.unicam.cs.ids.controller.Repository.CommentRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The  Comment controller class manages the addition and validation of a general comment
@@ -42,8 +43,7 @@ public class CommentController {
      */
     @PostMapping("/add/comment{userId}")
     public void addComment(@RequestBody Comment comment , @PathParam("userId") int userId) {
-        if(users.existsById(userId)){
-            BaseUser user = users.findById(userId).get();
+            BaseUser user = this.users.findById(userId).orElseThrow(UserNotExistException::new);
             comment.setAuthorId(userId);
             if (user.getUserType().equals(UserRole.Contributor) || user.getUserType().equals(UserRole.TouristAuthorized)) {
                     this.addWithPending(comment);
@@ -51,7 +51,6 @@ public class CommentController {
                 if((user.getUserType().equals(UserRole.ContributorAuthorized) || user.getUserType().equals(UserRole.Curator)))
                     this.addWithoutPending(comment);
             }
-        }else throw new UserNotExistException();
     }
 
     /**
@@ -82,20 +81,15 @@ public class CommentController {
      * @param commentId  The Point to be validated or removed.
      */
     @PutMapping("/validate/comment{userId}{commentId}")
-    public void validateComment(@RequestBody boolean choice,@PathParam("userId") int userId, @PathParam("userId")
-    int commentId) {
-        if(users.existsById(userId)) {
-            BaseUser curator = this.users.findById(userId).get();
-            if(curator.getUserType().equals(UserRole.Curator)) {
-                if(comments.existsById(commentId)){
-                    if (choice) {
-                        Comment x= comments.findById(commentId).get();
-                        x.setValidation(true);
-                        comments.save(x);
-                    }else
-                        this.comments.deleteById(commentId);
-                }
-            }
+    public void validateComment(@RequestBody boolean choice,@PathParam("userId") int userId, @PathParam("commentId") int commentId) {
+        BaseUser curator = this.users.findById(userId).orElseThrow(UserNotExistException::new);
+        if(curator.getUserType().equals(UserRole.Curator)) {
+            if (choice) {
+                Comment comment = comments.findById(commentId).orElseThrow(CommentNotExistExcpetion::new);
+                comment.setValidation(true);
+                comments.save(comment);
+            }else
+                this.comments.deleteById(commentId);
         }
     }
 
@@ -109,5 +103,6 @@ public class CommentController {
         List<Comment> commentsWithContentId = comments.findByContentId(contentId);
         return new ResponseEntity<>(commentsWithContentId, HttpStatus.OK);
     }
+
 }
 
