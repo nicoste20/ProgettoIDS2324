@@ -62,7 +62,8 @@ public class FestivalController {
      */
     @RequestMapping(value = "/delete{title}{userId}", method = RequestMethod.DELETE)
     public ResponseEntity<Object> removeFestival(@PathParam(("title")) String title, @PathParam(("userId")) int userId){
-        if(users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
+        BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
+        if(user.getUserType().equals(UserRole.Curator)) {
             if (festivals.countFestivalsWithName(title) > 0) {
                 festivals.deleteById(festivals.findFestivalIdByDescription(title));
                 return new ResponseEntity<>("Festival cancelled", HttpStatus.OK);
@@ -77,7 +78,7 @@ public class FestivalController {
      * @return true if the Festival is active, false otherwise.
      */
     private boolean isActive(String text){
-        if(festivals.countFestivalsWithName(text)>0){
+        if(festivals.countFestivalsWithName(text) > 0){
             int id = festivals.findFestivalIdByDescription(text);
             return festivals.findById(id).get().getEndDate().after(new Date());
         } throw new FestivalNotFoundException();

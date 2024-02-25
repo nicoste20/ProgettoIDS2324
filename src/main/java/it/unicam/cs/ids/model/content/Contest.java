@@ -53,13 +53,11 @@ public class Contest extends Content {
     public boolean isPrivate(){ return this.privacy;}
 
     public void deleteMultimedia(int id){
-        int index=-1;
-        for(int x : multimediaList){
-            if(x==id){
-                index = multimediaList.get(x);
+        for(int currentId : multimediaList){
+            if(currentId == id){
+                multimediaList.remove(id);
             }
         }
-        multimediaList.remove(index);
     }
 
     /**

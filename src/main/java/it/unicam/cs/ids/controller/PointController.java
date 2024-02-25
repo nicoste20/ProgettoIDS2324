@@ -95,15 +95,14 @@ public class PointController {
     private ResponseEntity<Object> addPoint(Point point,  int userId) {
         if (points.isAlreadyIn(point.getX(), point.getY()) == 0) {
             points2D.save(new Point2D(point.getX(), point.getY()));
-            if (users.existsById(userId)) {
+            BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
                 point.setAuthor(userId);
-                if(users.findById(userId).get().getUserType().equals(UserRole.Contributor))
+                if(user.getUserType().equals(UserRole.Contributor))
                     this.addWithPending(point);
                 else
                     this.addWithoutPending(point);
                 return new ResponseEntity<>("Point created", HttpStatus.OK);
             } else throw new UserBadTypeException();
-        }else throw new PointAlreadyInException();
     }
 
     /**
@@ -130,20 +129,18 @@ public class PointController {
      */
     @RequestMapping(value = "/validate{choice}{userId}{pointId}", method = RequestMethod.PUT)
     public ResponseEntity<Object> validatePoint(@PathParam("choice") boolean choice, @PathParam("userId") int userId, @PathParam("pointId") int pointId) {
-        if (users.findById(userId).get().getUserType().equals(UserRole.Curator)) {
-            if (points.existsById(pointId)) {
+        if (users.findById(userId).orElseThrow(UserNotExistException::new).getUserType().equals(UserRole.Curator)) {
+            Point point = points.findById(pointId).orElseThrow(PointAlreadyInException::new);
                 if (choice) {
-                    Point x =  points.findById(pointId).get();
-                    x.setValidation(true);
-                    points.save(x);
+                    point.setValidation(true);
+                    points.save(point);
                     return new ResponseEntity<>("Point Validated", HttpStatus.OK);
                 } else {
-                    points2D.deleteByCoordinate(points.findById(pointId).get().getX(),points.findById(pointId).get().getY());
+                    points2D.deleteByCoordinate(point.getX(),point.getY());
                     this.points.deleteById(pointId);
                     return new ResponseEntity<>("Point Deleted", HttpStatus.OK);
                 }
-            }else throw new PointNotExistException();
-        }else throw new UserBadTypeException();
+            }else throw new UserBadTypeException();
     }
 
     /**
@@ -167,12 +164,11 @@ public class PointController {
 
     @GetMapping(value = "/delete{id}{userId}")
     public ResponseEntity<Object> pointDelete(@PathParam("id") int id, @PathParam("userId") int userId){
-        if(users.findById(userId).isPresent() && points.findById(id).isPresent()){
-            BaseUser user = users.findById(userId).get();
-            Point point = points.findById(id).get();
-            if(user.getUserType().equals(UserRole.Curator) || point.getAuthor() == userId){
-                points.delete(point);
-            }
+
+        BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
+        Point point = points.findById(id).orElseThrow(PointNotExistException::new);
+        if(user.getUserType().equals(UserRole.Curator) || point.getAuthor() == userId){
+            points.delete(point);
         }
         return new ResponseEntity<>("Point Deleted", HttpStatus.OK);
     }

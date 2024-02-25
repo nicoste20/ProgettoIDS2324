@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.controller;
 
+import it.unicam.cs.ids.Exception.ItineraryNotExistException;
 import it.unicam.cs.ids.Exception.PointNotExistException;
 import it.unicam.cs.ids.Exception.UserBadTypeException;
 import it.unicam.cs.ids.Exception.UserNotExistException;
@@ -40,7 +41,6 @@ public class ItineraryController {
      * Constructs a new ItineraryController with the specified repositories.
      *
      * @param itinerariesList The repository for Itinerary objects.
-     * @param pointRepository
      * @param users           The repository for User objects.
      */
     @Autowired
@@ -58,18 +58,18 @@ public class ItineraryController {
      */
     @PostMapping("/add{userId}")
     public ResponseEntity<String> addItinerary(@RequestBody Itinerary itinerary ,@PathParam("userId") int userId) {
-        if(users.existsById(userId)){
-            IUserPlatform user = users.findById(userId).get();
-            if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.Animator))) {
-                this.pointExistControl(itinerary);
-                itinerary.setAuthor(userId);
-                if (user.getUserType().equals(UserRole.Contributor))
-                    this.addWithPending(itinerary);
-                else
-                    this.addWithoutPending(itinerary);
-                return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
-            }else throw new UserBadTypeException();
-        }else throw new UserNotExistException();
+        BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
+        if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.Animator))) {
+            this.pointExistControl(itinerary);
+            itinerary.setAuthor(userId);
+
+            if (user.getUserType().equals(UserRole.Contributor))
+                this.addWithPending(itinerary);
+            else
+                this.addWithoutPending(itinerary);
+
+            return new ResponseEntity<>("Itinerary created", HttpStatus.OK);
+        }else throw new UserBadTypeException();
     }
 
     private void pointExistControl(Itinerary itinerary){
@@ -106,29 +106,25 @@ public class ItineraryController {
      */
     @PostMapping("/validate{id}{userId}")
     public ResponseEntity<Object> validateItinerary(@PathParam(("userId")) int userId, @PathParam(("id")) int id, @RequestBody boolean choice) {
-        if (users.existsById(userId)) {
-            if(users.findById(id).get().equals(UserRole.Curator)){
-                if (this.itineraryRepository.existsById(id)) {
+        BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
+            if(user.getUserType().equals(UserRole.Curator)){
+                Itinerary itinerary = itineraryRepository.findById(id).orElseThrow(ItineraryNotExistException::new);
                     if (choice) {
-                        Itinerary x =  itineraryRepository.findById(id).get();
-                        x.setValidation(true);
-                        itineraryRepository.save(x);
+                        itinerary.setValidation(true);
+                        itineraryRepository.save(itinerary);
                         return new ResponseEntity<>("Itinerary validated", HttpStatus.OK);
-                    }else{
-                        this.itineraryRepository.deleteById(id);
-                        return new ResponseEntity<>("Itinerary deleted", HttpStatus.OK);
                     }
-                }else throw new RuntimeException("Itinerary doesn't exist");
+                    this.itineraryRepository.deleteById(id);
+                    return new ResponseEntity<>("Itinerary deleted", HttpStatus.OK);
             }
-        }else throw new RuntimeException("Users doesn't exist");
-        return null;
+        return new ResponseEntity<>("Itinerary not validated", HttpStatus.OK);
     }
 
     /**
      * It returns how many itineraries are published
      */
     public long getItinerariesSize(){
-        return StreamSupport.stream(itineraryRepository.findAll().spliterator(), true)
+        return itineraryRepository.findAll().parallelStream()
                 .filter(itinerary -> !itinerary.isValidate())
                 .count();
     }
@@ -137,7 +133,7 @@ public class ItineraryController {
      * It returns the itineraries that are in a pending situation
      */
     public List<Itinerary> getPendingItineraries(){
-        return StreamSupport.stream(itineraryRepository.findAll().spliterator(), false)
+        return itineraryRepository.findAll().stream()
                 .filter(itinerary -> !itinerary.isValidate()).toList();
     }
 
@@ -176,23 +172,19 @@ public class ItineraryController {
     @GetMapping("/get/itinerary{id}")
     public ResponseEntity<Object> getItinerary(@PathParam("id") int id){
         List<Point> points = new ArrayList<>();
-        if(this.itineraryRepository.findById(id).isPresent()){
-            for (Integer pointId : this.itineraryRepository.findById(id).get().getPoints()) {
+        Itinerary itinerary = itineraryRepository.findById(id).orElseThrow(ItineraryNotExistException::new);
+            for (Integer pointId : itinerary.getPoints()) {
                 pointRepository.findById(pointId).ifPresent(points::add);
             }
-        }
         return new ResponseEntity<>(points, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete{itineraryId}{userId}")
     public ResponseEntity<Object> deleteItinerary(@PathParam("itineraryId") int itineraryId , @PathParam("userId") int userId){
-        if(users.findById(userId).isEmpty())
-            throw new UserNotExistException();
-        if(this.itineraryRepository.findById(itineraryId).isPresent()){
-            Itinerary itinerary = itineraryRepository.findById(itineraryId).get();
-            if(users.findById(userId).get().getId() == itinerary.getAuthor() || users.findById(userId).get().getUserType().equals(UserRole.Curator))
+        BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
+        Itinerary itinerary = itineraryRepository.findById(itineraryId).orElseThrow(ItineraryNotExistException::new);
+            if(user.getId() == itinerary.getAuthor() || user.getUserType().equals(UserRole.Curator))
                 itineraryRepository.delete(itinerary);
-        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

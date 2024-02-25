@@ -1,5 +1,6 @@
 package it.unicam.cs.ids.controller;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import it.unicam.cs.ids.Exception.*;
 import it.unicam.cs.ids.controller.Repository.ContestRespository;
 import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
@@ -41,7 +42,6 @@ public class MultimediaController {
      * @param multimediaRepository the repository for multimedia content
      * @param userRepository       the repository of users
      * @param contestRepository    the repository of contest
-     * @param pointRepository
      */
     @Autowired
     public MultimediaController(MultimediaRepository multimediaRepository, UserRepository userRepository, ContestRespository contestRepository, PointRepository pointRepository) {
@@ -59,9 +59,7 @@ public class MultimediaController {
      */
     @PostMapping("/add/multimedia{userId}{pointId}")
     public ResponseEntity<Object> addContent(@RequestBody Multimedia content,@PathParam(("userId"))int userId, @PathParam(("pointId")) Integer pointId) {
-        if(userRepository.findById(userId).isEmpty())
-           throw new UserNotExistException();
-        BaseUser user = userRepository.findById(userId).get();
+        BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
         content.setAuthor(userId);
         if(pointId != null){
             if(pointRepository.existsById(pointId))
@@ -111,24 +109,18 @@ public class MultimediaController {
 
     @RequestMapping(value="/validate/multimedia{choice}{id}{userId}", method = RequestMethod.PUT)
     public ResponseEntity<Object> validateContent(@PathParam(("userId")) int userId, @PathParam(("choice")) boolean choice,
-                                                  @PathParam(("id")) int id) {
-        if (userRepository.existsById(userId)) {
-            BaseUser user = userRepository.findById(userId).get();
-            if (user.getUserType().equals(UserRole.Curator)){
-                if (multimediaRepository.existsById(id)) {
-                    if (choice) {
-                        Multimedia multimedia = multimediaRepository.findById(id).get();
-                        multimedia.setValidation(true);
-                        multimediaRepository.save(multimedia);
-                        return new ResponseEntity<>("Multimedia validated", HttpStatus.OK);
-                    } else {
-                        multimediaRepository.deleteById(id);
-                        return new ResponseEntity<>("Multimedia eliminated", HttpStatus.OK);
-                    }
-                }else throw new MultimediaNotFoundException();
-            }else throw new UserBadTypeException();
-        }
-        return new ResponseEntity<>("Multimedia nota validate", HttpStatus.NOT_FOUND);
+    @PathParam(("id")) int id) {
+        BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
+        Multimedia multimedia = multimediaRepository.findById(id).orElseThrow(MultimediaNotFoundException::new);
+        if (user.getUserType().equals(UserRole.Curator)){
+            if (choice) {
+                multimedia.setValidation(true);
+                multimediaRepository.save(multimedia);
+                return new ResponseEntity<>("Multimedia validated", HttpStatus.OK);
+            }
+            multimediaRepository.deleteById(id);
+            return new ResponseEntity<>("Multimedia eliminated", HttpStatus.OK);
+        }else throw new UserBadTypeException();
     }
 
     /**
@@ -148,75 +140,60 @@ public class MultimediaController {
      */
 
     @RequestMapping(value="/modify/multimedia/{description}{id}{userId}", method = RequestMethod.PUT)
-    public void modifyDescription(@PathParam("description") String description,@PathParam("id") int id,@PathParam("userId") int userId){
-        if(multimediaRepository.findById(id).isPresent()){
-            int author = multimediaRepository.findById(id).get().getAuthor();
-            if(userRepository.findById(userId).isPresent())
-                throw new UserNotExistException();
-            BaseUser user = userRepository.findById(userId).get();
-            if (author == userId) {
-                if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)) {
-                    Multimedia multimedia = multimediaRepository.findById(id).get();
-                    multimedia.setDescription(description);
-                    multimediaRepository.save(multimedia);
-                } else {
-                    Multimedia multimedia = multimediaRepository.findById(id).get();
-                    multimedia.setDescription(description);
-                    multimedia.setValidation(false);
-                    multimediaRepository.save(multimedia);
-                }
-            }else throw new UserBadTypeException();
-        }else throw new MultimediaNotFoundException();
-
+    public ResponseEntity<Object> modifyDescription(@PathParam("description") String description,@PathParam("id") int id,@PathParam("userId") int userId){
+        Multimedia multimedia = this.multimediaRepository.findById(id).orElseThrow(MultimediaNotFoundException::new);
+        BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
+        if (multimedia.getAuthor() == userId) {
+            if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)){
+                multimedia.setDescription(description);
+                multimediaRepository.save(multimedia);
+                return new ResponseEntity<>("Multimedia modified", HttpStatus.OK);
+            }
+            multimedia.setDescription(description);
+            multimedia.setValidation(false);
+            multimediaRepository.save(multimedia);
+        }else throw new UserBadTypeException();
+        return new ResponseEntity<>("Multimedia not modified", HttpStatus.OK);
     }
 
     /**
      * Delete a multimedia content
      * @param userId the curator user
-     * @param id the content to be removed
+     * @param multimediaId the content to be removed
      * @return a ResponseEntity representing the status of the operation
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
     @DeleteMapping("/delete/multimedia{id}{userId}")
-    public ResponseEntity<Object> deleteContent(@PathParam("userId") int userId,@PathParam("id") int id){
-        if(userRepository.existsById(userId)) {
-            if (userRepository.findById(userId).get().getUserType().equals(UserRole.Curator)) {
-                if (multimediaRepository.existsById(id)) {
-                    multimediaRepository.deleteById(id);
-                    for (Contest contest: contestRespository.findAll()) {
-                        if(contest.getMultimediaList().contains(id)){
-                            contest.deleteMultimedia(id);
-                        }
-                    }
-                    return new ResponseEntity<>("Multimedia deleted", HttpStatus.OK);
-                } else throw new MultimediaNotFoundException();
-            } else throw new UserBadTypeException();
-        }
-        return new ResponseEntity<>("Multimedia not deleted", HttpStatus.NOT_FOUND);
+    public ResponseEntity<Object> deleteContent(@PathParam("userId") int userId,@PathParam("id") int multimediaId){
+        Multimedia multimedia = multimediaRepository.findById(multimediaId).orElseThrow(MultimediaNotFoundException::new);
+        if (userRepository.findById(userId).orElseThrow(UserNotExistException::new).getUserType().equals(UserRole.Curator)){
+            for (Contest contest: contestRespository.findAll()) {
+                if(contest.getMultimediaList().contains(multimediaId)){
+                    contest.deleteMultimedia(multimediaId);
+                }
+            }
+            return new ResponseEntity<>("Multimedia deleted", HttpStatus.OK);
+        } else throw new UserBadTypeException();
     }
 
     /**
      * Reports a multimedia content
      * @param userId the user that is reporting the content
-     * @param id      the ID of the content that the user wants to signal
+     * @param multimediaId      the ID of the content that the user wants to signal
      * @return a ResponseEntity representing the status of the operation
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
     @RequestMapping(value="/signal/multimedia{userId}{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Object> signalContent(@PathParam(("userId")) int userId,@PathParam(("id")) int id) {
-        if (multimediaRepository.existsById(id)) {
-            if(userRepository.existsById(userId)){
-                IUserPlatform user = userRepository.findById(userId).get();
-                if (!(user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.PlatformManager)
-                        || user.getUserType().equals(UserRole.Animator))){
-                    Multimedia x = multimediaRepository.findById(id).get();
-                    x.setSignaled(true);
-                    multimediaRepository.save(x);
-                    return new ResponseEntity<>("Multimedia signaled",HttpStatus.OK);
-                }else throw new UserBadTypeException();
-            }else throw new MultimediaNotFoundException();
+    public ResponseEntity<Object> signalContent(@PathParam(("userId")) int userId,@PathParam(("id")) int multimediaId) {
+        Multimedia multimedia = multimediaRepository.findById(multimediaId).orElseThrow(MultimediaNotFoundException::new);
+        BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
+        if (!(user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.PlatformManager)
+                || user.getUserType().equals(UserRole.Animator))){
+            multimedia.setSignaled(true);
+            multimediaRepository.save(multimedia);
+            return new ResponseEntity<>("Multimedia signaled",HttpStatus.OK);
         }else throw new UserBadTypeException();
     }
 
@@ -236,14 +213,12 @@ public class MultimediaController {
     @RequestMapping(value = "/addMultimediaPending/contest{contestId}{userId}", method = RequestMethod.POST)
     public ResponseEntity<Object> addWithPending(@RequestBody Multimedia multimedia, @PathParam(("contestId")) int contestId, @PathParam("userId") int userId)
     {
-        if (contestRespository.existsById(contestId)) {
-            multimedia.setValidation(false);
-            this.addContent(multimedia,userId,null);
-            int multimediaId = multimedia.getId();
-            Contest contest = contestRespository.findById(contestId).get();
-            contest.addMultimedia(multimediaId);
-            contestRespository.save(contest);
-            return new ResponseEntity<>("Multimedia added", HttpStatus.OK);
-        }else throw new ContestNotExistException();
+        Contest contest = contestRespository.findById(contestId).orElseThrow(ContestNotExistException::new);
+        multimedia.setValidation(false);
+        this.addContent(multimedia,userId,null);
+        int multimediaId = multimedia.getId();
+        contest.addMultimedia(multimediaId);
+        contestRespository.save(contest);
+        return new ResponseEntity<>("Multimedia added", HttpStatus.OK);
     }
 }
