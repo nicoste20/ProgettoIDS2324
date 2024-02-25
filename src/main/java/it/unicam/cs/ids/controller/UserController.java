@@ -36,14 +36,14 @@ public class UserController {
      * @param email        The email of the user to be added as a curator.
      * @return A ResponseEntity with the appropriate message and status code.
      */
-    @PostMapping("/addCurator{userEmail}")
-    public ResponseEntity<Object> addCurator(@RequestBody String managerEmail, @PathParam("userEmail") String email) {
-        if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
+    @PostMapping("/addCurator{email}")
+    public ResponseEntity<Object> addCurator(@RequestBody String managerEmail, @PathParam("email") String email) {
+        if(userRepository.findByEmail(email)==1 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
             BaseUser x = getUserByEmail(email);
             x.setRole(UserRole.Curator);
             userRepository.save(x);
             return new ResponseEntity<>("Curator added", HttpStatus.OK);
-        }else throw new UserAlreadyInException();
+        }else throw new UserNotExistException();
     }
 
     /**
@@ -52,14 +52,15 @@ public class UserController {
      * @param email        The email of the user to be added as an animator.
      * @return A ResponseEntity with the appropriate message and status code.
      */
-    @PostMapping("/addAnimator{userEmail}")
-    public ResponseEntity<Object> addAnimator(@RequestBody String managerEmail, @PathParam("userEmail") String email) {
-        if(userRepository.findByEmail(email)!=0 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
+    @PostMapping("/addAnimator{email}")
+    public ResponseEntity<Object> addAnimator(@RequestBody String managerEmail, @PathParam("email") String email) {
+
+        if(userRepository.findByEmail(email)==1 && userRepository.findById(userRepository.selectByEmail(managerEmail)).get().getUserType().equals(UserRole.PlatformManager)){
             BaseUser x = getUserByEmail(email);
             x.setRole(UserRole.Animator);
             userRepository.save(x);
             return new ResponseEntity<>("Animator added", HttpStatus.OK);
-        }else throw new UserAlreadyInException();
+        }else throw new UserNotExistException();
     }
 
     /**

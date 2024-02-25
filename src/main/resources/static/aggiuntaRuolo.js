@@ -101,8 +101,11 @@ function createUser() {
     body: JSON.stringify(users),
 })
 .then(response => response.text())
-    .then(data => console.log(data))
-    .catch(error => console.error('Error: Utente non creato', error));
+        .then(data => {
+            console.log(data);
+            refreshPage(); // Esegui il refresh della pagina dopo l'esecuzione del metodo makeCurator()
+        })
+        .catch(error => console.error('Error: Utente non creato', error));
 }
 
 function deleteUser() {
@@ -117,7 +120,10 @@ function deleteUser() {
         body: email
     })
         .then(response => response.text())
-        .then(data => console.log(data))
+        .then(data => {
+            console.log(data);
+            refreshPage(); // Esegui il refresh della pagina dopo l'esecuzione del metodo makeCurator()
+        })
         .catch(error => console.error('Errore: Utente cancellato', error));
 }
 
@@ -154,7 +160,7 @@ function displayUsers(users) {
     users.forEach(user => {
         const li = document.createElement('li');
         li.textContent = "E-mail: " + user.email + " Ruolo: " + user.userType;
-
+        var UEmail= user.email;
         if (user.userType === "Contributor") {
             const button = document.createElement('button');
             button.classList.add('editButton', 'btn', 'btn-secondary');
@@ -193,8 +199,9 @@ function displayUsers(users) {
                 buttonChange.style.color = 'white';
                 buttonChange.style.cursor = 'pointer';
                 buttonChange.addEventListener('click', () => {
+                    makeAnimator(UEmail);
                     // Qui puoi aggiungere la logica per cambiare il ruolo dell'utente
-                    console.log(`Cambia ruolo per ${user.name}`);
+                    //console.log(`Cambia ruolo per ${user.name}`);
                     // Chiudi la finestra pop-up
                     popupContainer.remove();
                 });
@@ -205,10 +212,11 @@ function displayUsers(users) {
                 buttonCancel.style.padding = '8px 16px';
                 buttonCancel.style.border = 'none';
                 buttonCancel.style.borderRadius = '4px';
-                buttonCancel.style.backgroundColor = '#6c757d'; // Colore di sfondo del pulsante Annulla
+                buttonCancel.style.backgroundColor = '#007bff'; // Colore di sfondo del pulsante Annulla
                 buttonCancel.style.color = 'white';
                 buttonCancel.style.cursor = 'pointer';
                 buttonCancel.addEventListener('click', () => {
+                    makeCurator(UEmail);
                     // Chiudi la finestra pop-up
                     popupContainer.remove();
                 });
@@ -232,3 +240,45 @@ function displayUsers(users) {
 
 // Chiamata alla funzione per ottenere gli utenti dal database quando necessario
 getUsersFromDatabase();
+
+var ManagerEmail = "ijeievn@example.com";
+
+function makeAnimator(emailNew){
+
+    fetch(`http://localhost:8080/users/addAnimator?email=${emailNew}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: ManagerEmail,
+    })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            refreshPage(); // Esegui il refresh della pagina dopo l'esecuzione del metodo makeCurator()
+        })
+        .catch(error => console.error('Error: Animatore non creato', error));
+}
+
+function makeCurator(email){
+
+    fetch(`http://localhost:8080/users/addCurator?email=${email}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: ManagerEmail,
+    })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            refreshPage(); // Esegui il refresh della pagina dopo l'esecuzione del metodo makeCurator()
+        })
+        .catch(error => console.error('Error: Curatore non creato', error));
+}
+
+function refreshPage() {
+    setTimeout(function() {
+        location.reload();
+    }, 2000); // Aspetta 2 secondi prima di eseguire il refresh della pagina
+}
