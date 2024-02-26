@@ -38,41 +38,30 @@
         </div>
     </div>
 </nav>
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-3">
-            <!-- Menu a tendina per selezionare l'itinerario -->
-            <label for="selectItinerario" class="form-label">Seleziona Itinerario:</label>
-            <select class="form-select" id="selectItinerario">
-                <option selected disabled>Scegli un itinerario</option>
-            </select>
-        </div>
-        <div class="col-md-9">
-            <!-- Mappa -->
-            <div id="map" class="leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab
-                         leaflet-touch-drag leaflet-touch-zoom" style="height: 580px;">
-            </div>
-        </div>
-    </div>
+<div id="map" class="leaflet-container leaflet-touch leaflet-retina leaflet-fade-anim leaflet-grab
+                 leaflet-touch-drag leaflet-touch-zoom">
 </div>
 
 <div class="container mt-4">
-    <div class="row mt-3">
-        <div class="col-text-center">
-            <!-- Bottone con icona di una persona che cammina -->
-            <button id="centerMapButton" class="btn-center">
-                <i class="fas fa-running"></i>
-            </button>
-        </div>
+    <div class="col-text-center">
+        <button id="centerMapButton" class="btn-center">
+            <i class="fas fa-running"></i>
+        </button>
+    </div>
+    <div class= "selezione">
+        <!-- Menu a tendina per selezionare l'itinerario -->
+        <label for="selectItinerario" class="form-label">Seleziona Itinerario:</label>
+
+        <select class="form-select" id="selectItinerario">
+            <option selected disabled>Scegli un itinerario</option>
+        </select>
     </div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""></script>
 <script src="/static/itinerari.js"></script>
 <script src="/static/home.js"></script>
-
 </body>
 </html>
