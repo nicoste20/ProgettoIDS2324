@@ -89,7 +89,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form> <!-- action="" method="post" enctype="multipart/form-data" -->
                     <div class="form-group">
                         <label for="point">Punto:</label>
                         <select class="form-control" id="point" name="point">
@@ -100,10 +100,13 @@
                         <label for="optionalText">Descrizione:</label>
                         <input type="text" class="form-control" id="optionalText" name="optionalText">
                     </div>
+                    <div>
+                        <input type="file" accept=".png, .jpg"/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Salva</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Salva</button>
             </div>
         </div>
     </div>

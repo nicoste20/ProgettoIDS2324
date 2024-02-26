@@ -68,5 +68,3 @@ modifyButtons.forEach(function(button) {
     });
 });
 
-
-
