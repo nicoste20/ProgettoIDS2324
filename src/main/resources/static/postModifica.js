@@ -1,3 +1,4 @@
+const user= 2;
 document.addEventListener("DOMContentLoaded", function() {
     // Ottieni il modal
     var modal = document.getElementById("signal");
@@ -67,4 +68,77 @@ modifyButtons.forEach(function(button) {
         }
     });
 });
+function getAllMultimedia() {
+    const multimedia = { name: name, description: description, path:path };
+    fetch(`http://localhost:8080/multimedia/getAll`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(multimedia),
+    })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            // Puoi aggiungere qui ulteriori azioni dopo il salvataggio
+        })
+        .catch(error => console.error('Errore: Multimedia non creato', error));
+}
 
+// Chiama la funzione onPageLoad quando la pagina è completamente caricata
+document.addEventListener('DOMContentLoaded', popolaMenuTendina);
+function popolaMenuTendina() {
+    fetch('http://localhost:8080/points/getAll')
+        .then(response => response.json())
+        .then(data => {
+            const selectPoint = document.getElementById('selectPoint');
+            data.forEach(point => {
+                const option = document.createElement('option');
+                option.value = point.id;
+                option.textContent = point.name;
+                selectPoint.appendChild(option);
+            });
+        })
+        .catch(error => console.error('Errore durante il recupero dei punti:', error));
+}
+
+async function salvaMultimedia() {
+    const selectPoint = document.getElementById('selectPoint');
+    const pointId = selectPoint.value;
+    console.log(pointId);
+    const nameMultimedia = document.getElementById('multimediaName').value;
+    const descriptionInput = document.getElementById('multimediaDescription').value;
+
+    const fileInput = document.getElementById('fileInput');
+    const file = fileInput.files[0];
+    //modifica <input type="file" id="fileInput" accept=".png, .jpg, .jpeg">
+
+    if (!pointId || !file) {
+        alert('Compila tutti i campi prima di salvare.');
+        return;
+    }
+
+    const formData = new FormData();
+    const fileName = `${pointId}_${generateUniqueNumber()}`;
+    const multimediaFiles = {name: nameMultimedia, description: descriptionInput, path: fileName};
+    try {
+          await fetch(`http://localhost:8080/multimedia/add?userId=${user}&pointId=${pointId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(multimediaFiles)
+        });
+        formData.append('fileInput', file, fileName); // Aggiunge il file con il nome personalizzato
+    } catch (error) {
+        console.error('Errore durante la richiesta fetch:', error);
+    }
+}
+
+function generateUniqueNumber() {
+    return Math.floor(Math.random() * 1000); // Cambia 10000 con un numero più grande se necessario
+}
+
+document.getElementById('salva').addEventListener('click', function() {
+    salvaMultimedia();
+});

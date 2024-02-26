@@ -27,7 +27,7 @@ function centerMapToLocation(latitude, longitude) {
 // Trova il bottone nella pagina
 var centerMapButton = document.getElementById('centerMapButton');
 
-const user=4;
+const user=3;
 
 // Aggiungi un gestore di eventi al bottone
 centerMapButton.addEventListener('click', function () {
@@ -94,16 +94,6 @@ function createPointSquare(name, x, y, type, history) {
         .then(data => console.log(data))
         .catch(error => console.error('Error:Piazza non creata', error));
 }
-
-/*function addMarkerToMap(latitude, longitude, name, type) {
-    createPoint()
-    var newMarker = L.marker([latitude, longitude], {
-    }).addTo(map);
-
-    //newMarker.bindPopup(`Nome: ${name}<br>Tipo: ${type}<br><button onclick="removeMarker('${name}')">Rimuovi</button>`).openPopup();
-
-
-}*/
 
 // Funzione per rimuovere un marker dalla mappa
 /*function removeMarker(name) {
@@ -227,8 +217,6 @@ map.on('click', function (e) {
 
                 ricaricaPaginaDopoTempo(2000);
             }
-
-
         }
     });
 });

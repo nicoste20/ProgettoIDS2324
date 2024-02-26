@@ -1,6 +1,6 @@
 package it.unicam.cs.ids.controller;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
+
 import it.unicam.cs.ids.Exception.*;
 import it.unicam.cs.ids.controller.Repository.ContestRespository;
 import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
@@ -9,15 +9,21 @@ import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Content;
 import it.unicam.cs.ids.model.content.Contest;
 import it.unicam.cs.ids.model.content.Multimedia;
-import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.InputStreamResource;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * The  ContentController class manages the addition and validation of content,
@@ -61,8 +67,9 @@ public class MultimediaController {
      * @return a ResponseEntity representing the status of the operation
      * @throws UserBadTypeException if the user's role is not correct
      */
-    @PostMapping("/add{userId}{pointId}")
-    public ResponseEntity<Object> addContent(@RequestBody Multimedia content,@PathParam(("userId"))int userId, @PathParam(("pointId")) Integer pointId) {
+    @RequestMapping(value="/add{userId}{pointId}" , method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> addContent(@RequestParam ("file") MultipartFile file, @RequestBody Multimedia content, @PathParam(("userId"))int userId,
+                                             @PathParam(("pointId")) Integer pointId) {
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
         content.setAuthor(userId);
         if(pointId != null){
@@ -163,18 +170,18 @@ public class MultimediaController {
     /**
      * Delete a multimedia content
      * @param userId the curator user
-     * @param multimediaId the content to be removed
+     * @param id the content to be removed
      * @return a ResponseEntity representing the status of the operation
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
     @DeleteMapping("/delete{id}{userId}")
-    public ResponseEntity<Object> deleteContent(@PathParam("userId") int userId,@PathParam("id") int multimediaId){
-        Multimedia multimedia = multimediaRepository.findById(multimediaId).orElseThrow(MultimediaNotFoundException::new);
+    public ResponseEntity<Object> deleteContent(@PathParam("userId") int userId,@PathParam("id") int id){
+        Multimedia multimedia = multimediaRepository.findById(id).orElseThrow(MultimediaNotFoundException::new);
         if (userRepository.findById(userId).orElseThrow(UserNotExistException::new).getUserType().equals(UserRole.Curator)){
             for (Contest contest: contestRespository.findAll()) {
-                if(contest.getMultimediaList().contains(multimediaId)){
-                    contest.deleteMultimedia(multimediaId);
+                if(contest.getMultimediaList().contains(id)){
+                    contest.deleteMultimedia(id);
                 }
             }
             multimediaRepository.delete(multimedia);
@@ -225,10 +232,18 @@ public class MultimediaController {
     {
         Contest contest = contestRespository.findById(contestId).orElseThrow(ContestNotExistException::new);
         multimedia.setValidation(false);
-        this.addContent(multimedia,userId,null);
+        this.addContent(multimedia,userId,null, );
         int multimediaId = multimedia.getId();
         contest.addMultimedia(multimediaId);
         contestRespository.save(contest);
         return new ResponseEntity<>("Multimedia added", HttpStatus.OK);
     }
+    private void addFile(MultipartFile file) throws IOException {
+        File newFile = new File("C:/Users/nicos/Desktop/IDS Laboratorio Esercizi SpringBoot/unicam/src/main/resources" + file.getOriginalFilename());
+        newFile.createNewFile();
+        FileOutputStream fileOutputStream = new FileOutputStream(newFile);
+        fileOutputStream.write(file.getBytes());
+        fileOutputStream.close();
+    }
 }
+
