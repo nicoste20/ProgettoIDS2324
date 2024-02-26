@@ -177,6 +177,7 @@ public class MultimediaController {
                     contest.deleteMultimedia(multimediaId);
                 }
             }
+            multimediaRepository.delete(multimedia);
             return new ResponseEntity<>("Multimedia deleted", HttpStatus.OK);
         } else throw new UserBadTypeException();
     }
