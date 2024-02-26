@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commenti</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Collegamento al file CSS -->
+    <link href="/static/Login.css" rel="stylesheet">
+    <link href="/static/commenti.css" rel="stylesheet">
+    <link href="/static/commentiModifica.css" rel="stylesheet">
+
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand"  href="curatore.html">
+            <span>Piattaforma Comunale</span>
+        </a>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="mappaConModifica.html" id="mappaLink" >Mappa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="postModifica.html" id= "postLink">Post</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="itinerari.html" id=" itinerarioLink">Itinerari</a>
+                </li>
+            </ul>
+        </div>
+        <div class="d-flex">
+            <button class="btn btn-primary me-2">Login</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="board">
+        <h1 class="board-header">Commenti</h1>
+
+        <div class="comment">
+            <p class="comment-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae lectus nec ex tincidunt posuere.</p>
+            <p class="comment-author">John Doe</p>
+            <p class="comment-date">February 15, 2024</p>
+        </div>
+
+        <div class="comment">
+            <p class="comment-content">Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+            <p class="comment-author">Jane Smith</p>
+            <p class="comment-date">February 16, 2024</p>
+        </div>
+        <!-- Aggiungi altri commenti qui -->
+        <div id="new-comment-form">
+            <textarea id="comment-content" class="form-control" rows="3" placeholder="Inserisci il tuo commento"></textarea>
+            <button id="submit-comment" class="btn btn-primary mt-2">Aggiungi Commento</button>
+        </div>
+
+        <!-- Aggiungi altri commenti qui -->
+
+    </div>
+</div>
+
+<!-- Script JavaScript -->
+<script src="/static/home.js"></script>
+<script src="/static/commentiModifica.js"></script>
+</body>
+</html>
