@@ -6,6 +6,29 @@
     height: 100%; /* Altezza del 100% della pagina */
     z-index: -1; /* Sposta la mappa dietro al contenuto */
 }
+.selezione {
+    padding: 10px; /* Aggiunge spazio intorno al menu a tendina */
+    border-radius: 5px; /* Aggiunge bordi arrotondati */
+    width: 100%; /* Imposta la larghezza al 100% */
+    max-width: 300px; /* Imposta una larghezza massima */
+    font-size: 16px; /* Imposta la dimensione del testo */
+    color: #333; /* Colore del testo */
+    z-index: 10;
+    margin-top: -40px;
+    margin-left: -20%;
+}
+
+/* Stile quando il menu a tendina è in hover */
+#selectItinerario:hover {
+    border-color: #999; /* Cambia il colore del bordo quando in hover */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Aggiunge una leggera ombra durante l'hover */
+}
+
+/* Stile per le opzioni del menu a tendina */
+#selectItinerario option {
+    background-color: #fff; /* Cambia il colore dello sfondo delle opzioni */
+    color: #333; /* Colore del testo delle opzioni */
+}
 #centerMapButton {
     background-color: #ffffff; /* Colore di sfondo del bottone */
     border-radius: 50%; /* Rende il bottone circolare */
