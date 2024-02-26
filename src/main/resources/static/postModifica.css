@@ -33,50 +33,49 @@
 }
 /* Stile per il modale */
 /* Stile per il modale */
-.modal {
-    display: none; /* Inizialmente nascosto */
-    position: fixed; /* Posizionamento fisso */
-    top: 50%; /* Allineamento verticale al centro */
-    left: 50%; /* Allineamento orizzontale al centro */
-    transform: translate(-50%, -50%); /* Spostamento al centro della pagina */
-    max-width: max-content; /* Massima larghezza del modale */
+/* Stile per il modal specifico */
+#signal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: max-content;
     max-height: 25%;
-    padding: 20px; /* Spazio interno */
+    padding: 20px;
     align-items: center;
     align-content: center;
     align-self: center;
-    text-align: center; /* Testo centrato */
+    text-align: center;
 }
 
-.modal-content {
-    padding: 20px; /* Spazio interno */
-    border-radius: 10px; /* Bordi arrotondati */
-    background-color: rgba(255, 255, 255, 0.9); /* Sfondo bianco con opacità */
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* Ombra leggera */
+#signal .modal-content {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
-/* Stile per i pulsanti "Sì" e "No" */
-#btn-confirm-yes,
-#btn-confirm-no {
-    padding: 10px 20px; /* Spazio interno */
-    margin: 10px; /* Margine esterno */
-    background-color: #007bff; /* Colore di sfondo */
-    color: #fff; /* Colore del testo */
-    border: none; /* Nessun bordo */
-    border-radius: 5px; /* Bordi arrotondati */
-    cursor: pointer; /* Cambio del cursore al passaggio */
-    transition: background-color 0.3s ease; /* Transizione fluida del colore di sfondo */
+#signal #btn-confirm-yes-new,
+#signal #btn-confirm-no-new {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-/* Stile per il pulsante "Sì" al passaggio del mouse */
-#btn-confirm-yes:hover {
-    background-color: #0056b3; /* Cambio del colore di sfondo al passaggio */
+#signal #btn-confirm-yes-new:hover {
+    background-color: #0056b3;
 }
 
-/* Stile per il pulsante "No" al passaggio del mouse */
-#btn-confirm-no:hover {
-    background-color: #6c757d; /* Cambio del colore di sfondo al passaggio */
+#signal #btn-confirm-no-new:hover {
+    background-color: #6c757d;
 }
+
 /* Stile per il bottone di modifica */
 
 .btn-modify {
@@ -118,3 +117,4 @@
     background-color: #0056b3; /* cambio di colore al passaggio del mouse */
     border-color: #0056b3; /* cambio di colore del bordo al passaggio del mouse */
 }
+

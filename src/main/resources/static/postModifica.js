@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Ottieni il modal
-    var modal = document.getElementById("myModal");
+    var modal = document.getElementById("signal");
 
     // Ottieni tutti i pulsanti di segnalazione
     var btns = document.querySelectorAll(".btn-report");
@@ -67,4 +67,6 @@ modifyButtons.forEach(function(button) {
         }
     });
 });
+
+
 

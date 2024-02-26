@@ -17,6 +17,7 @@ import java.util.Date;
 /**
  * The FestivalController class manages the addition and removal of festivals.
  */
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/festivals")
 public class FestivalController {

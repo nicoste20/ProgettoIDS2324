@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.*;
  * differentiating between immediate addition and pending approval based on the user's role.
  * It interacts with instances of {@link Multimedia}, {@link BaseUser}, {@link IUserPlatform}, and {@link UserRole}.
  */
+@CrossOrigin(origins = "http://localhost:63342")
 @RestController
+@RequestMapping("/multimedia")
 public class MultimediaController {
 
     /**
@@ -57,7 +59,7 @@ public class MultimediaController {
      * @return a ResponseEntity representing the status of the operation
      * @throws UserBadTypeException if the user's role is not correct
      */
-    @PostMapping("/add/multimedia{userId}{pointId}")
+    @PostMapping("/add{userId}{pointId}")
     public ResponseEntity<Object> addContent(@RequestBody Multimedia content,@PathParam(("userId"))int userId, @PathParam(("pointId")) Integer pointId) {
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
         content.setAuthor(userId);
@@ -107,7 +109,7 @@ public class MultimediaController {
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
 
-    @RequestMapping(value="/validate/multimedia{choice}{id}{userId}", method = RequestMethod.PUT)
+    @RequestMapping(value="/validate{choice}{id}{userId}", method = RequestMethod.PUT)
     public ResponseEntity<Object> validateContent(@PathParam(("userId")) int userId, @PathParam(("choice")) boolean choice,
     @PathParam(("id")) int id) {
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
@@ -139,7 +141,7 @@ public class MultimediaController {
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
 
-    @RequestMapping(value="/modify/multimedia/{description}{id}{userId}", method = RequestMethod.PUT)
+    @RequestMapping(value="/modify{description}{id}{userId}", method = RequestMethod.PUT)
     public ResponseEntity<Object> modifyDescription(@PathParam("description") String description,@PathParam("id") int id,@PathParam("userId") int userId){
         Multimedia multimedia = this.multimediaRepository.findById(id).orElseThrow(MultimediaNotFoundException::new);
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
@@ -164,7 +166,7 @@ public class MultimediaController {
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @DeleteMapping("/delete/multimedia{id}{userId}")
+    @DeleteMapping("/delete{id}{userId}")
     public ResponseEntity<Object> deleteContent(@PathParam("userId") int userId,@PathParam("id") int multimediaId){
         Multimedia multimedia = multimediaRepository.findById(multimediaId).orElseThrow(MultimediaNotFoundException::new);
         if (userRepository.findById(userId).orElseThrow(UserNotExistException::new).getUserType().equals(UserRole.Curator)){
@@ -185,7 +187,7 @@ public class MultimediaController {
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @RequestMapping(value="/signal/multimedia{userId}{id}", method = RequestMethod.PUT)
+    @RequestMapping(value="/signal{userId}{id}", method = RequestMethod.PUT)
     public ResponseEntity<Object> signalContent(@PathParam(("userId")) int userId,@PathParam(("id")) int multimediaId) {
         Multimedia multimedia = multimediaRepository.findById(multimediaId).orElseThrow(MultimediaNotFoundException::new);
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
@@ -197,7 +199,7 @@ public class MultimediaController {
         }else throw new UserBadTypeException();
     }
 
-    @GetMapping(value ="/get/multimedias")
+    @GetMapping(value ="/getAll")
     public ResponseEntity<Object> getMultimedia(){
         return new ResponseEntity<>(multimediaRepository.findAll(), HttpStatus.OK);
     }
@@ -210,7 +212,7 @@ public class MultimediaController {
      * @throws MultimediaNotFoundException If the multimedia is not found.
      * @throws ContestNotExistException    If the contest does not exist.
      */
-    @RequestMapping(value = "/addMultimediaPending/contest{contestId}{userId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/add/contest{contestId}{userId}", method = RequestMethod.POST)
     public ResponseEntity<Object> addWithPending(@RequestBody Multimedia multimedia, @PathParam(("contestId")) int contestId, @PathParam("userId") int userId)
     {
         Contest contest = contestRespository.findById(contestId).orElseThrow(ContestNotExistException::new);
