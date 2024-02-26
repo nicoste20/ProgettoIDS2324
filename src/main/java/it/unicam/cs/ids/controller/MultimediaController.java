@@ -6,8 +6,10 @@ import it.unicam.cs.ids.controller.Repository.ContestRespository;
 import it.unicam.cs.ids.controller.Repository.MultimediaRepository;
 import it.unicam.cs.ids.controller.Repository.PointRepository;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
+import it.unicam.cs.ids.model.content.Content;
 import it.unicam.cs.ids.model.content.Contest;
 import it.unicam.cs.ids.model.content.Multimedia;
+import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
@@ -202,6 +204,11 @@ public class MultimediaController {
     @GetMapping(value ="/getAll")
     public ResponseEntity<Object> getMultimedia(){
         return new ResponseEntity<>(multimediaRepository.findAll(), HttpStatus.OK);
+    }
+
+    @GetMapping(value ="/getAllAuthorized")
+    public ResponseEntity<Object> getAuthorizedMultimedia(){
+        return new ResponseEntity<>(multimediaRepository.findAll().stream().filter(Content::isValidate), HttpStatus.OK);
     }
 
     /**

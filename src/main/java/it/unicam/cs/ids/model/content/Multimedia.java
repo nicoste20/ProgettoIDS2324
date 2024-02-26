@@ -20,9 +20,10 @@ public class Multimedia extends Content {
      * @param name        The name of the multimedia content.
      * @param description The description of the multimedia content.
      */
-    public Multimedia(String name , String description) {
+    public Multimedia(String name , String description, String path) {
         super(name,description);
-        this.signaled =false;
+        this.path = path;
+        this.signaled = false;
     }
 
     /**

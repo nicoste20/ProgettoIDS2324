@@ -162,6 +162,11 @@ public class PointController {
         return new ResponseEntity<>(points.findAll(),HttpStatus.OK);
     }
 
+    @GetMapping(value ="/getAllAuthorized")
+    public ResponseEntity<Object> getAuthorizedPoints(){
+        return new ResponseEntity<>(points.findAll().stream().filter(Point::isValidate),HttpStatus.OK);
+    }
+
     @GetMapping(value = "/delete{id}{userId}")
     public ResponseEntity<Object> pointDelete(@PathParam("id") int id, @PathParam("userId") int userId){
 
