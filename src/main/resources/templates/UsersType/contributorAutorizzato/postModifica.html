@@ -90,7 +90,7 @@
                 </button>
             </div>
             <div class="modal-body">
-
+                <form id="uploadForm" enctype="multipart/form-data" onsubmit="return salvaMultimedia(event)"">
                     <div class="form-group">
                         <label for="selectPoint">Punto:</label>
                         <select class="form-control" id="selectPoint" name="point"> </select>
@@ -103,14 +103,13 @@
                         <label for="multimediaDescription">Descrizione:</label>
                         <input type="text" class="form-control" id="multimediaDescription" name="multimediaDescription">
                     </div>
-
                     <div>
                         <input type="file" id="fileInput" accept=".png, .jpg"/>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id='salva' class="btn btn-primary">Salva</button>
                     </div>
-
+                </form>
             </div>
         </div>
     </div>

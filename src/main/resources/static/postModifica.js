@@ -102,43 +102,41 @@ function popolaMenuTendina() {
         .catch(error => console.error('Errore durante il recupero dei punti:', error));
 }
 
-async function salvaMultimedia() {
+async function salvaMultimedia(event) {
+    event.preventDefault(); // Impedisce il comportamento predefinito di aggiornare la pagina
+
     const selectPoint = document.getElementById('selectPoint');
     const pointId = selectPoint.value;
     console.log(pointId);
-    const nameMultimedia = document.getElementById('multimediaName').value;
-    const descriptionInput = document.getElementById('multimediaDescription').value;
-
+    const name = document.getElementById('multimediaName').value;
+    const description = document.getElementById('multimediaDescription').value;
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
-    //modifica <input type="file" id="fileInput" accept=".png, .jpg, .jpeg">
+
+    const formData = new FormData();
+    formData.append('file', file);
 
     if (!pointId || !file) {
         alert('Compila tutti i campi prima di salvare.');
-        return;
+        return false; // Impedisce l'invio del modulo
     }
 
-    const formData = new FormData();
-    const fileName = `${pointId}_${generateUniqueNumber()}`;
-    const multimediaFiles = {name: nameMultimedia, description: descriptionInput, path: fileName};
+    const path = `${pointId}_${generateUniqueNumber()}`;
     try {
-          await fetch(`http://localhost:8080/multimedia/add?userId=${user}&pointId=${pointId}`, {
+        await fetch(`http://localhost:8080/multimedia/add?userId=${user}&pointId=${pointId}&name=${name}&description=${description}&path=${path}`, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(multimediaFiles)
+            body: formData,
         });
-        formData.append('fileInput', file, fileName); // Aggiunge il file con il nome personalizzato
+        // Aggiungi qui eventuali azioni dopo il completamento della richiesta
     } catch (error) {
         console.error('Errore durante la richiesta fetch:', error);
+        return false; // Impedisce l'invio del modulo in caso di errore
     }
+
+    return true; // Consente l'invio del modulo
 }
+
 
 function generateUniqueNumber() {
-    return Math.floor(Math.random() * 1000); // Cambia 10000 con un numero più grande se necessario
+    return Math.floor(Math.random() * 10000); // Cambia 10000 con un numero più grande se necessario
 }
-
-document.getElementById('salva').addEventListener('click', function() {
-    salvaMultimedia();
-});

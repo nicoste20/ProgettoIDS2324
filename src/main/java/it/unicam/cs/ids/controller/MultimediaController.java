@@ -60,12 +60,14 @@ public class MultimediaController {
     /**
      * Adds content to the appropriate list based on the user's role.
      *
-     * @param multimedia the content to be added
      * @return a ResponseEntity representing the status of the operation
      */
-    @RequestMapping(value="/add{userId}{pointId}" , method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addPointMultimedia(@RequestParam ("file") MultipartFile file, @RequestBody Multimedia multimedia,
-    @PathParam(("userId"))int userId, @PathParam(("pointId")) int pointId) {
+    @RequestMapping(value="/add{userId}{pointId}{name}{description}{path}" , method=RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addPointMultimedia(@RequestParam ("file") MultipartFile file, @PathParam(("userId"))int userId,
+     @PathParam(("pointId")) int pointId, @PathParam("name") String name ,
+     @PathParam("description") String description,@PathParam("path") String path )
+    {
+        Multimedia multimedia = new Multimedia(name,description,path);
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
         Point point = pointRepository.findById(pointId).orElseThrow(PointNotExistException::new);
         multimedia.setAuthor(user.getId());
@@ -233,7 +235,7 @@ public class MultimediaController {
 
 
     private void addFile(MultipartFile file,String path){
-        String finalPath = String.format("%s%s" ,path , file.getName());
+        String finalPath = String.format("%s%s" ,"/src/main/resources/multimedia/",path);
         try {
             file.transferTo( new File(finalPath));
         } catch (Exception e){
