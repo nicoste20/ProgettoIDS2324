@@ -10,22 +10,19 @@ import jakarta.persistence.*;
 public class Comment{
 
     private boolean isValidate;
-    private int contentId;
     private int authorId;
     private String comment;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private int id;
 
     /**
      * Constructs a new Contest object with the specified parameters.
      *
-     * @param contentId The ID of the content associated with the comment.
      * @param comment   The text of the comment.
      */
-    public Comment(int contentId, String comment) {
-        this.contentId = contentId;
+    public Comment(String comment) {
         this.isValidate = false;
         this.comment = comment;
     }
@@ -67,9 +64,10 @@ public class Comment{
 
     /**
      * Retrieves the ID of the comment.
+     *
      * @return The comment ID.
      */
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
@@ -77,7 +75,7 @@ public class Comment{
      * Sets the ID of the comment.
      * @param id The comment ID to set.
      */
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

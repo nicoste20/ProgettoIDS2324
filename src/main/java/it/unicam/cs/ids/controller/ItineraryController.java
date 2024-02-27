@@ -57,7 +57,7 @@ public class ItineraryController {
      * @return A response entity indicating the success of the operation.
      */
     @PostMapping("/add{userId}")
-    public ResponseEntity<String> addItinerary(@RequestBody Itinerary itinerary ,@PathParam("userId") int userId) {
+    public ResponseEntity<?> addItinerary(@RequestBody Itinerary itinerary ,@PathParam("userId") int userId) {
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
         if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.Animator))) {
             this.pointExistControl(itinerary);
@@ -73,8 +73,8 @@ public class ItineraryController {
     }
 
     private void pointExistControl(Itinerary itinerary){
-        for (Integer point: itinerary.getPoints()) {
-            if(!pointRepository.existsById(point))
+        for (Integer pointId: itinerary.getPoints()) {
+            if(!pointRepository.existsById(pointId) || !pointRepository.findById(pointId).get().isValidate())
                 throw new PointNotExistException();
         }
     }
@@ -105,7 +105,7 @@ public class ItineraryController {
      * @return A response entity indicating the success of the operation.
      */
     @PostMapping("/validate{id}{userId}")
-    public ResponseEntity<Object> validateItinerary(@PathParam(("userId")) int userId, @PathParam(("id")) int id, @RequestBody boolean choice) {
+    public ResponseEntity<?> validateItinerary(@PathParam(("userId")) int userId, @PathParam(("id")) int id, @RequestBody boolean choice) {
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
             if(user.getUserType().equals(UserRole.Curator)){
                 Itinerary itinerary = itineraryRepository.findById(id).orElseThrow(ItineraryNotExistException::new);
@@ -152,7 +152,7 @@ public class ItineraryController {
      * @return A response entity containing all itineraries.
      */
     @GetMapping(value ="/getAll/Points")
-    public ResponseEntity<Object> getItinerariesWithPoints(){
+    public ResponseEntity<?> getItinerariesWithPoints(){
         Map<Integer, List<Point>> result = new HashMap<>();
         for (Itinerary itinerary : itineraryRepository.findAllItineraries()) {
             List<Point> points = new ArrayList<>();
@@ -165,12 +165,14 @@ public class ItineraryController {
     }
 
     @GetMapping(value ="/getAll")
-    public ResponseEntity<Object> getItineraries(){
+    public ResponseEntity<?> getItineraries(){
+        if(itineraryRepository.findAllItineraries().isEmpty())
+            return new ResponseEntity<>("No itineraries found", HttpStatus.OK);
         return new ResponseEntity<>(itineraryRepository.findAllItineraries(), HttpStatus.OK);
     }
 
     @GetMapping("/get/itinerary{id}")
-    public ResponseEntity<Object> getItinerary(@PathParam("id") int id){
+    public ResponseEntity<?> getItinerary(@PathParam("id") int id){
         List<Point> points = new ArrayList<>();
         Itinerary itinerary = itineraryRepository.findById(id).orElseThrow(ItineraryNotExistException::new);
             for (Integer pointId : itinerary.getPoints()) {
@@ -180,12 +182,12 @@ public class ItineraryController {
     }
 
     @DeleteMapping("/delete{itineraryId}{userId}")
-    public ResponseEntity<Object> deleteItinerary(@PathParam("itineraryId") int itineraryId , @PathParam("userId") int userId){
+    public ResponseEntity<?> deleteItinerary(@PathParam("itineraryId") int itineraryId , @PathParam("userId") int userId){
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
         Itinerary itinerary = itineraryRepository.findById(itineraryId).orElseThrow(ItineraryNotExistException::new);
             if(user.getId() == itinerary.getAuthor() || user.getUserType().equals(UserRole.Curator))
                 itineraryRepository.delete(itinerary);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("Itinerary deleted", HttpStatus.OK);
     }
 
 }

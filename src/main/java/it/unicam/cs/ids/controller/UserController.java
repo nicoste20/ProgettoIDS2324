@@ -38,7 +38,7 @@ public class UserController {
      * @return A ResponseEntity with the appropriate message and status code.
      */
     @PostMapping("/addCurator{email}")
-    public ResponseEntity<Object> addCurator(@RequestBody String managerEmail, @PathParam("email") String email) {
+    public ResponseEntity<?> addCurator(@RequestBody String managerEmail, @PathParam("email") String email) {
         BaseUser manager = this.getUserByEmail(managerEmail);
         if(manager.getUserType().equals(UserRole.PlatformManager)){
             BaseUser user = getUserByEmail(email);
@@ -55,7 +55,7 @@ public class UserController {
      * @return A ResponseEntity with the appropriate message and status code.
      */
     @PostMapping("/addAnimator{email}")
-    public ResponseEntity<Object> addAnimator(@RequestBody String managerEmail, @PathParam("email") String email) {
+    public ResponseEntity<?> addAnimator(@RequestBody String managerEmail, @PathParam("email") String email) {
         BaseUser manager = this.getUserByEmail(managerEmail);
         if(manager.getUserType().equals(UserRole.PlatformManager)){
             BaseUser user = getUserByEmail(email);
@@ -95,7 +95,7 @@ public class UserController {
      * @return A ResponseEntity with the appropriate message and status code.
      */
     @PostMapping("/add")
-    public ResponseEntity<Object> addUser(@RequestBody BaseUser user){
+    public ResponseEntity<?> addUser(@RequestBody BaseUser user){
         if(userRepository.countByEmail(user.getEmail()) == 0){
             userRepository.save(user);
             return new ResponseEntity<>("User created", HttpStatus.OK);
@@ -109,7 +109,7 @@ public class UserController {
      * @return A ResponseEntity with the appropriate message and status code.
      */
     @DeleteMapping("/delete")
-    public ResponseEntity<Object> deleteUser(@RequestBody String email){
+    public ResponseEntity<?> deleteUser(@RequestBody String email){
         BaseUser user = this.getUserByEmail(email);
         this.userRepository.delete(user);
         return new ResponseEntity<>("User deleted", HttpStatus.OK);

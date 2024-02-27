@@ -25,8 +25,11 @@ public abstract class Point{
     private String type;
     private Float x;
     private Float y;
-    @OneToMany
-    private List<Multimedia> multimediaList;
+
+    @ElementCollection
+    @CollectionTable(name = "point_comments", joinColumns = @JoinColumn(name = "point_id"))
+    @Column(name = "comment_id")
+    private List<Integer> comments;
 
     /**
      * Constructor to create a point with coordinates, type, author, text description, and a unique identifier.
@@ -41,7 +44,6 @@ public abstract class Point{
         this.x = x;
         this.y = y;
         this.type = type;
-        this.multimediaList=new ArrayList<Multimedia>();
     }
 
     /**
@@ -73,22 +75,6 @@ public abstract class Point{
      */
     public String getType() {
         return this.type;
-    }
-
-    /**
-     * Adds a multimedia to the list associated with this point.
-     * @param multimedia The multimedia to add.
-     */
-    public void addMultimedia(Multimedia multimedia){
-        this.multimediaList.add(multimedia);
-    }
-
-    /**
-     * Retrieves the list of multimedia associated with this point.
-     * @return The list of multimedia associated with this point.
-     */
-    public List<Multimedia> getMultimediaList(){
-        return this.multimediaList;
     }
 
     /**
@@ -124,8 +110,7 @@ public abstract class Point{
     }
 
     /**
-     * Getter for the validation status of the content.
-     * @return True if the content is validated, false otherwise.
+     * Setter for the validation status of the content.
      */
     public void setValidation(boolean val) {
         this.isValidate = val;
@@ -144,6 +129,12 @@ public abstract class Point{
      * @param description the new description
      */
     public void setName(String description){this.name =description;}
+
+    public void addComment(int id){this.comments.add(id);}
+
+    public List<Integer> getComments(){return this.comments;}
+
+    public void deleteComment(int id){this.comments.remove(id);}
 
     /**
      * Abstract method to create a clone of the Point object.

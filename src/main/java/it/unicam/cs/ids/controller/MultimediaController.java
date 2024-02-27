@@ -9,6 +9,7 @@ import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Content;
 import it.unicam.cs.ids.model.content.Contest;
 import it.unicam.cs.ids.model.content.Multimedia;
+import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
@@ -19,11 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.core.io.InputStreamResource;
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 /**
  * The  ContentController class manages the addition and validation of content,
@@ -63,29 +60,25 @@ public class MultimediaController {
     /**
      * Adds content to the appropriate list based on the user's role.
      *
-     * @param content the content to be added
+     * @param multimedia the content to be added
      * @return a ResponseEntity representing the status of the operation
-     * @throws UserBadTypeException if the user's role is not correct
      */
     @RequestMapping(value="/add{userId}{pointId}" , method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Object> addContent(@RequestParam ("file") MultipartFile file, @RequestBody Multimedia content, @PathParam(("userId"))int userId,
-                                             @PathParam(("pointId")) Integer pointId) {
+    public ResponseEntity<?> addPointMultimedia(@RequestParam ("file") MultipartFile file, @RequestBody Multimedia multimedia,
+    @PathParam(("userId"))int userId, @PathParam(("pointId")) int pointId) {
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
-        content.setAuthor(userId);
-        if(pointId != null){
-            if(pointRepository.existsById(pointId))
-                content.setPointId(pointId);
-            else
-                throw new PointNotExistException();
-        }
-        if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))) {
+        Point point = pointRepository.findById(pointId).orElseThrow(PointNotExistException::new);
+        multimedia.setAuthor(user.getId());
+        multimedia.setPointId(point.getId());
+        if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))){
             if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)) {
-                addContentNoPending(content);
+                addContentNoPending(multimedia);
             } else {
-                addContentPending(content);
+                addContentPending(multimedia);
             }
-            return new ResponseEntity<>("Multimedia created", HttpStatus.OK);
+            this.addFile(file, multimedia.getPath());
         }else throw new UserBadTypeException();
+        return new ResponseEntity<>("Multimedia created", HttpStatus.OK);
     }
 
     /**
@@ -113,23 +106,23 @@ public class MultimediaController {
      *
      * @param userId    the curator making the decision
      * @param choice  {@code true} to approve the content, {@code false} to reject
-     * @param id      the ID of the content to be validated
+     * @param multimediaId      the ID of the content to be validated
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
 
-    @RequestMapping(value="/validate{choice}{id}{userId}", method = RequestMethod.PUT)
-    public ResponseEntity<Object> validateContent(@PathParam(("userId")) int userId, @PathParam(("choice")) boolean choice,
-    @PathParam(("id")) int id) {
+    @RequestMapping(value="/validate{choice}{multimediaId}{userId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> validateContent(@PathParam(("userId")) int userId, @PathParam(("choice")) boolean choice,
+    @PathParam(("multimediaId")) int multimediaId) {
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
-        Multimedia multimedia = multimediaRepository.findById(id).orElseThrow(MultimediaNotFoundException::new);
+        Multimedia multimedia = multimediaRepository.findById(multimediaId).orElseThrow(MultimediaNotFoundException::new);
         if (user.getUserType().equals(UserRole.Curator)){
             if (choice) {
                 multimedia.setValidation(true);
                 multimediaRepository.save(multimedia);
                 return new ResponseEntity<>("Multimedia validated", HttpStatus.OK);
             }
-            multimediaRepository.deleteById(id);
+            multimediaRepository.deleteById(multimediaId);
             return new ResponseEntity<>("Multimedia eliminated", HttpStatus.OK);
         }else throw new UserBadTypeException();
     }
@@ -151,7 +144,7 @@ public class MultimediaController {
      */
 
     @RequestMapping(value="/modify{description}{id}{userId}", method = RequestMethod.PUT)
-    public ResponseEntity<Object> modifyDescription(@PathParam("description") String description,@PathParam("id") int id,@PathParam("userId") int userId){
+    public ResponseEntity<?> modifyDescription(@PathParam("description") String description,@PathParam("id") int id,@PathParam("userId") int userId){
         Multimedia multimedia = this.multimediaRepository.findById(id).orElseThrow(MultimediaNotFoundException::new);
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
         if (multimedia.getAuthor() == userId) {
@@ -176,7 +169,7 @@ public class MultimediaController {
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
     @DeleteMapping("/delete{id}{userId}")
-    public ResponseEntity<Object> deleteContent(@PathParam("userId") int userId,@PathParam("id") int id){
+    public ResponseEntity<?> deleteContent(@PathParam("userId") int userId,@PathParam("id") int id){
         Multimedia multimedia = multimediaRepository.findById(id).orElseThrow(MultimediaNotFoundException::new);
         if (userRepository.findById(userId).orElseThrow(UserNotExistException::new).getUserType().equals(UserRole.Curator)){
             for (Contest contest: contestRespository.findAll()) {
@@ -198,7 +191,7 @@ public class MultimediaController {
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
     @RequestMapping(value="/signal{userId}{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Object> signalContent(@PathParam(("userId")) int userId,@PathParam(("id")) int multimediaId) {
+    public ResponseEntity<?> signalContent(@PathParam(("userId")) int userId,@PathParam(("id")) int multimediaId) {
         Multimedia multimedia = multimediaRepository.findById(multimediaId).orElseThrow(MultimediaNotFoundException::new);
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
         if (!(user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.PlatformManager)
@@ -210,12 +203,12 @@ public class MultimediaController {
     }
 
     @GetMapping(value ="/getAll")
-    public ResponseEntity<Object> getMultimedia(){
+    public ResponseEntity<?> getMultimedia(){
         return new ResponseEntity<>(multimediaRepository.findAll(), HttpStatus.OK);
     }
 
     @GetMapping(value ="/getAllAuthorized")
-    public ResponseEntity<Object> getAuthorizedMultimedia(){
+    public ResponseEntity<?> getAuthorizedMultimedia(){
         return new ResponseEntity<>(multimediaRepository.findAll().stream().filter(Content::isValidate), HttpStatus.OK);
     }
 
@@ -224,26 +217,29 @@ public class MultimediaController {
      *
      * @param multimedia The multimedia to be added.
      * @param contestId    The ID of the contest to which multimedia is added.
-     * @throws MultimediaNotFoundException If the multimedia is not found.
-     * @throws ContestNotExistException    If the contest does not exist.
      */
-    @RequestMapping(value = "/add/contest{contestId}{userId}", method = RequestMethod.POST)
-    public ResponseEntity<Object> addWithPending(@RequestBody Multimedia multimedia, @PathParam(("contestId")) int contestId, @PathParam("userId") int userId)
-    {
+    @RequestMapping(value="/add/contest{contestId}{userId}" , method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addWithPending(@RequestParam ("file") MultipartFile file, @RequestBody Multimedia multimedia,
+    @PathParam(("contestId")) int contestId, @PathParam("userId") int userId) {
         Contest contest = contestRespository.findById(contestId).orElseThrow(ContestNotExistException::new);
-        multimedia.setValidation(false);
-        this.addContent(multimedia,userId,null, );
-        int multimediaId = multimedia.getId();
-        contest.addMultimedia(multimediaId);
+        BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
+        multimedia.setAuthor(user.getId());
+        this.addContentPending(multimedia);
+        contest.addMultimedia(multimedia.getId());
         contestRespository.save(contest);
+        this.addFile(file, multimedia.getPath());
         return new ResponseEntity<>("Multimedia added", HttpStatus.OK);
     }
-    private void addFile(MultipartFile file) throws IOException {
-        File newFile = new File("C:/Users/nicos/Desktop/IDS Laboratorio Esercizi SpringBoot/unicam/src/main/resources" + file.getOriginalFilename());
-        newFile.createNewFile();
-        FileOutputStream fileOutputStream = new FileOutputStream(newFile);
-        fileOutputStream.write(file.getBytes());
-        fileOutputStream.close();
+
+
+    private void addFile(MultipartFile file,String path){
+        String finalPath = String.format("%s%s" ,path , file.getName());
+        try {
+            file.transferTo( new File(finalPath));
+        } catch (Exception e){
+            throw new FileException();
+        }
     }
+
 }
 

@@ -16,4 +16,9 @@ public class FestivalExceptionController {
     public ResponseEntity<Object> exception(FestivalNotFoundException exception){
         return new ResponseEntity<>("Festival not found", HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(value=BadDateException.class)
+    public ResponseEntity<Object> exception(BadDateException exception){
+        return new ResponseEntity<>("Bad Date", HttpStatus.NOT_FOUND);
+    }
 }

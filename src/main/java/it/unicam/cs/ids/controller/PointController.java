@@ -52,8 +52,8 @@ public class PointController {
      * @param userId The ID of the user performing the action.
      */
     @PostMapping("/addRestaurant{userId}")
-    public void addPointRestaurant(@RequestBody Restaurant point, @PathParam(("userId")) int userId) {
-        addPoint(point,userId);
+    public ResponseEntity<?> addPointRestaurant(@RequestBody Restaurant point, @PathParam(("userId")) int userId) {
+        return addPoint(point,userId);
     }
 
     /**
@@ -62,8 +62,8 @@ public class PointController {
      * @param userId The ID of the user performing the action.
      */
     @PostMapping("/addMonument{userId}")
-    public void addPointMonument(@RequestBody Monument point, @PathParam(("userId")) int userId) {
-        addPoint(point,userId);
+    public ResponseEntity<?> addPointMonument(@RequestBody Monument point, @PathParam(("userId")) int userId) {
+        return addPoint(point,userId);
     }
 
     /**
@@ -72,8 +72,8 @@ public class PointController {
      * @param userId The ID of the user performing the action.
      */
     @PostMapping("/addGreenZone{userId}")
-    public void addPointGreenZone(@RequestBody GreenZone point, @PathParam(("userId")) int userId) {
-        addPoint(point, userId);
+    public ResponseEntity<?> addPointGreenZone(@RequestBody GreenZone point, @PathParam(("userId")) int userId) {
+        return addPoint(point, userId);
     }
 
     /**
@@ -82,8 +82,8 @@ public class PointController {
      * @param userId The ID of the user performing the action.
      */
     @PostMapping("/addSquare{userId}")
-    public void addPointSquare(@RequestBody Square point, @PathParam(("userId")) int userId) {
-        addPoint(point, userId);
+    public ResponseEntity<?> addPointSquare(@RequestBody Square point, @PathParam(("userId")) int userId) {
+        return addPoint(point, userId);
     }
 
     /**
@@ -92,8 +92,8 @@ public class PointController {
      * @param userId the id of the user who created the point
      * @return A response entity indicating the success of the operation.
      */
-    private ResponseEntity<Object> addPoint(Point point,  int userId) {
-        if (points.isAlreadyIn(point.getX(), point.getY()) == 0) {
+    private ResponseEntity<?> addPoint(Point point,  int userId) {
+        if (points.isAlreadyIn(point.getX(), point.getY()) == 0 && points.findAllByTitle(point.getName()) == null) {
             points2D.save(new Point2D(point.getX(), point.getY()));
             BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
                 point.setAuthor(userId);
@@ -102,7 +102,7 @@ public class PointController {
                 else
                     this.addWithoutPending(point);
                 return new ResponseEntity<>("Point created", HttpStatus.OK);
-            } else throw new UserBadTypeException();
+            } else throw new PointAlreadyInException();
     }
 
     /**
@@ -128,7 +128,7 @@ public class PointController {
      * @return A response entity indicating the success of the operation.
      */
     @RequestMapping(value = "/validate{choice}{userId}{pointId}", method = RequestMethod.PUT)
-    public ResponseEntity<Object> validatePoint(@PathParam("choice") boolean choice, @PathParam("userId") int userId, @PathParam("pointId") int pointId) {
+    public ResponseEntity<?> validatePoint(@PathParam("choice") boolean choice, @PathParam("userId") int userId, @PathParam("pointId") int pointId) {
         if (users.findById(userId).orElseThrow(UserNotExistException::new).getUserType().equals(UserRole.Curator)) {
             Point point = points.findById(pointId).orElseThrow(PointAlreadyInException::new);
                 if (choice) {
@@ -148,9 +148,10 @@ public class PointController {
      * @param title The title of the point to search for.
      * @return An optional containing the found point, if any.
      */
-    @RequestMapping(value = "/search{title}" , method = RequestMethod.PUT)
-    public Optional<Point> searchPoint(@PathParam("title") String title) {
-        return Optional.of(points.findAllByTitle(title));
+    @RequestMapping(value = "/search{title}" , method = RequestMethod.GET)
+    public ResponseEntity<?> searchPoint(@PathParam("title") String title) {
+        Optional<Integer> id = Optional.of(points.findAllByTitle(title));
+        return new ResponseEntity<>(points.findById(id.get()),HttpStatus.OK);
     }
 
     /**
@@ -158,17 +159,17 @@ public class PointController {
      * @return A response entity containing all points.
      */
     @GetMapping(value ="/getAll")
-    public ResponseEntity<Object> getPoints(){
+    public ResponseEntity<?> getPoints(){
         return new ResponseEntity<>(points.findAll(),HttpStatus.OK);
     }
 
     @GetMapping(value ="/getAllAuthorized")
-    public ResponseEntity<Object> getAuthorizedPoints(){
+    public ResponseEntity<?> getAuthorizedPoints(){
         return new ResponseEntity<>(points.findAll().stream().filter(Point::isValidate),HttpStatus.OK);
     }
 
     @GetMapping(value = "/delete{id}{userId}")
-    public ResponseEntity<Object> pointDelete(@PathParam("id") int id, @PathParam("userId") int userId){
+    public ResponseEntity<?> pointDelete(@PathParam("id") int id, @PathParam("userId") int userId){
 
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
         Point point = points.findById(id).orElseThrow(PointNotExistException::new);

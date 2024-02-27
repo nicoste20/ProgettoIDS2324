@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.DateTimeException;
 import java.util.Date;
+import java.util.zip.DataFormatException;
 
 /**
  * The FestivalController class manages the addition and removal of festivals.
@@ -42,16 +44,18 @@ public class FestivalController {
      * @return A response entity indicating the success of the operation.
      */
     @PostMapping("/add{userId}")
-    public ResponseEntity<Object> addFestival(@RequestBody Festival newfestival, @PathParam(("userId")) Integer userId){
+    public ResponseEntity<?> addFestival(@RequestBody Festival newfestival, @PathParam(("userId")) Integer userId){
         newfestival.setAuthor(userId);
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
+        Date endDate = newfestival.getEndDate();
+        Date startDate = newfestival.getStartDate();
         if(user.getUserType().equals(UserRole.Curator)) {
-            if (newfestival.getEndDate().after(new Date())) {
+            if (endDate.compareTo(new Date()) >= 0 && endDate.after(startDate)) {
                 if (festivals.countFestivalsWithName(newfestival.getName()) == 0) {
                     festivals.save(newfestival);
                     return new ResponseEntity<>("Festival created", HttpStatus.OK);
                 } else throw new FestivalAlreadyInException();
-            }else throw new FestivalNotFoundException();
+            }else throw new BadDateException();
         }else throw new UserBadTypeException();
     }
 
@@ -62,7 +66,7 @@ public class FestivalController {
      * @return A response entity indicating the success of the operation.
      */
     @RequestMapping(value = "/delete{title}{userId}", method = RequestMethod.DELETE)
-    public ResponseEntity<Object> removeFestival(@PathParam(("title")) String title, @PathParam(("userId")) int userId){
+    public ResponseEntity<?> removeFestival(@PathParam(("title")) String title, @PathParam(("userId")) int userId){
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
         if(user.getUserType().equals(UserRole.Curator)) {
             if (festivals.countFestivalsWithName(title) > 0) {
@@ -90,7 +94,7 @@ public class FestivalController {
      * @return A response entity containing all festivals.
      */
     @GetMapping(value ="/getAll")
-    public ResponseEntity<Object> getFestival(){
+    public ResponseEntity<?> getFestival(){
         return new ResponseEntity<>(festivals.findAll(), HttpStatus.OK);
     }
 

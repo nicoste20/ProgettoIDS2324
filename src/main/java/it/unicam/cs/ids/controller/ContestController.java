@@ -24,6 +24,7 @@ import java.util.Optional;
  */
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
+@RequestMapping("/contest")
 public class ContestController {
 
     private final ContestRespository contestList;
@@ -49,8 +50,8 @@ public class ContestController {
      *
      * @param contest The contest to be added.
      */
-    @PostMapping("/add/contest{userId}")
-    public ResponseEntity<Object> addContest(@RequestBody Contest contest, @PathParam(("userId")) int userId) {
+    @PostMapping("/add{userId}")
+    public ResponseEntity<?> addContest(@RequestBody Contest contest, @PathParam(("userId")) int userId) {
         contest.setAuthor(userId);
         contest.setValidation(true);
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
@@ -66,8 +67,8 @@ public class ContestController {
      * @param contestId The ID of the contest to be removed.
      * @return
      */
-    @DeleteMapping("/delete/contest{userId}")
-    public ResponseEntity<Object> removeContest(@RequestBody int contestId, @PathParam(("userId")) int userId) {
+    @DeleteMapping("/delete{userId}")
+    public ResponseEntity<?> removeContest(@RequestBody int contestId, @PathParam(("userId")) int userId) {
         Contest contest = contestList.findById(contestId).orElseThrow(ContestNotExistException::new);
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
         if (user.getUserType().equals(UserRole.Animator)) {
@@ -84,13 +85,13 @@ public class ContestController {
      * @throws ContestNotExistException If the contest does not exist.
      * @throws UserBadTypeException     If the user is not correct.
      */
-    @RequestMapping(value = "/invite/contest{contestId}{userId}{animatorId}", method = RequestMethod.PUT)
-    public ResponseEntity<Object> invite(@PathParam(("contestId")) int contestId, @PathParam(("userId")) int userId, @PathParam(("animatorId")) int animatorId) {
+    @RequestMapping(value = "/invite{contestId}{userId}{animatorId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> invite(@PathParam(("contestId")) int contestId, @PathParam(("userId")) int userId, @PathParam(("animatorId")) int animatorId) {
         Contest contest = contestList.findById(contestId).orElseThrow(ContestNotExistException::new);
         BaseUser animator = users.findById(animatorId).orElseThrow(UserNotExistException::new);
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
         if(animator.getUserType().equals(UserRole.Animator)){
-            if (contest.isPrivate()) {
+            if (contest.getPrivacy()) {
                 contest.addAllowedUsers(user.getId());
                 contestList.save(contest);
                 return new ResponseEntity<>("User invited", HttpStatus.OK);
@@ -107,8 +108,8 @@ public class ContestController {
      * @param animatorId   The ID of the user performing the validation.
      * @param choice       The choice for validation.
      */
-    @RequestMapping(value = "/validateMultimedia/contest{contestId}{multimediaId}{animatorId}{choice}", method = RequestMethod.POST)
-    public ResponseEntity<Object> validateMultimedia(@PathParam(("multimediaId")) int multimediaId,
+    @RequestMapping(value = "/validateMultimedia{contestId}{multimediaId}{animatorId}{choice}", method = RequestMethod.PUT)
+    public ResponseEntity<?> validateMultimedia(@PathParam(("multimediaId")) int multimediaId,
     @PathParam(("contestId")) int contestId, @PathParam(("animatorId")) int animatorId, @PathParam(("choice")) boolean choice)
     {
         BaseUser animator = users.findById(animatorId).orElseThrow(UserNotExistException::new);
@@ -132,18 +133,18 @@ public class ContestController {
      * @param contestName The name of the contest to search for.
      * @return An Optional containing the found contest, if any.
      */
-    @RequestMapping(value = "/search/contest{contestName}", method = RequestMethod.POST)
+    @RequestMapping(value = "/search{contestName}", method = RequestMethod.POST)
     public Optional<Contest> searchContest(@PathParam(("contestName")) String contestName) {
         return Optional.of(contestList.findAllByTitle(contestName));
     }
 
-    @GetMapping(value ="/get/contests")
-    public ResponseEntity<Object> getContest(){
+    @GetMapping(value ="/get")
+    public ResponseEntity<?> getContest(){
         return new ResponseEntity<>(contestList.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping(value ="/get/multimedias/contest{contestId}")
-    public ResponseEntity<Object> getMultimedia(@PathParam("contestId") int contestId){
+    @GetMapping(value ="/get{contestId}")
+    public ResponseEntity<?> getMultimedia(@PathParam("contestId") int contestId){
         Contest contest = contestList.findById(contestId).orElseThrow(ContestNotExistException::new);
         List<Multimedia> multimedias = new ArrayList<Multimedia>();
         for (Integer id: contest.getMultimediaList()) {

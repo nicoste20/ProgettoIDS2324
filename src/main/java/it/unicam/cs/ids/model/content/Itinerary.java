@@ -14,6 +14,11 @@ public class Itinerary extends Content {
     @Column(name = "point_id")
     private List<Integer> points;
 
+    @ElementCollection
+    @CollectionTable(name = "itinerary_comments", joinColumns = @JoinColumn(name = "itinerary_id"))
+    @Column(name = "comment_id")
+    private List<Integer> comments;
+
     /**
      * Constructor to create an itinerary with a name, a list of points, and a description.
      * @param name        The textual description of the itinerary.
@@ -47,5 +52,11 @@ public class Itinerary extends Content {
     public void addPoint(Integer point) {
         this.points.add(point);
     }
+
+    public void addComment(int id){this.comments.add(id);}
+
+    public List<Integer> getComments(){return this.comments;}
+
+    public void deleteComment(int id){this.comments.remove(id);}
 }
 

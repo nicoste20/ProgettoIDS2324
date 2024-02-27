@@ -1,7 +1,8 @@
 package it.unicam.cs.ids.model.content;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 /**
  * Represents a multimedia content item with user information, a photo, a description, and a signaling status.
@@ -13,6 +14,11 @@ public class Multimedia extends Content {
     private boolean signaled;
     private String path;
     private Integer pointId;
+
+    @ElementCollection
+    @CollectionTable(name = "multimedia_comments", joinColumns = @JoinColumn(name = "multimedia_id"))
+    @Column(name = "comment_id")
+    private List<Integer> comments;
 
     /**
      * Constructs a new Multimedia object with the specified name, file path or URL, and description.
@@ -69,5 +75,10 @@ public class Multimedia extends Content {
         this.pointId = pointId;
     }
 
+    public void addComment(int id){this.comments.add(id);}
+
+    public List<Integer> getComments(){return this.comments;}
+
+    public void deleteComment(int id){this.comments.remove(id);}
 
 }
