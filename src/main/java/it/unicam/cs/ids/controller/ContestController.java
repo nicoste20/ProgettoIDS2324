@@ -62,10 +62,13 @@ public class ContestController {
     }
 
     /**
-     * Removes a contest from the list of contests.
-     *
+     * Removes a contest identified by its ID.
      * @param contestId The ID of the contest to be removed.
-     * @return
+     * @param userId The ID of the user requesting the removal.
+     * @return A ResponseEntity representing the status of the operation.
+     * @throws ContestNotExistException if the contest does not exist.
+     * @throws UserNotExistException if the user does not exist.
+     * @throws UserBadTypeException if the user's role is not correct.
      */
     @DeleteMapping("/delete{userId}")
     public ResponseEntity<?> removeContest(@RequestBody int contestId, @PathParam(("userId")) int userId) {
@@ -77,13 +80,17 @@ public class ContestController {
         }else throw new UserBadTypeException();
     }
 
+
     /**
-     * Invites a user to a private contest, adding them to the allowed users if the contest is private and exists.
-     *
-     * @param contestId The ID of the contest to invite the user to.
-     * @param userId    The ID of the user to be invited.
-     * @throws ContestNotExistException If the contest does not exist.
-     * @throws UserBadTypeException     If the user is not correct.
+     * Invites a user to a contest, given the contest ID, user ID, and animator ID.
+     * @param contestId The ID of the contest to which the user is invited.
+     * @param userId The ID of the user being invited.
+     * @param animatorId The ID of the animator inviting the user.
+     * @return A ResponseEntity representing the status of the invitation.
+     * @throws ContestNotExistException if the contest does not exist.
+     * @throws UserNotExistException if the user or animator does not exist.
+     * @throws UninvitableContestException if the contest cannot be invited to due to its privacy setting.
+     * @throws UserBadTypeException if the animator's role is not correct.
      */
     @RequestMapping(value = "/invite{contestId}{userId}{animatorId}", method = RequestMethod.PUT)
     public ResponseEntity<?> invite(@PathParam(("contestId")) int contestId, @PathParam(("userId")) int userId, @PathParam(("animatorId")) int animatorId) {
@@ -137,12 +144,21 @@ public class ContestController {
     public Optional<Contest> searchContest(@PathParam(("contestName")) String contestName) {
         return Optional.of(contestList.findAllByTitle(contestName));
     }
-
+    /**
+     * Retrieves all contests.
+     * @return A ResponseEntity containing all contests.
+     */
     @GetMapping(value ="/get")
     public ResponseEntity<?> getContest(){
         return new ResponseEntity<>(contestList.findAll(), HttpStatus.OK);
     }
-
+    /**
+     * Retrieves multimedia associated with a specific contest.
+     * @param contestId The ID of the contest.
+     * @return A ResponseEntity containing multimedia associated with the specified contest.
+     * @throws ContestNotExistException if the contest does not exist.
+     * @throws MultimediaNotFoundException if multimedia associated with the contest is not found.
+     */
     @GetMapping(value ="/get{contestId}")
     public ResponseEntity<?> getMultimedia(@PathParam("contestId") int contestId){
         Contest contest = contestList.findById(contestId).orElseThrow(ContestNotExistException::new);

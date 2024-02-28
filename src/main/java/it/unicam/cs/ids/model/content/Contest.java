@@ -52,6 +52,11 @@ public class Contest extends Content {
      */
     public boolean getPrivacy(){ return this.privacy;}
 
+    /**
+     * Deletes a multimedia item from the contest.
+     *
+     * @param id The ID of the multimedia item to be deleted.
+     */
     public void deleteMultimedia(int id){
         for(int currentId : multimediaList){
             if(currentId == id){

@@ -21,12 +21,13 @@ public class Itinerary extends Content {
 
     /**
      * Constructor to create an itinerary with a name, a list of points, and a description.
-     * @param name        The textual description of the itinerary.
+     *
+     * @param name        The name of the itinerary.
      * @param points      The list of points in the itinerary.
-     * @param description The textual description of the itinerary.
+     * @param description The description of the itinerary.
      */
-    public Itinerary(String name, List<Integer> points , String description) {
-        super(name,description);
+    public Itinerary(String name, List<Integer> points, String description) {
+        super(name, description);
         this.points = points;
     }
 
@@ -39,6 +40,7 @@ public class Itinerary extends Content {
 
     /**
      * Getter for the list of points in the itinerary.
+     *
      * @return The list of points in the itinerary.
      */
     public List<Integer> getPoints() {
@@ -47,16 +49,37 @@ public class Itinerary extends Content {
 
     /**
      * Adds a point to the itinerary.
-     * @param point The point to be added to the itinerary.
+     *
+     * @param point The ID of the point to be added to the itinerary.
      */
     public void addPoint(Integer point) {
         this.points.add(point);
     }
 
-    public void addComment(int id){this.comments.add(id);}
+    /**
+     * Adds a comment to the itinerary.
+     *
+     * @param id The ID of the comment to be added.
+     */
+    public void addComment(int id) {
+        this.comments.add(id);
+    }
 
-    public List<Integer> getComments(){return this.comments;}
+    /**
+     * Retrieves the list of comments associated with the itinerary.
+     *
+     * @return The list of comments associated with the itinerary.
+     */
+    public List<Integer> getComments() {
+        return this.comments;
+    }
 
-    public void deleteComment(int id){this.comments.remove(id);}
+    /**
+     * Deletes a comment from the itinerary.
+     *
+     * @param id The ID of the comment to be deleted.
+     */
+    public void deleteComment(int id) {
+        this.comments.remove(id);
+    }
 }
-

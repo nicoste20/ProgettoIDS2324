@@ -163,14 +163,24 @@ public class PointController {
         return new ResponseEntity<>(points.findAll(),HttpStatus.OK);
     }
 
+    /**
+     * Retrieves all authorized points.
+     * @return A response entity containing all authorized points.
+     */
     @GetMapping(value ="/getAllAuthorized")
     public ResponseEntity<?> getAuthorizedPoints(){
         return new ResponseEntity<>(points.findAll().stream().filter(Point::isValidate),HttpStatus.OK);
     }
 
+    /**
+     * Requests to delete a point.
+     *
+     * @param id     The ID of the point to be deleted.
+     * @param userId The ID of the user performing the deletion.
+     * @return A ResponseEntity indicating the result of the deletion operation.
+     */
     @GetMapping(value = "/delete{id}{userId}")
     public ResponseEntity<?> pointDelete(@PathParam("id") int id, @PathParam("userId") int userId){
-
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
         Point point = points.findById(id).orElseThrow(PointNotExistException::new);
         if(user.getUserType().equals(UserRole.Curator) || point.getAuthor() == userId){

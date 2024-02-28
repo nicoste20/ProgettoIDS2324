@@ -27,24 +27,17 @@ import java.io.IOException;
 import java.util.UUID;
 
 /**
- * The  ContentController class manages the addition and validation of content,
+ * The MultimediaController class manages the addition and validation of multimedia,
  * differentiating between immediate addition and pending approval based on the user's role.
- * It interacts with instances of {@link Multimedia}, {@link BaseUser}, {@link IUserPlatform}, and {@link UserRole}.
  */
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
 @RequestMapping("/multimedia")
 public class MultimediaController {
 
-    /**
-     * The list of content.
-     */
     private final MultimediaRepository multimediaRepository;
-
     private final UserRepository userRepository;
-
     private final ContestRespository contestRespository;
-
     private final PointRepository pointRepository;
 
     /**
@@ -53,6 +46,7 @@ public class MultimediaController {
      * @param multimediaRepository the repository for multimedia content
      * @param userRepository       the repository of users
      * @param contestRepository    the repository of contest
+     * @param pointRepository  the repository of points
      */
     @Autowired
     public MultimediaController(MultimediaRepository multimediaRepository, UserRepository userRepository, ContestRespository contestRepository, PointRepository pointRepository) {
@@ -61,10 +55,20 @@ public class MultimediaController {
         this.contestRespository = contestRepository;
         this.pointRepository = pointRepository;
     }
+
     /**
-     * Adds content to the appropriate list based on the user's role.
+     * Adds multimedia content to the list based on the user's role.
      *
+     * @param file        the multimedia file to be uploaded
+     * @param name        the name of the multimedia
+     * @param description the description of the multimedia
+     * @param path        the path of the multimedia
+     * @param userId      the ID of the user adding the multimedia
+     * @param pointId     the ID of the point associated with the multimedia
      * @return a ResponseEntity representing the status of the operation
+     * @throws UserNotExistException     if the user does not exist
+     * @throws PointNotExistException    if the associated point does not exist
+     * @throws UserBadTypeException      if the user's role is incorrect
      */
     @RequestMapping(value="/add" , method=RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addPointMultimedia(@RequestParam("file") MultipartFile file,
@@ -150,10 +154,11 @@ public class MultimediaController {
     /**
      * Update the description of a multimedia content
      * @param description the new description
+     * @param id the id of the content
+     * @param userId the userId
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-
     @RequestMapping(value="/modify{description}{id}{userId}", method = RequestMethod.PUT)
     public ResponseEntity<?> modifyDescription(@PathParam("description") String description,@PathParam("id") int id,@PathParam("userId") int userId){
         Multimedia multimedia = this.multimediaRepository.findById(id).orElseThrow(MultimediaNotFoundException::new);
@@ -213,25 +218,45 @@ public class MultimediaController {
         }else throw new UserBadTypeException();
     }
 
+    /**
+     * Retrieves all multimedia items.
+     * @return A ResponseEntity containing all multimedia items.
+     */
     @GetMapping(value ="/getAll")
     public ResponseEntity<?> getMultimedia(){
         return new ResponseEntity<>(multimediaRepository.findAll(), HttpStatus.OK);
     }
 
+    /**
+     * Retrieves all authorized multimedia items.
+     * @return A ResponseEntity containing all authorized multimedia items.
+     */
     @GetMapping(value ="/getAllAuthorized")
     public ResponseEntity<?> getAuthorizedMultimedia(){
         return new ResponseEntity<>(multimediaRepository.findAll().stream().filter(Content::isValidate), HttpStatus.OK);
     }
 
+
     /**
      * Adds multimedia to a contest with pending validation.
-     *
-     * @param multimedia The multimedia to be added.
-     * @param contestId    The ID of the contest to which multimedia is added.
+     * @param file The multimedia file.
+     * @param name The name of the multimedia.
+     * @param description The description of the multimedia.
+     * @param path The path where the multimedia will be stored.
+     * @param userId The ID of the user adding the multimedia.
+     * @param contestId The ID of the contest to which the multimedia is added.
+     * @return A ResponseEntity representing the status of the operation.
+     * @throws ContestNotExistException if the contest does not exist.
+     * @throws UserNotExistException if the user does not exist.
      */
-    @RequestMapping(value="/add/contest{contestId}{userId}" , method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addWithPending(@RequestParam ("file") MultipartFile file, @RequestBody Multimedia multimedia,
-    @PathParam(("contestId")) int contestId, @PathParam("userId") int userId) {
+    @RequestMapping(value="/add/contest" , method=RequestMethod.POST, consumes= MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addWithPending(@RequestParam("file") MultipartFile file,
+                                                     @RequestParam("name") String name,
+                                                      @RequestParam("description") String description,
+                                                      @RequestParam("path") String path,
+                                                      @RequestParam("userId") Integer userId,
+                                                      @RequestParam("contestId") Integer contestId) {
+        Multimedia multimedia = new Multimedia(name,description,path);
         Contest contest = contestRespository.findById(contestId).orElseThrow(ContestNotExistException::new);
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
         multimedia.setAuthor(user.getId());
@@ -242,9 +267,18 @@ public class MultimediaController {
         return new ResponseEntity<>("Multimedia added", HttpStatus.OK);
     }
 
-    @Value("${upload.directory}") // Configurazione del percorso della directory di upload tramite application.properties
+    /**
+     *     Configuration of the upload directory path through application.properties
+     */
+    @Value("${upload.directory}")
     private String uploadDirectory;
 
+    /**
+     * Adds a file to the specified path.
+     * @param file The file to be added.
+     * @param path The path where the file will be added.
+     * @throws FileException if an error occurs during file transfer.
+     */
     private void addFile(MultipartFile file,String path){
         String projectDirectory = System.getProperty("user.dir");
         String finalPath = projectDirectory + File.separator + uploadDirectory + File.separator + path+ ".jpg";
