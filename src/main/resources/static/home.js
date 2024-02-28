@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     if (mapLink) {
         mapLink.addEventListener('click', function() {
-            window.location.href = 'mappaConModifica.html';
+            window.location.href = 'mappa.html';
         });
     }
     if (aggiuntaRuoloLink) {

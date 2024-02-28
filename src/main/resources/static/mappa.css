@@ -14,8 +14,8 @@
     font-size: 16px; /* Imposta la dimensione del testo */
     color: #333; /* Colore del testo */
     z-index: 10;
-    margin-top: -40px;
-    margin-left: -20%;
+    margin-top: 3%;
+    margin-left: -5%;
 }
 
 /* Stile quando il menu a tendina è in hover */
