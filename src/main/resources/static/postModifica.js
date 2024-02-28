@@ -68,22 +68,43 @@ modifyButtons.forEach(function(button) {
         }
     });
 });
+
+
+
+window.addEventListener('DOMContentLoaded', getAllMultimedia);
+
 function getAllMultimedia() {
-    const multimedia = { name: name, description: description, path:path };
-    fetch(`http://localhost:8080/multimedia/getAll`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(multimedia),
-    })
-        .then(response => response.text())
-        .then(data => {
-            console.log(data);
-            // Puoi aggiungere qui ulteriori azioni dopo il salvataggio
-        })
-        .catch(error => console.error('Errore: Multimedia non creato', error));
+        fetch('http://localhost:8080/multimedia/getAll')
+            .then(response => response.json()) // Trasforma la risposta in formato JSON
+            .then(multimediaList => { // Utilizza la risposta JSON
+                // Se non ci sono immagini nel database, mostra un messaggio
+                if (multimediaList.length === 0) {
+                    document.getElementById('photo-container').innerHTML = "<p>Nessuna immagine trovata.</p>";
+                    return;
+                }
+
+                // Trova l'elemento HTML dove verranno visualizzate le immagini
+                const imageContainer = document.getElementById('photo-container');
+
+                // Itera su ogni oggetto multimediale e crea un elemento immagine per ciascuno
+                multimediaList.forEach(multimedia => {
+                    console.log(multimedia.path);
+                    const imgElement = document.createElement('img');
+                    imgElement.src = `/upload/${multimedia.path}.jpg`; // Assicurati che il percorso sia corretto
+                    imgElement.alt = multimedia.name;
+                    imageContainer.appendChild(imgElement);
+                });
+            })
+            .catch(error => {
+                console.error('Si è verificato un errore durante il recupero delle immagini:', error);
+            });
+
 }
+
+
+
+
+
 
 // Chiama la funzione onPageLoad quando la pagina è completamente caricata
 document.addEventListener('DOMContentLoaded', popolaMenuTendina);
@@ -113,17 +134,24 @@ async function salvaMultimedia(event) {
     const fileInput = document.getElementById('fileInput');
     const file = fileInput.files[0];
 
+    const path = `${pointId}_${generateUniqueNumber()}`;
+
+
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('path', path);
+    formData.append('name',name);
+    formData.append('description',description);
+    formData.append('pointId',pointId);
+    formData.append('userId',user);
 
     if (!pointId || !file) {
         alert('Compila tutti i campi prima di salvare.');
         return false; // Impedisce l'invio del modulo
     }
 
-    const path = `${pointId}_${generateUniqueNumber()}`;
     try {
-        await fetch(`http://localhost:8080/multimedia/add?userId=${user}&pointId=${pointId}&name=${name}&description=${description}&path=${path}`, {
+        await fetch(`http://localhost:8080/multimedia/add`, {
             method: 'POST',
             body: formData,
         });

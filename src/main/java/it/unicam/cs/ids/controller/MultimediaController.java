@@ -15,12 +15,16 @@ import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 /**
  * The  ContentController class manages the addition and validation of content,
@@ -62,23 +66,28 @@ public class MultimediaController {
      *
      * @return a ResponseEntity representing the status of the operation
      */
-    @RequestMapping(value="/add{userId}{pointId}{name}{description}{path}" , method=RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> addPointMultimedia(@RequestParam ("file") MultipartFile file, @PathParam(("userId"))int userId,
-     @PathParam(("pointId")) int pointId, @PathParam("name") String name ,
-     @PathParam("description") String description,@PathParam("path") String path )
+    @RequestMapping(value="/add" , method=RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> addPointMultimedia(@RequestParam("file") MultipartFile file,
+                                                @RequestParam("name") String name,
+                                                @RequestParam("description") String description,
+                                                @RequestParam("path") String path,
+                                                @RequestParam("userId") Integer userId,
+                                                @RequestParam("pointId") Integer pointId)
     {
+
         Multimedia multimedia = new Multimedia(name,description,path);
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
         Point point = pointRepository.findById(pointId).orElseThrow(PointNotExistException::new);
         multimedia.setAuthor(user.getId());
         multimedia.setPointId(point.getId());
+
         if (!(user.getUserType().equals(UserRole.Tourist) || user.getUserType().equals(UserRole.PlatformManager))){
             if (user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.ContributorAuthorized)) {
                 addContentNoPending(multimedia);
             } else {
                 addContentPending(multimedia);
             }
-            this.addFile(file, multimedia.getPath());
+            this.addFile(file, path);
         }else throw new UserBadTypeException();
         return new ResponseEntity<>("Multimedia created", HttpStatus.OK);
     }
@@ -233,12 +242,16 @@ public class MultimediaController {
         return new ResponseEntity<>("Multimedia added", HttpStatus.OK);
     }
 
+    @Value("${upload.directory}") // Configurazione del percorso della directory di upload tramite application.properties
+    private String uploadDirectory;
 
     private void addFile(MultipartFile file,String path){
-        String finalPath = String.format("%s%s" ,"/src/main/resources/multimedia/",path);
+        String projectDirectory = System.getProperty("user.dir");
+        String finalPath = projectDirectory + File.separator + uploadDirectory + File.separator + path+ ".jpg";
         try {
-            file.transferTo( new File(finalPath));
-        } catch (Exception e){
+            String newFileName = UUID.randomUUID().toString() + ".jpg";
+            file.transferTo(new File(finalPath));
+        } catch (IOException e) {
             throw new FileException();
         }
     }

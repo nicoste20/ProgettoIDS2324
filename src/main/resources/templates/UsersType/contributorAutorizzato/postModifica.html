@@ -42,29 +42,7 @@
 <div class="photo-grid">
     <button type="button" class="aggiuntaCM-btn" data-toggle="modal" data-target="#exampleModal">Aggiungi</button>
     <div class="photo-row">
-        <div class="photo-container">
-            <img src="/contents/comune jesi 2.jpeg" alt="Immagine 1" class="photo" >
-            <script>getAllMultimedia();</script>
-            <button class="btn-report">
-                <i class="fas fa-exclamation-circle"></i>
-            </button>
-        </div>
-        <p>Uno degli edifici più antichi di Jesi</p>
-        <button class="btn-modify" >Modifica</button>
-        <button a href="commentiModifica.html" class="btn-comment"></a>
-            <i class="fas fa-comment"></i>
-        </button>
-        <div class="photo-container">
-            <img src="/contents/comune-jesi1.jpg" alt="Immagine 2" class="photo">
-            <button class="btn-report">
-                <i class="fas fa-exclamation-circle"></i>
-            </button>
-        </div>
-        <p>Il comune di Jesi</p>
-        <button class="btn-modify" >Modifica</button>
-        <button a href="commentiModifica.html" class="btn-comment"></a>
-            <i class="fas fa-comment"></i>
-        </button>
+        <div id="photo-container"></div>
     </div>
 </div>
 
@@ -90,7 +68,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="uploadForm" enctype="multipart/form-data" onsubmit="return salvaMultimedia(event)"">
+                <form id="uploadForm" enctype="multipart/form-data" onsubmit="return salvaMultimedia(event)">
                     <div class="form-group">
                         <label for="selectPoint">Punto:</label>
                         <select class="form-control" id="selectPoint" name="point"> </select>
