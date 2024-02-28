@@ -1,26 +1,56 @@
+function getMultimediaIdFromURL() {
+    // Ottieni l'URL della pagina corrente
+    const url = window.location.href;
+
+    // Dividi l'URL utilizzando il carattere '?' come separatore
+    const parts = url.split('?');
+
+    // Se il numero di parti è uguale a 2, significa che l'URL contiene dei parametri
+    if (parts.length === 2) {
+        // Dividi la seconda parte utilizzando il carattere '=' come separatore
+        const params = parts[1].split('=');
+
+        // Se il numero di parametri è uguale a 2 e il nome del parametro è 'id', restituisci il valore
+        if (params.length === 2 && params[0] === 'id') {
+            return parseInt(params[1]); // Converti il valore in intero
+        }
+    }
+
+    // Se non riesci a trovare l'ID nell'URL, restituisci null
+    return null;
+}
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
-    const submitButton = document.getElementById('submit-comment');
-    const commentBox = document.getElementById('new-comment-form');
 
-    submitButton.addEventListener('click', function() {
-        const commentContent = document.getElementById('comment-content').value;
-        const commentAuthor = 'Nuovo Utente'; // Puoi definire un'autenticazione utente per ottenere il nome utente reale
-        const currentDate = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    var multimediaId = getMultimediaIdFromURL();
+    console.log(multimediaId)
+    // Esegui una fetch per ottenere i commenti dal server
+    fetch(`http://localhost:8080/comment/multimedia?multimediaId=${multimediaId}`)
+        .then(response => response.json())
+        .then(data => {
+            const board = document.querySelector('.board');
 
-        // Creazione del nuovo commento
-        const newComment = document.createElement('div');
-        newComment.classList.add('comment');
-        newComment.innerHTML = `
-      <p class="comment-content">${commentContent}</p>
-      <p class="comment-author">${commentAuthor}</p>
-      <p class="comment-date">${currentDate}</p>
-    `;
+            // Itera su ogni commento ricevuto dalla fetch
+            data.forEach(comments => {
+                // Crea un elemento div per il commento
+                const commentDiv = document.createElement('div');
+                commentDiv.classList.add('comment');
 
-        // Inserimento del nuovo commento prima del box di inserimento
-        const commentBoard = document.querySelector('.board');
-        commentBoard.insertBefore(newComment, commentBox);
+                // Crea un elemento p per il contenuto del commento
+                const commentContent = document.createElement('p');
+                commentContent.classList.add('comment-content');
+                commentContent.textContent = comments.comment;
 
-        // Pulizia del campo del commento dopo l'invio
-        document.getElementById('comment-content').value = '';
-    });
+                // Aggiungi il contenuto del commento al div del commento
+                commentDiv.appendChild(commentContent);
+
+                // Aggiungi il div del commento alla bacheca
+                board.appendChild(commentDiv);
+            });
+        })
+        .catch(error => {
+            console.error('Errore durante il recupero dei commenti:', error);
+        });
 });

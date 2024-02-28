@@ -2,6 +2,7 @@ package it.unicam.cs.ids.model.content;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +31,7 @@ public class Multimedia extends Content {
         super(name,description);
         this.path = path;
         this.signaled = false;
+        this.comments=new ArrayList<>();
     }
 
     /**

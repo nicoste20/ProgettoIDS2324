@@ -18,6 +18,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The  Comment controller class manages the addition and validation of a general comment
  * differentiating between immediate addition and pending approval based on the user's role.
@@ -132,6 +135,20 @@ public class CommentController {
     @GetMapping(value = "/getAll")
     public ResponseEntity<?> getComment(){
         return new ResponseEntity<>(comments.findAll(), HttpStatus.OK);
+    }
+
+
+    @GetMapping("/multimedia{multimediaId}")
+    public ResponseEntity<?> getCommentsByMultimediaId(@PathParam("multimediaId") int multimediaId) {
+        List<Integer> commentIds = comments.findByMultimediaId(multimediaId);
+        List<Comment> multimediaComments = new ArrayList<>();
+        commentIds.forEach(commentId -> {
+            Comment comment = comments.findById(commentId).orElse(null);
+            if (comment != null) {
+                multimediaComments.add(comment);
+            }
+        });
+        return ResponseEntity.ok(multimediaComments);
     }
 }
 

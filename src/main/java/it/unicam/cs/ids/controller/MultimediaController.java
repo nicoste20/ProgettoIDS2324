@@ -201,8 +201,8 @@ public class MultimediaController {
      * @throws UserBadTypeException if the user's role is not correct
      * @throws MultimediaNotFoundException if the multimedia content is not found
      */
-    @RequestMapping(value="/signal{userId}{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> signalContent(@PathParam(("userId")) int userId,@PathParam(("id")) int multimediaId) {
+    @RequestMapping(value="/signal{userId}{multimediaId}", method = RequestMethod.PUT)
+    public ResponseEntity<?> signalContent(@PathParam(("userId")) int userId,@PathParam(("multimediaId")) int multimediaId) {
         Multimedia multimedia = multimediaRepository.findById(multimediaId).orElseThrow(MultimediaNotFoundException::new);
         BaseUser user = userRepository.findById(userId).orElseThrow(UserNotExistException::new);
         if (!(user.getUserType().equals(UserRole.Curator) || user.getUserType().equals(UserRole.PlatformManager)

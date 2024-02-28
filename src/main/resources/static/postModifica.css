@@ -118,3 +118,41 @@
     border-color: #0056b3; /* cambio di colore del bordo al passaggio del mouse */
 }
 
+/* Stili per il popup */
+.popup-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    border-radius: 10px; /* Angoli arrotondati */
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5); /* Ombra */
+    padding: 20px;
+    z-index: 1000;
+    width: 300px; /* Larghezza del popup */
+    text-align: center; /* Allinea il contenuto al centro */
+}
+
+/* Stili per i bottoni */
+.action-button {
+    background-color: dodgerblue; /* Colore di sfondo verde */
+    border: none;
+    color: white; /* Testo bianco */
+    padding: 10px 20px; /* Spaziatura interna */
+    text-align: center; /* Allinea testo al centro */
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 20px; /* Angoli arrotondati */
+    transition-duration: 0.4s;
+    border: 2px solid transparent; /* Bordo trasparente */
+}
+
+.action-button:hover {
+    background-color: dodgerblue; /* Cambia il colore di sfondo al passaggio del mouse */
+    border: 2px solid dodgerblue; /* Aggiungi bordo al passaggio del mouse */
+}
+
+
