@@ -26,35 +26,43 @@ public class Multimedia extends Content {
      *
      * @param name        The name of the multimedia content.
      * @param description The description of the multimedia content.
+     * @param path        The file path or URL of the multimedia content.
      */
-    public Multimedia(String name , String description, String path) {
-        super(name,description);
+    public Multimedia(String name, String description, String path) {
+        super(name, description);
         this.path = path;
         this.signaled = false;
-        this.comments=new ArrayList<>();
+        this.comments = new ArrayList<>();
     }
 
     /**
      * Default constructor.
      */
     public Multimedia() {
-        super(null,"");
+        super(null, "");
     }
 
     /**
      * Gets the file path of the photo associated with the content.
-     * @return the file path
+     *
+     * @return The file path or URL.
      */
     public String getPath() {
         return this.path;
     }
 
-    public void setPath(String path){
+    /**
+     * Sets the file path or URL of the multimedia content.
+     *
+     * @param path The file path or URL to set.
+     */
+    public void setPath(String path) {
         this.path = path;
     }
 
     /**
      * Checks if the multimedia content has been signaled.
+     *
      * @return True if the multimedia content has been signaled, false otherwise.
      */
     public boolean getSignaled() {
@@ -63,24 +71,56 @@ public class Multimedia extends Content {
 
     /**
      * Sets the signaling status of the multimedia content.
-     * @param signaled signaled the signaling status to be set.
+     *
+     * @param signaled The signaling status to be set.
      */
     public void setSignaled(boolean signaled) {
         this.signaled = signaled;
     }
 
+    /**
+     * Retrieves the ID of the point associated with the multimedia content.
+     *
+     * @return The ID of the associated point.
+     */
     public Integer getPointId() {
         return pointId;
     }
 
+    /**
+     * Sets the ID of the point associated with the multimedia content.
+     *
+     * @param pointId The ID of the point to set.
+     */
     public void setPointId(Integer pointId) {
         this.pointId = pointId;
     }
 
-    public void addComment(int id){this.comments.add(id);}
+    /**
+     * Adds a comment to the multimedia content.
+     *
+     * @param id The ID of the comment to be added.
+     */
+    public void addComment(int id) {
+        this.comments.add(id);
+    }
 
-    public List<Integer> getComments(){return this.comments;}
+    /**
+     * Retrieves the list of comments associated with the multimedia content.
+     *
+     * @return The list of comments associated with the multimedia content.
+     */
+    public List<Integer> getComments() {
+        return this.comments;
+    }
 
-    public void deleteComment(int id){this.comments.remove(id);}
+    /**
+     * Deletes a comment from the multimedia content.
+     *
+     * @param id The ID of the comment to be deleted.
+     */
+    public void deleteComment(int id) {
+        this.comments.remove(id);
+    }
 
 }

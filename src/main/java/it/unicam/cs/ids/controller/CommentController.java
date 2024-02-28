@@ -24,7 +24,6 @@ import java.util.List;
 /**
  * The  Comment controller class manages the addition and validation of a general comment
  * differentiating between immediate addition and pending approval based on the user's role.
- * It interacts with instances of {@link BaseUser}, {@link UserRole}, {@link IUserPlatform}, {@link Comment}
  */
 @CrossOrigin(origins = "http://localhost:63342")
 @RestController
@@ -47,9 +46,10 @@ public class CommentController {
     }
 
     /**
-     * Adds a comment
+     * Adds a comment to a multimedia
      * @param comment the comment that we want to add
      * @param userId the user that wants to add a comment
+     * @param multimediaId the multimedia that we want to add
      */
     @PostMapping("/multimedia/add{userId}{multimediaId}")
     public ResponseEntity<?> addMultimediaComment(@RequestBody Comment comment , @PathParam("userId") int userId , @PathParam("multimediaId") int multimediaId) {
@@ -59,7 +59,12 @@ public class CommentController {
         multimediaRepository.save(multimedia);
         return new ResponseEntity<>("Comment added", HttpStatus.OK);
     }
-
+    /**
+     * Adds a comment to an itinerary
+     * @param comment the comment that we want to add
+     * @param userId the user that wants to add a comment
+     * @param itineraryId the itinerary that we want to add
+     */
     @PostMapping("/itinerary/add{userId}{itineraryId}")
     public ResponseEntity<?> addItineraryComment(@RequestBody Comment comment , @PathParam("userId") int userId , @PathParam("itineraryId") int itineraryId) {
         Itinerary itinerary = this.itineraryRepository.findById(itineraryId).orElseThrow(MultimediaNotFoundException::new);
@@ -68,7 +73,12 @@ public class CommentController {
         itineraryRepository.save(itinerary);
         return new ResponseEntity<>("Comment added", HttpStatus.OK);
     }
-
+    /**
+     * Adds a comment to a point
+     * @param comment the comment that we want to add
+     * @param userId the user that wants to add a comment
+     * @param pointId the point that we want to add
+     */
     @PostMapping("/point/add{userId}{pointId}")
     public ResponseEntity<?> addPointComment(@RequestBody Comment comment , @PathParam("userId") int userId, @PathParam("pointId") int pointId) {
         Point point = this.pointRepository.findById(pointId).orElseThrow(MultimediaNotFoundException::new);
@@ -78,6 +88,13 @@ public class CommentController {
         return new ResponseEntity<>("Comment added", HttpStatus.OK);
     }
 
+
+    /**
+     * Adds a comment with the specified user ID.
+     * @param userId The ID of the user adding the comment.
+     *@param comment The comment to be added.
+     * @throws UserNotExistException if the user does not exist.
+     */
     private void addComment(int userId, Comment comment){
         BaseUser user = this.users.findById(userId).orElseThrow(UserNotExistException::new);
         comment.setAuthorId(userId);
@@ -132,12 +149,20 @@ public class CommentController {
             throw new UserBadTypeException();
     }
 
+    /**
+     * Retrieves all comments.
+     * @return A ResponseEntity containing all comments and HTTP status OK.
+     */
     @GetMapping(value = "/getAll")
     public ResponseEntity<?> getComment(){
         return new ResponseEntity<>(comments.findAll(), HttpStatus.OK);
     }
 
-
+    /**
+     * Retrieves comments associated with a multimedia item specified by its ID.
+     * @param multimediaId The ID of the multimedia item.
+     * @return A ResponseEntity containing comments associated with the multimedia item and HTTP status OK.
+     */
     @GetMapping("/multimedia{multimediaId}")
     public ResponseEntity<?> getCommentsByMultimediaId(@PathParam("multimediaId") int multimediaId) {
         List<Integer> commentIds = comments.findByMultimediaId(multimediaId);
