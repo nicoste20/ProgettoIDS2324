@@ -9,7 +9,7 @@ L'applicazione consentirà agli utenti di:
 - visualizzare una mappa della città di Jesi
 - aggiungere punti sulla mappa come ristoranti, monumenti o piazze
 - aggiungere e visualizzare itinerari e sagre
-- aggiungere e visaulizzare contenuti multimediali e commenti 
+- aggiungere e visualizzare contenuti multimediali e commenti 
 
 ## Tecnologie Utilizzate
 
