@@ -187,5 +187,16 @@ public class PointController {
         }
         return new ResponseEntity<>("Point Deleted", HttpStatus.OK);
     }
+
+    /**
+     * Request to clone a point
+     * @param id the id of the point we want to clone
+     * @return the clone point
+     */
+    @GetMapping(value="/clone{id}")
+    public Point getCloneById(@PathParam("id") int id) {
+        Point originalPoint = points.getById(id);
+        return originalPoint.clone();
+    }
 }
 
