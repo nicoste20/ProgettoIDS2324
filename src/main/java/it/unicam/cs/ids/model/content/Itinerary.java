@@ -82,4 +82,8 @@ public class Itinerary extends Content {
     public void deleteComment(int id) {
         this.comments.remove(id);
     }
+
+    public void setComments(List<Integer> comments){
+        this.comments = comments;
+    }
 }

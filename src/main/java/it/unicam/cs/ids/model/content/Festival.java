@@ -55,9 +55,12 @@ public class Festival extends Itinerary{
         return this.endDate;
     }
 
+    public void setEndDate(Date endDate){
+        this.endDate = endDate;
+    }
+
     public FestivalMemento createMemento(){
-        Date today= new Date();
-        return new FestivalMemento(today,this);
+        return new FestivalMemento(this);
     }
 
     public void restoreFromMemento(FestivalMemento festivalMemento){

@@ -2,25 +2,21 @@ package it.unicam.cs.ids.model.memento;
 
 
 import it.unicam.cs.ids.model.content.Festival;
-
 import java.util.Date;
 import java.util.List;
 
 public class FestivalMemento {
-
-    private Date currentDate;
-    private  Date startDate;
-    private  Date endDate;
-    private List<Integer> points;
-    private List<Integer> comments;
-    private int author;
-    private String name;
-    private String description;
-    private boolean isValidate;
+    private final Date startDate;
+    private final Date endDate;
+    private final List<Integer> points;
+    private final List<Integer> comments;
+    private final int author;
+    private final String name;
+    private final String description;
+    private final boolean isValidate;
 
 
-    public FestivalMemento(Date currentDate, Festival festival) {
-        this.currentDate = currentDate;
+    public FestivalMemento(Festival festival) {
         this.startDate = festival.getStartDate();
         this.endDate=festival.getEndDate();
         this.points=festival.getPoints();
@@ -31,19 +27,11 @@ public class FestivalMemento {
         this.isValidate= festival.isValidate();
     }
 
-    public Date getCurrentDate() {
-        return currentDate;
-    }
-
-    public void setCurrentDate(Date currentDate) {
-        this.currentDate = currentDate;
-    }
-
     public Festival getFestival() {
+        Festival festival = new Festival(this.name ,this.points,this.startDate, this.endDate, this.description);
+        festival.setAuthor(this.author);
+        festival.setComments(this.comments);
+        festival.setValidation(this.isValidate);
         return festival;
-    }
-
-    public void setFestival(Festival festival) {
-        this.festival = festival;
     }
 }
