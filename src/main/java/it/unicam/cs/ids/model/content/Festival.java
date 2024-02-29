@@ -1,6 +1,7 @@
 package it.unicam.cs.ids.model.content;
 
 
+import it.unicam.cs.ids.model.memento.FestivalMemento;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
@@ -54,4 +55,13 @@ public class Festival extends Itinerary{
         return this.endDate;
     }
 
+    public FestivalMemento createMemento(){
+        Date today= new Date();
+        return new FestivalMemento(today,this);
+    }
+
+    public void restoreFromMemento(FestivalMemento festivalMemento){
+        this.startDate= festivalMemento.getFestival().getStartDate();
+        this.endDate= festivalMemento.getFestival().getEndDate();
+    }
 }
