@@ -13,7 +13,6 @@ import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import it.unicam.cs.ids.util.Point2D;
 import jakarta.websocket.server.PathParam;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

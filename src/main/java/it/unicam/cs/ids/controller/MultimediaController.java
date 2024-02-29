@@ -11,7 +11,6 @@ import it.unicam.cs.ids.model.content.Contest;
 import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +18,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 /**
  * The MultimediaController class manages the addition and validation of multimedia,
@@ -283,7 +280,6 @@ public class MultimediaController {
         String projectDirectory = System.getProperty("user.dir");
         String finalPath = projectDirectory + File.separator + uploadDirectory + File.separator + path+ ".jpg";
         try {
-            String newFileName = UUID.randomUUID().toString() + ".jpg";
             file.transferTo(new File(finalPath));
         } catch (IOException e) {
             throw new FileException();

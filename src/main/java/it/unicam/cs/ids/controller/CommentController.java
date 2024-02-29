@@ -10,7 +10,6 @@ import it.unicam.cs.ids.model.content.Itinerary;
 import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;

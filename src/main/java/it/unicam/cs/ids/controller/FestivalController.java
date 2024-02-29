@@ -12,9 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.DateTimeException;
 import java.util.Date;
-import java.util.zip.DataFormatException;
 
 /**
  * The FestivalController class manages the addition and removal of festivals.

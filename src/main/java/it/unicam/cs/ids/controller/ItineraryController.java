@@ -10,7 +10,6 @@ import it.unicam.cs.ids.controller.Repository.UserRepository;
 import it.unicam.cs.ids.model.content.Itinerary;
 import it.unicam.cs.ids.model.content.Point;
 import it.unicam.cs.ids.model.user.BaseUser;
-import it.unicam.cs.ids.model.user.IUserPlatform;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.StreamSupport;
+
 
 /**
  * The Itinerary controller class manages the addition and validation of itinerary,
@@ -163,7 +162,12 @@ public class ItineraryController {
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
-
+    /**
+     * Retrieves all the itineraries from the repository.
+     *
+     * @return ResponseEntity containing a list of itineraries if present in the repository,
+     *         otherwise a string "No itineraries found" with HttpStatus OK.
+     */
     @GetMapping(value ="/getAll")
     public ResponseEntity<?> getItineraries(){
         if(itineraryRepository.findAllItineraries().isEmpty())
@@ -171,6 +175,13 @@ public class ItineraryController {
         return new ResponseEntity<>(itineraryRepository.findAllItineraries(), HttpStatus.OK);
     }
 
+    /**
+     * Retrieves an itinerary by its ID.
+     *
+     * @param id The ID of the itinerary to retrieve.
+     * @return ResponseEntity containing a list of points belonging to the itinerary
+     *         if the itinerary is found, otherwise an ItineraryNotExistException is thrown.
+     */
     @GetMapping("/get/itinerary{id}")
     public ResponseEntity<?> getItinerary(@PathParam("id") int id){
         List<Point> points = new ArrayList<>();
@@ -181,6 +192,14 @@ public class ItineraryController {
         return new ResponseEntity<>(points, HttpStatus.OK);
     }
 
+    /**
+     * Deletes an itinerary based on the provided itinerary ID and user ID.
+     *
+     * @param itineraryId The ID of the itinerary to delete.
+     * @param userId      The ID of the user attempting to delete the itinerary.
+     * @return ResponseEntity indicating the deletion status, with a success message if
+     *         the itinerary is deleted successfully, otherwise an exception is thrown.
+     */
     @DeleteMapping("/delete{itineraryId}{userId}")
     public ResponseEntity<?> deleteItinerary(@PathParam("itineraryId") int itineraryId , @PathParam("userId") int userId){
         BaseUser user = users.findById(userId).orElseThrow(UserNotExistException::new);
