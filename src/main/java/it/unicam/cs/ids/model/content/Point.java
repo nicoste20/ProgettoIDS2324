@@ -175,6 +175,5 @@ public abstract class Point {
      *
      * @return A clone of the Point object.
      */
-    @Override
     public abstract Point clone();
 }
