@@ -1,13 +1,15 @@
 package it.unicam.cs.ids.model.user;
 
+import it.unicam.cs.ids.model.observer.Observer;
 import jakarta.persistence.*;
 
 /**
- * Represents a base implementation of the {@link IUserPlatform} interface.
- * This class provides basic functionality for user-related operations.
+ * Represents a base implementation of the {@link IUserPlatform} interface and
+ * implements the {@link Observer} interface for observing multimedia content publication.
+ * This class provides basic functionality for user-related operations and multimedia notifications.
  */
 @Entity
-public class BaseUser implements IUserPlatform {
+public class BaseUser implements IUserPlatform , Observer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  int id;
@@ -117,4 +119,11 @@ public class BaseUser implements IUserPlatform {
      */
     public int getPostCount(){return this.postCount;}
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update(String message) {
+        System.out.println(username + ": Notifica - Nuovo contenuto multimediale pubblicato: " + message);
+    }
 }

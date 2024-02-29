@@ -10,6 +10,7 @@ import it.unicam.cs.ids.model.content.Content;
 import it.unicam.cs.ids.model.content.Contest;
 import it.unicam.cs.ids.model.content.Multimedia;
 import it.unicam.cs.ids.model.content.Point;
+import it.unicam.cs.ids.model.observer.MultimediaListener;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
@@ -36,6 +37,7 @@ public class MultimediaController {
     private final UserRepository userRepository;
     private final ContestRespository contestRespository;
     private final PointRepository pointRepository;
+    public static MultimediaListener listener;
 
     /**
      * Constructs a new {@code MultimediaController} with empty content lists.
@@ -51,6 +53,7 @@ public class MultimediaController {
         this.userRepository = userRepository;
         this.contestRespository = contestRepository;
         this.pointRepository = pointRepository;
+        listener = new MultimediaListener();
     }
 
     /**
@@ -101,6 +104,7 @@ public class MultimediaController {
     public void addContentNoPending(Multimedia content) {
         content.setValidation(true);
         multimediaRepository.save(content);
+        listener.notifyObservers("Multimedia: " + content.getName());
     }
 
     /**

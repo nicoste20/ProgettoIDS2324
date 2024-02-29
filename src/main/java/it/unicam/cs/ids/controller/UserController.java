@@ -4,6 +4,7 @@ import it.unicam.cs.ids.Exception.UserAlreadyInException;
 import it.unicam.cs.ids.Exception.UserBadTypeException;
 import it.unicam.cs.ids.Exception.UserNotExistException;
 import it.unicam.cs.ids.controller.Repository.UserRepository;
+import it.unicam.cs.ids.model.observer.MultimediaListener;
 import it.unicam.cs.ids.model.user.BaseUser;
 import it.unicam.cs.ids.model.user.UserRole;
 import jakarta.websocket.server.PathParam;
@@ -98,6 +99,7 @@ public class UserController {
     public ResponseEntity<?> addUser(@RequestBody BaseUser user){
         if(userRepository.countByEmail(user.getEmail()) == 0){
             userRepository.save(user);
+            MultimediaController.listener.registerObserver(user);
             return new ResponseEntity<>("User created", HttpStatus.OK);
         }else throw new UserAlreadyInException();
     }
